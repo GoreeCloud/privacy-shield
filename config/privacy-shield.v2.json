@@ -1,0 +1,117 @@
+{
+  "schema_version": 2,
+  "feature": "GoreeCloud Privacy Shield",
+  "ruleset_version": 2,
+  "default_enabled": true,
+  "settings": {
+    "master_toggle": true,
+    "component_toggles": [
+      "content_blocking",
+      "tracker_protection",
+      "url_cleaning",
+      "local_resources"
+    ],
+    "persistent_site_exceptions": true,
+    "exception_storage": "adapter-local-only"
+  },
+  "components": {
+    "content_blocking": {
+      "enabled": true,
+      "ownership": "goreecloud",
+      "extension_required": false,
+      "default_enabled": true,
+      "site_exception_supported": true,
+      "site_exceptions_persistent": true,
+      "ruleset_source": "goreecloud-controlled",
+      "remote_rules_required": false,
+      "replaces": "uBlock Origin",
+      "hosts": [
+        "doubleclick.net",
+        "googlesyndication.com",
+        "googleadservices.com",
+        "adnxs.com",
+        "adsrvr.org",
+        "criteo.com",
+        "criteo.net",
+        "taboola.com",
+        "outbrain.com",
+        "amazon-adsystem.com",
+        "scorecardresearch.com",
+        "quantserve.com",
+        "pubmatic.com",
+        "rubiconproject.com",
+        "openx.net",
+        "casalemedia.com",
+        "smartadserver.com",
+        "serving-sys.com",
+        "media.net",
+        "bidswitch.net",
+        "yieldmo.com",
+        "sharethrough.com",
+        "lijit.com",
+        "adform.net",
+        "adroll.com"
+      ],
+      "cosmetic_filtering_planned": true,
+      "advanced_dynamic_filtering_planned": true
+    },
+    "tracker_protection": {
+      "enabled": true,
+      "user_toggle_supported": true,
+      "minimum_distinct_first_party_sites": 3,
+      "requires_tracking_signal": true,
+      "learning_scope": "local-session",
+      "remote_learning_allowed": false,
+      "remote_telemetry_allowed": false,
+      "site_exception_supported": true,
+      "site_exceptions_persistent": true
+    },
+    "url_cleaning": {
+      "enabled": true,
+      "user_toggle_supported": true,
+      "clean_navigation": true,
+      "clean_copy_share_api": true,
+      "unknown_parameters_preserved": true,
+      "functional_parameters_preserved": true,
+      "tracking_parameters": [
+        "utm_*",
+        "fbclid",
+        "gclid",
+        "dclid",
+        "msclkid",
+        "mc_cid",
+        "mc_eid",
+        "igshid",
+        "vero_id",
+        "oly_anon_id",
+        "oly_enc_id",
+        "_hsenc",
+        "_hsmi",
+        "mkt_tok",
+        "ref_src",
+        "ref_url"
+      ],
+      "exempt_hosts": [
+        "accounts.google.com",
+        "login.microsoftonline.com"
+      ]
+    },
+    "local_resources": {
+      "enabled": true,
+      "user_toggle_supported": true,
+      "mode": "exact-byte-match-only",
+      "fail_behavior": "network-original",
+      "remote_catalog_allowed": false,
+      "resources": []
+    }
+  },
+  "security_boundaries": {
+    "safe_browsing_unchanged": true,
+    "certificate_validation_unchanged": true,
+    "tls_unchanged": true,
+    "sandbox_unchanged": true,
+    "process_isolation_unchanged": true,
+    "application_updates_unchanged": true
+  },
+  "production_approved": false
+}
