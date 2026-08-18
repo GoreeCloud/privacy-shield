@@ -62,6 +62,8 @@ Source validation verifies that the ruleset and lifecycle contract are internall
 
 Production acceptance requires the exact compiled GoreeCloud Browser to validate Privacy Shield behavior, private-browsing behavior, site compatibility, failure handling, and inherited Firefox/Gecko security boundaries.
 
+The lifecycle contract therefore keeps `production_ready` false and the canonical configuration keeps `production_approved` false until that separate acceptance process is completed and explicitly recorded.
+
 ## Validation
 
 The repository validates this lifecycle with:
