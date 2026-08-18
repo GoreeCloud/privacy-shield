@@ -23,7 +23,10 @@ This repository now contains the first portable Privacy Shield core and reviewed
 - `tools/validate_config.py` — fail-closed configuration validation;
 - `tests/core.test.mjs` — Node tests for blocking, URL cleaning, tracker evidence, exceptions, and substitution boundaries;
 - `tests/test_config.py` — source-contract tests;
-- `.github/workflows/validate.yml` — automated source validation.
+- `.github/workflows/validate.yml` — automated source validation;
+- `contracts/privacy-shield.identity.json` — machine-readable product and visual-identity contract;
+- `scripts/validate_privacy_shield_identity.py` — fail-closed identity/showcase validator;
+- `.github/workflows/validate-identity.yml` — dedicated identity validation.
 
 GoreeCloud Browser continues to own the Gecko-specific runtime adapter: preference persistence, HTTP-channel integration, Browser lifecycle hooks, private-browsing behavior, and integration with Browser-owned navigation/copy/share surfaces.
 
@@ -75,19 +78,22 @@ branding/privacy-shield/privacy-shield-icon.svg
 
 Derived toolbar, monochrome, favicon-sized, and high-resolution assets must originate from that authoritative SVG rather than being maintained as unrelated artwork.
 
+The identity validator keeps visual showcase status fail-closed while the canonical icon is absent or unapproved. Placeholder, inherited, generic, or temporary artwork cannot be represented as the official Privacy Shield identity.
+
 ## Documentation
 
 - [Architecture](docs/ARCHITECTURE.md)
 - [Identity and icon standard](docs/IDENTITY.md)
 - [GoreeCloud Browser integration requirements](docs/BROWSER-INTEGRATION.md)
+- [Implementation boundary](docs/IMPLEMENTATION-BOUNDARY.md)
 - [Branding asset directory](branding/privacy-shield/README.md)
 
 ## Validation
 
-The repository validation workflow checks the reviewed configuration contract, Python configuration tests, portable Node core tests, JSON syntax, and Python compilation.
+The repository validation workflows check the reviewed configuration contract, Python configuration tests, portable Node core tests, JSON syntax, Python compilation, and the machine-readable Privacy Shield identity/showcase contract.
 
 Passing these checks demonstrates source consistency only. It does **not** constitute compiled GoreeCloud Browser runtime acceptance or production approval.
 
 ## Status
 
-Privacy Shield now has a documented identity, a reviewed v2 configuration contract, a portable core foundation, automated validation, and explicit Browser integration boundaries. The next development work is deeper Browser synchronization and runtime/UI acceptance testing. Final icon artwork remains separate and unapproved.
+Privacy Shield now has a documented identity, a reviewed v2 configuration contract, a portable core foundation, automated validation, a fail-closed visual-identity gate, and explicit Browser integration boundaries. The next development work is deeper Browser synchronization, ruleset lifecycle governance, and runtime/UI acceptance testing. Final icon artwork remains separate and unapproved.
