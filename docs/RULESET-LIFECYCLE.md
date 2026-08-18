@@ -79,3 +79,7 @@ tests/test_ruleset_lifecycle.py
 ```
 
 The main Privacy Shield validation workflow executes both as part of source validation.
+
+## Current lifecycle state
+
+Ruleset lifecycle governance is established for schema version 2 / ruleset version 2. Future semantic changes must update the ruleset version and lifecycle contract together, pass repository validation, and then be separately synchronized and accepted in the compiled Browser runtime.
