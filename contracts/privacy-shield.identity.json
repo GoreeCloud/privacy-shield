@@ -19,8 +19,11 @@
     "identity_distinction_review_required": true
   },
   "implementation": {
+    "portable_core_authority": "GoreeCloud/goreecloud-privacy-shield",
+    "portable_core_path": "src/privacy-shield-core.mjs",
+    "reviewed_config_path": "config/privacy-shield.v2.json",
     "current_privileged_runtime_authority": "GoreeCloud/goreecloud-browser",
-    "standalone_repository_role": "identity, conformance, shared rules/catalog governance, documentation, and future reusable subsystem contracts",
+    "standalone_repository_role": "portable core, reviewed configuration and rules, identity, conformance, documentation, and shared subsystem governance",
     "compiled_runtime_acceptance_required": true,
     "production_ready": false
   }
