@@ -65,7 +65,7 @@ contracts/privacy-shield.ruleset-lifecycle.json
 
 The Browser runtime adapter must validate supported schema and ruleset versions before treating a contract as approved Privacy Shield policy. Unsupported contract versions must fail closed at the policy-consumption boundary rather than being partially or optimistically interpreted.
 
-Ruleset source validation does not constitute Browser production acceptance.
+Material ruleset changes require explicit review and a ruleset-version decision before Browser synchronization. Ruleset source validation does not constitute Browser production acceptance.
 
 ## Functional expectations
 
