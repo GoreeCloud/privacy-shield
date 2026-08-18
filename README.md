@@ -16,14 +16,16 @@ Privacy Shield therefore requires its own recognizable icon and visual identity.
 
 ## Current foundation
 
-This repository now contains the first portable Privacy Shield core and reviewed rules contract:
+This repository contains the portable Privacy Shield core, reviewed rules contract, lifecycle governance, identity governance, and source validation:
 
 - `config/privacy-shield.v2.json` — reviewed configuration and seed rules contract;
 - `src/privacy-shield-core.mjs` — portable, Firefox-independent core behavior;
+- `contracts/privacy-shield.ruleset-lifecycle.json` — machine-readable ruleset ownership, versioning, review, and Browser-consumption contract;
 - `tools/validate_config.py` — fail-closed configuration validation;
+- `tools/validate_ruleset_lifecycle.py` — fail-closed lifecycle and Browser-consumption validation;
 - `tests/core.test.mjs` — Node tests for blocking, URL cleaning, tracker evidence, exceptions, and substitution boundaries;
-- `tests/test_config.py` — source-contract tests;
-- `.github/workflows/validate.yml` — automated source validation;
+- `tests/test_config.py` and `tests/test_ruleset_lifecycle.py` — source-contract tests;
+- `.github/workflows/validate.yml` — automated core/configuration/lifecycle source validation;
 - `contracts/privacy-shield.identity.json` — machine-readable product and visual-identity contract;
 - `scripts/validate_privacy_shield_identity.py` — fail-closed identity/showcase validator;
 - `.github/workflows/validate-identity.yml` — dedicated identity validation.
@@ -51,6 +53,8 @@ Privacy Shield does not replace or weaken Firefox/Gecko Safe Browsing, TLS, cert
 Behavioral tracker learning stays local and session-scoped in the portable core. The reviewed threshold is three distinct first-party sites with a tracking signal. Remote tracker learning and remote tracker telemetry are not part of the approved contract.
 
 Local-resource substitution remains exact-match only and fails open to the original network request. The payload catalog intentionally remains empty until resources receive provenance, licensing, integrity, update, and compatibility review.
+
+The canonical ruleset is versioned independently from its JSON schema. Material rule or behavior changes require review and a ruleset-version increment; source validation cannot be used as a substitute for compiled Browser acceptance.
 
 ## Glaze UI
 
@@ -83,6 +87,7 @@ The identity validator keeps visual showcase status fail-closed while the canoni
 ## Documentation
 
 - [Architecture](docs/ARCHITECTURE.md)
+- [Ruleset lifecycle](docs/RULESET-LIFECYCLE.md)
 - [Identity and icon standard](docs/IDENTITY.md)
 - [GoreeCloud Browser integration requirements](docs/BROWSER-INTEGRATION.md)
 - [Implementation boundary](docs/IMPLEMENTATION-BOUNDARY.md)
@@ -90,10 +95,10 @@ The identity validator keeps visual showcase status fail-closed while the canoni
 
 ## Validation
 
-The repository validation workflows check the reviewed configuration contract, Python configuration tests, portable Node core tests, JSON syntax, Python compilation, and the machine-readable Privacy Shield identity/showcase contract.
+The repository validation workflows check the reviewed configuration contract, ruleset lifecycle contract, Python source-contract tests, portable Node core tests, JSON syntax, Python compilation, and the machine-readable Privacy Shield identity/showcase contract.
 
 Passing these checks demonstrates source consistency only. It does **not** constitute compiled GoreeCloud Browser runtime acceptance or production approval.
 
 ## Status
 
-Privacy Shield now has a documented identity, a reviewed v2 configuration contract, a portable core foundation, automated validation, a fail-closed visual-identity gate, and explicit Browser integration boundaries. The next development work is deeper Browser synchronization, ruleset lifecycle governance, and runtime/UI acceptance testing. Final icon artwork remains separate and unapproved.
+Privacy Shield now has a documented identity, reviewed v2 configuration contract, portable core foundation, explicit ruleset lifecycle governance, automated validation, a fail-closed visual-identity gate, and explicit Browser integration boundaries. The next development work is deeper Browser synchronization and runtime/UI acceptance testing. Final icon artwork remains separate and unapproved.
