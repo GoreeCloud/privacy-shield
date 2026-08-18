@@ -1,0 +1,33 @@
+name: Privacy Shield Validation
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: privacy-shield-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check out Privacy Shield
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Validate configuration contract
+        run: python3 tools/validate_config.py
+      - name: Run configuration tests
+        run: python3 -m unittest discover -s tests -p 'test_*.py'
+      - name: Run portable core tests
+        run: node --test tests/core.test.mjs
+      - name: Validate JSON syntax
+        run: python3 -m json.tool config/privacy-shield.v2.json >/dev/null
+      - name: Compile Python validation tools
+        run: python3 -m py_compile tools/validate_config.py tests/test_config.py
