@@ -2,6 +2,8 @@ name: Validate Privacy Shield Identity
 
 on:
   push:
+    branches:
+      - main
     paths:
       - "contracts/privacy-shield.identity.json"
       - "scripts/validate_privacy_shield_identity.py"
@@ -18,11 +20,18 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: privacy-shield-identity-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   validate:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Validate Privacy Shield identity contract
         run: python3 scripts/validate_privacy_shield_identity.py
+      - name: Compile identity validator
+        run: python3 -m py_compile scripts/validate_privacy_shield_identity.py
