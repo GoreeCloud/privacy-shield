@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "product": {
+    "canonical_name": "GoreeCloud Privacy Shield",
+    "short_name": "Privacy Shield",
+    "scope": "goreecloud-browser-privacy-and-content-protection",
+    "design_language": "Glaze UI",
+    "security_identity_relationship": "Wardveil Security by GoreeCloud may present Privacy Shield status but does not replace Privacy Shield's Browser-specific authority"
+  },
+  "visual_identity": {
+    "canonical_asset": "branding/privacy-shield/privacy-shield-icon.svg",
+    "canonical_visual_identity_status": "pending-canonical-icon",
+    "showcase_status": "blocked-pending-canonical-icon",
+    "temporary_icon_substitution_allowed": false,
+    "explicit_approval_required": true,
+    "small_size_review_required": true,
+    "monochrome_review_required": true,
+    "light_dark_glaze_review_required": true,
+    "identity_distinction_review_required": true
+  },
+  "implementation": {
+    "current_privileged_runtime_authority": "GoreeCloud/goreecloud-browser",
+    "standalone_repository_role": "identity, conformance, shared rules/catalog governance, documentation, and future reusable subsystem contracts",
+    "compiled_runtime_acceptance_required": true,
+    "production_ready": false
+  }
+}
