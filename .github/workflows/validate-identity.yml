@@ -1,0 +1,28 @@
+name: Validate Privacy Shield Identity
+
+on:
+  push:
+    paths:
+      - "contracts/privacy-shield.identity.json"
+      - "scripts/validate_privacy_shield_identity.py"
+      - "branding/privacy-shield/**"
+      - ".github/workflows/validate-identity.yml"
+  pull_request:
+    paths:
+      - "contracts/privacy-shield.identity.json"
+      - "scripts/validate_privacy_shield_identity.py"
+      - "branding/privacy-shield/**"
+      - ".github/workflows/validate-identity.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Validate Privacy Shield identity contract
+        run: python3 scripts/validate_privacy_shield_identity.py
