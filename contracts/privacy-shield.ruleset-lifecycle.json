@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "canonical_ruleset": {
+    "path": "config/privacy-shield.v2.json",
+    "schema_version": 2,
+    "ruleset_version": 2,
+    "owner": "GoreeCloud",
+    "review_required": true
+  },
+  "governance": {
+    "remote_rules_required": false,
+    "remote_tracker_learning_allowed": false,
+    "remote_tracker_telemetry_allowed": false,
+    "remote_local_resource_catalog_allowed": false,
+    "semantic_changes_require_ruleset_version_increment": true,
+    "production_approval_must_remain_separate": true,
+    "review_scopes": [
+      "components.content_blocking.hosts",
+      "components.tracker_protection",
+      "components.url_cleaning.tracking_parameters",
+      "components.url_cleaning.exempt_hosts",
+      "components.local_resources.resources",
+      "security_boundaries"
+    ]
+  },
+  "browser_consumption": {
+    "current_runtime_authority": "GoreeCloud/goreecloud-browser",
+    "adapter_must_validate_schema_version": true,
+    "adapter_must_validate_ruleset_version": true,
+    "adapter_must_fail_closed_on_unsupported_contract": true,
+    "site_exception_storage": "adapter-local-only",
+    "tracker_evidence_scope": "local-session",
+    "local_resource_failure_behavior": "network-original"
+  },
+  "release_boundary": {
+    "source_validation_is_production_acceptance": false,
+    "compiled_browser_acceptance_required": true,
+    "production_ready": false
+  }
+}
