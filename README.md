@@ -23,12 +23,14 @@ This repository contains the portable Privacy Shield core, reviewed rules contra
 - `contracts/privacy-shield.ruleset-lifecycle.json` — machine-readable ruleset ownership, versioning, review, and Browser-consumption contract;
 - `tools/validate_config.py` — fail-closed configuration validation;
 - `tools/validate_ruleset_lifecycle.py` — fail-closed lifecycle and Browser-consumption validation;
-- `tests/core.test.mjs` — Node tests for blocking, URL cleaning, tracker evidence, exceptions, and substitution boundaries;
+- `tests/core.test.mjs` — Node tests for blocking, URL cleaning, tracker evidence, exceptions, disabled protection state, and substitution boundaries;
 - `tests/test_config.py` and `tests/test_ruleset_lifecycle.py` — source-contract tests;
 - `.github/workflows/validate.yml` — automated core/configuration/lifecycle source validation;
 - `contracts/privacy-shield.identity.json` — machine-readable product and visual-identity contract;
 - `scripts/validate_privacy_shield_identity.py` — fail-closed identity/showcase validator;
 - `.github/workflows/validate-identity.yml` — dedicated identity validation.
+
+Portable-core hardening was merged through PR #18 as commit `34bcbe9ee6a99c2381bf204b7411286e63abb7a1` after Privacy Shield Validation run #24 completed successfully. That hardening added fail-closed schema/ruleset handling, required component-structure validation, deterministic enforcement of the master protection toggle, stricter local-resource substitution boundaries, and expanded portable-core test coverage.
 
 GoreeCloud Browser continues to own the Gecko-specific runtime adapter: preference persistence, HTTP-channel integration, Browser lifecycle hooks, private-browsing behavior, and integration with Browser-owned navigation/copy/share surfaces.
 
@@ -91,14 +93,26 @@ The identity validator keeps visual showcase status fail-closed while the canoni
 - [Identity and icon standard](docs/IDENTITY.md)
 - [GoreeCloud Browser integration requirements](docs/BROWSER-INTEGRATION.md)
 - [Implementation boundary](docs/IMPLEMENTATION-BOUNDARY.md)
+- [Acceptance status](docs/ACCEPTANCE-STATUS.md)
 - [Branding asset directory](branding/privacy-shield/README.md)
 
 ## Validation
 
 The repository validation workflows check the reviewed configuration contract, ruleset lifecycle contract, Python source-contract tests, portable Node core tests, JSON syntax, Python compilation, and the machine-readable Privacy Shield identity/showcase contract.
 
-Passing these checks demonstrates source consistency only. It does **not** constitute compiled GoreeCloud Browser runtime acceptance or production approval.
+PR #18 was validated successfully at exact head `3b1d24a102fea39189babe440c32ab278366ec5f` before squash merge. Passing these checks demonstrates source consistency and portable-core conformance only. It does **not** constitute compiled GoreeCloud Browser runtime acceptance or production approval.
 
 ## Status
 
-Privacy Shield now has a documented identity, reviewed v2 configuration contract, portable core foundation, explicit ruleset lifecycle governance, automated validation, a fail-closed visual-identity gate, and explicit Browser integration boundaries. Outstanding work is deeper Browser synchronization, compiled runtime/UI acceptance, and final icon creation/approval. Final icon artwork remains separate and unapproved.
+| Gate | State |
+| --- | --- |
+| Portable core foundation | Complete |
+| Reviewed v2 configuration and lifecycle contract | Complete |
+| Portable-core hardening | Merged and source-validated |
+| Fail-closed identity/showcase contract | Complete |
+| Browser contract synchronization | Source-integrated; exact compiled-runtime acceptance still required |
+| Compiled Browser runtime/UI acceptance | Pending |
+| Canonical Privacy Shield icon | Pending explicit approval |
+| Overall production approval | Pending |
+
+Privacy Shield must remain classified as active development until the exact compiled GoreeCloud Browser passes the required runtime and UI acceptance work and the canonical icon receives explicit approval. Source validation, Browser source synchronization, and successful repository CI do not by themselves authorize a production-ready classification.
