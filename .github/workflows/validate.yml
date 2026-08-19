@@ -19,8 +19,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - name: Check out Privacy Shield
+      - name: Check out exact Privacy Shield revision
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
       - name: Validate configuration contract
         run: python3 tools/validate_config.py
       - name: Validate ruleset lifecycle contract
@@ -40,3 +42,7 @@ jobs:
           tools/validate_ruleset_lifecycle.py
           tests/test_config.py
           tests/test_ruleset_lifecycle.py
+          website/build.py
+          website/validate.py
+      - name: Build and validate public Privacy Shield website
+        run: python3 website/validate.py
