@@ -27,22 +27,70 @@ function isTrackingParameter(name, patterns) {
   });
 }
 
+function requireObject(value, label) {
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    throw new TypeError(`${label} must be an object`);
+  }
+  return value;
+}
+
+function requireArray(value, label) {
+  if (!Array.isArray(value)) {
+    throw new TypeError(`${label} must be an array`);
+  }
+  return value;
+}
+
+function validateConfig(config) {
+  requireObject(config, "Privacy Shield configuration");
+  if (config.feature !== "GoreeCloud Privacy Shield") {
+    throw new TypeError("A valid GoreeCloud Privacy Shield configuration is required");
+  }
+  if (config.schema_version !== 2 || config.ruleset_version !== 2) {
+    throw new TypeError("Unsupported Privacy Shield schema or ruleset version");
+  }
+
+  const components = requireObject(config.components, "Privacy Shield components");
+  const contentBlocking = requireObject(components.content_blocking, "content_blocking");
+  const trackerProtection = requireObject(components.tracker_protection, "tracker_protection");
+  const urlCleaning = requireObject(components.url_cleaning, "url_cleaning");
+  const localResources = requireObject(components.local_resources, "local_resources");
+
+  requireArray(contentBlocking.hosts, "content_blocking.hosts");
+  requireArray(urlCleaning.tracking_parameters, "url_cleaning.tracking_parameters");
+  requireArray(urlCleaning.exempt_hosts, "url_cleaning.exempt_hosts");
+  requireArray(localResources.resources, "local_resources.resources");
+
+  if (!Number.isInteger(trackerProtection.minimum_distinct_first_party_sites) ||
+      trackerProtection.minimum_distinct_first_party_sites < 1) {
+    throw new TypeError("tracker_protection.minimum_distinct_first_party_sites must be a positive integer");
+  }
+
+  if (localResources.mode !== "exact-byte-match-only" || localResources.fail_behavior !== "network-original") {
+    throw new TypeError("Privacy Shield local-resource substitution must remain exact-match and fail open");
+  }
+
+  return config;
+}
+
 export class PrivacyShieldCore {
   constructor(config) {
-    if (!config || config.feature !== "GoreeCloud Privacy Shield") {
-      throw new TypeError("A valid GoreeCloud Privacy Shield configuration is required");
-    }
-
-    this.config = config;
+    this.config = validateConfig(config);
+    this.enabled = config.default_enabled !== false && config.settings?.master_toggle !== false;
     this.contentExceptions = new Set();
     this.trackerExceptions = new Set();
     this.trackerEvidence = new Map();
     this.localResources = new Map(
-      (config.components.local_resources.resources ?? []).map(resource => [
-        resource.url,
-        resource,
-      ])
+      config.components.local_resources.resources.map(resource => [resource.url, resource])
     );
+  }
+
+  setEnabled(enabled) {
+    this.enabled = Boolean(enabled);
+  }
+
+  isEnabled() {
+    return this.enabled;
   }
 
   addContentBlockingException(host) {
@@ -70,7 +118,7 @@ export class PrivacyShieldCore {
 
   shouldBlockContent(requestHost, firstPartyHost = "") {
     const component = this.config.components.content_blocking;
-    if (!component.enabled) return false;
+    if (!this.enabled || !component.enabled) return false;
 
     const request = normalizeHost(requestHost);
     const firstParty = normalizeHost(firstPartyHost);
@@ -85,7 +133,7 @@ export class PrivacyShieldCore {
 
   cleanURL(spec) {
     const component = this.config.components.url_cleaning;
-    if (!component.enabled) return spec;
+    if (!this.enabled || !component.enabled) return spec;
 
     let url;
     try {
@@ -110,7 +158,7 @@ export class PrivacyShieldCore {
 
   recordThirdPartyObservation(firstPartyHost, thirdPartyHost, hasTrackingSignal) {
     const component = this.config.components.tracker_protection;
-    if (!component.enabled || !hasTrackingSignal) return false;
+    if (!this.enabled || !component.enabled || !hasTrackingSignal) return false;
 
     const firstParty = normalizeHost(firstPartyHost);
     const thirdParty = normalizeHost(thirdPartyHost);
@@ -128,21 +176,19 @@ export class PrivacyShieldCore {
 
   shouldBlockThirdParty(firstPartyHost, thirdPartyHost) {
     const component = this.config.components.tracker_protection;
-    if (!component.enabled) return false;
+    if (!this.enabled || !component.enabled) return false;
 
     const firstParty = normalizeHost(firstPartyHost);
     const thirdParty = normalizeHost(thirdPartyHost);
     if (!firstParty || !thirdParty || hostMatchesDomain(thirdParty, firstParty)) return false;
     if ([...this.trackerExceptions].some(domain => hostMatchesDomain(firstParty, domain))) return false;
 
-    return (
-      this.trackerEvidence.get(thirdParty)?.size ?? 0
-    ) >= component.minimum_distinct_first_party_sites;
+    return (this.trackerEvidence.get(thirdParty)?.size ?? 0) >= component.minimum_distinct_first_party_sites;
   }
 
   localResourceFor(spec) {
     const component = this.config.components.local_resources;
-    if (!component.enabled || component.mode !== "exact-byte-match-only") return null;
+    if (!this.enabled || !component.enabled || component.mode !== "exact-byte-match-only") return null;
     return this.localResources.get(spec) ?? null;
   }
 
@@ -151,4 +197,4 @@ export class PrivacyShieldCore {
   }
 }
 
-export { hostMatchesDomain, normalizeHost };
+export { hostMatchesDomain, normalizeHost, validateConfig };
