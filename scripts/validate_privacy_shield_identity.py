@@ -9,6 +9,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 CONTRACT_PATH = ROOT / "contracts" / "privacy-shield.identity.json"
 CANONICAL_ICON = ROOT / "branding" / "privacy-shield" / "privacy-shield-icon.svg"
+APPROVAL_RECORD = ROOT / "docs" / "APPROVED-ICON.md"
 
 
 def fail(message: str) -> None:
@@ -51,12 +52,28 @@ def main() -> None:
         if showcase_status != "blocked-pending-canonical-icon":
             fail("missing icon requires blocked-pending-canonical-icon showcase status")
     else:
-        if visual_status == "pending-canonical-icon":
-            fail("canonical icon exists but contract still says pending-canonical-icon")
-        if showcase_status == "blocked-pending-canonical-icon":
-            fail("canonical icon exists but showcase status still says blocked-pending-canonical-icon")
+        if visual_status != "approved-canonical-icon":
+            fail("canonical icon requires approved-canonical-icon status")
+        if showcase_status != "approved":
+            fail("approved canonical icon requires approved showcase status")
         if visual.get("explicit_approval_required") is not True:
             fail("explicit artwork approval must remain required")
+        if visual.get("explicit_approval_satisfied") is not True:
+            fail("canonical icon requires recorded explicit approval")
+        if visual.get("approval_date") != "2026-08-19":
+            fail("canonical icon approval date is missing or incorrect")
+        if visual.get("approval_record") != "docs/APPROVED-ICON.md":
+            fail("canonical icon approval record path drifted")
+        if not APPROVAL_RECORD.is_file():
+            fail("missing docs/APPROVED-ICON.md approval evidence")
+        for key in (
+            "small_size_review_satisfied",
+            "monochrome_review_satisfied",
+            "light_dark_glaze_review_satisfied",
+            "identity_distinction_review_satisfied",
+        ):
+            if visual.get(key) is not True:
+                fail(f"approved icon requires {key}=true")
 
     if implementation.get("current_privileged_runtime_authority") != "GoreeCloud/goreecloud-browser":
         fail("current privileged Browser runtime authority drifted")

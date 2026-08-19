@@ -6,15 +6,9 @@ This document records the current acceptance state of GoreeCloud Privacy Shield 
 
 ## Current source baseline
 
-Portable-core hardening was merged through PR #18 as commit `34bcbe9ee6a99c2381bf204b7411286e63abb7a1` after Privacy Shield Validation run #24 completed successfully. The validated PR head was `3b1d24a102fea39189babe440c32ab278366ec5f`.
+Portable-core hardening was merged through PR #18 as commit `34bcbe9ee6a99c2381bf204b7411286e63abb7a1` after Privacy Shield Validation run #24 completed successfully. Repository acceptance-state reconciliation was merged through PR #19 as `a8a98be3c2a4f5dff706761a80cca8b704a65af9` after run #26 passed.
 
-The merged hardening establishes:
-
-- fail-closed handling for unsupported schema and ruleset contracts;
-- validation of required component structures;
-- deterministic master protection-toggle enforcement across portable blocking, URL cleaning, tracker learning and blocking, and local-resource lookup;
-- exact-match local-resource substitution with fail-open behavior to the original network request;
-- expanded portable-core test coverage for disabled protection state, repeated tracking parameters, contract rejection, and tracker-evidence clearing.
+The merged hardening establishes fail-closed unsupported-contract handling, required component-structure validation, deterministic master protection-toggle enforcement, exact-match local-resource substitution with network-original fail-open behavior, and expanded portable-core coverage.
 
 ## Acceptance gates
 
@@ -34,7 +28,7 @@ GoreeCloud Browser is the privileged Firefox/Gecko runtime authority. The Browse
 
 **State: Pending.**
 
-The exact compiled GoreeCloud Browser must demonstrate, against the intended Privacy Shield source revision and exact Browser build, at minimum:
+The exact compiled GoreeCloud Browser must demonstrate, against the intended Privacy Shield source revision and exact Browser binary, at minimum:
 
 - request blocking and allow/bypass behavior;
 - navigation, copy, and share URL cleaning;
@@ -44,8 +38,8 @@ The exact compiled GoreeCloud Browser must demonstrate, against the intended Pri
 - private-browsing isolation and lifecycle behavior;
 - exact-match local-resource substitution and fail-open behavior;
 - missing, malformed, unsupported, or unavailable policy-data handling;
-- compatibility and rollback behavior;
-- user-visible protection-state accuracy;
+- compatibility, rollback, and recovery behavior;
+- user-visible protection-state accuracy using the approved Privacy Shield identity where applicable;
 - keyboard and assistive-technology accessibility;
 - light and dark Glaze UI behavior;
 - preservation of Firefox/Gecko TLS, certificate validation, Safe Browsing, sandboxing, process isolation, permissions, and update boundaries.
@@ -54,18 +48,18 @@ Passing portable-source validation must never be substituted for this gate.
 
 ### 4. Canonical visual identity
 
-**State: Pending explicit approval.**
+**State: Passed.**
 
-The machine-readable identity contract remains fail-closed while `branding/privacy-shield/privacy-shield-icon.svg` is absent or unapproved. Placeholder, generic, inherited Browser, or Wardveil Security artwork must not be represented as the Privacy Shield identity.
+Candidate 01 was explicitly approved by the user on August 19, 2026 after direct review of a 1024×1024 PNG rendered from the exact authored SVG. PR #20 merged the authored design as `44d47982d154e0a0a9a913d232a2eae835c6905f`. PR #22 promoted the approved geometry to `branding/privacy-shield/privacy-shield-icon.svg` and merged as `164310648a140a97df006146949fc0c59272eda8`.
 
-Before visual showcase readiness is approved, the canonical artwork must pass compact-size, monochrome, light/dark Glaze UI, and identity-distinction review.
+Compact 16 px, 20 px, and 24 px checks preserve the shield silhouette and layered structure. The monochrome derivative supports controlled light/dark Glaze UI presentation. Issue #2 is closed completed. The approval evidence is recorded in `docs/APPROVED-ICON.md`.
 
 ### 5. Overall production approval
 
-**State: Pending.**
+**State: Pending exact compiled Browser acceptance.**
 
-Privacy Shield must remain classified as active development until the exact compiled Browser acceptance gate and canonical visual-identity gate are both satisfied and the resulting state is deliberately documented.
+The Privacy Shield visual-identity gate is satisfied. Privacy Shield must remain classified as active development until the exact compiled GoreeCloud Browser acceptance gate is successfully executed, reviewed, and recorded.
 
 ## Production-boundary rule
 
-A successful GitHub workflow, portable-core test suite, source-contract synchronization, or documentation update proves only the scope it directly validates. None of those artifacts independently proves production Browser behavior.
+A successful GitHub workflow, portable-core test suite, source-contract synchronization, documentation update, or icon approval proves only the scope it directly validates. None of those artifacts independently proves production Browser behavior.
