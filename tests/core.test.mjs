@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 
-import { PrivacyShieldCore, hostMatchesDomain } from "../src/privacy-shield-core.mjs";
+import { PrivacyShieldCore, hostMatchesDomain, validateConfig } from "../src/privacy-shield-core.mjs";
 
 const config = JSON.parse(
   await readFile(new URL("../config/privacy-shield.v2.json", import.meta.url), "utf8")
@@ -11,6 +11,27 @@ const config = JSON.parse(
 function newShield() {
   return new PrivacyShieldCore(structuredClone(config));
 }
+
+test("configuration validation fails closed on unsupported contracts", () => {
+  const invalid = structuredClone(config);
+  invalid.schema_version = 99;
+  assert.throws(() => validateConfig(invalid), /Unsupported Privacy Shield schema/);
+
+  const unsafe = structuredClone(config);
+  unsafe.components.local_resources.fail_behavior = "block";
+  assert.throws(() => validateConfig(unsafe), /fail open/);
+});
+
+test("master protection state disables every portable protection component", () => {
+  const shield = newShield();
+  shield.setEnabled(false);
+  assert.equal(shield.isEnabled(), false);
+  assert.equal(shield.shouldBlockContent("ads.doubleclick.net", "example.org"), false);
+  assert.equal(shield.cleanURL("https://example.org/?utm_source=x"), "https://example.org/?utm_source=x");
+  assert.equal(shield.recordThirdPartyObservation("one.example", "tracker.test", true), false);
+  assert.equal(shield.shouldBlockThirdParty("one.example", "tracker.test"), false);
+  assert.equal(shield.localResourceFor("https://cdn.example.org/library.js"), null);
+});
 
 test("domain matching is exact or subdomain-aware", () => {
   assert.equal(hostMatchesDomain("ads.doubleclick.net", "doubleclick.net"), true);
@@ -37,6 +58,15 @@ test("URL cleaning removes reviewed tracking parameters and preserves functional
   assert.equal(cleaned.hash, "#part");
 });
 
+test("URL cleaning removes repeated tracking parameters without touching functional duplicates", () => {
+  const shield = newShield();
+  const cleaned = new URL(shield.cleanURL(
+    "https://example.org/?utm_source=a&utm_source=b&id=1&id=2"
+  ));
+  assert.equal(cleaned.searchParams.has("utm_source"), false);
+  assert.deepEqual(cleaned.searchParams.getAll("id"), ["1", "2"]);
+});
+
 test("URL cleaning leaves exempt authentication hosts unchanged", () => {
   const shield = newShield();
   const original = "https://accounts.google.com/signin?utm_source=x&continue=https%3A%2F%2Fexample.org";
@@ -58,6 +88,16 @@ test("tracker exceptions suppress local learning and blocking", () => {
   shield.addTrackerException("example.org");
   assert.equal(shield.recordThirdPartyObservation("news.example.org", "tracker.test", true), false);
   assert.equal(shield.shouldBlockThirdParty("news.example.org", "tracker.test"), false);
+});
+
+test("clearing tracker evidence removes learned blocking state", () => {
+  const shield = newShield();
+  shield.recordThirdPartyObservation("one.example", "tracker.test", true);
+  shield.recordThirdPartyObservation("two.example", "tracker.test", true);
+  shield.recordThirdPartyObservation("three.example", "tracker.test", true);
+  assert.equal(shield.shouldBlockThirdParty("four.example", "tracker.test"), true);
+  shield.clearTrackerEvidence();
+  assert.equal(shield.shouldBlockThirdParty("four.example", "tracker.test"), false);
 });
 
 test("local resource substitution is exact-match only and currently has no payloads", () => {
