@@ -1,11 +1,11 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "product": {
     "canonical_name": "GoreeCloud Privacy Shield",
     "short_name": "Privacy Shield",
-    "scope": "goreecloud-browser-privacy-and-content-protection",
+    "scope": "goreecloud-platform-privacy-protection",
     "design_language": "Glaze UI",
-    "security_identity_relationship": "Wardveil Security by GoreeCloud may present Privacy Shield status but does not replace Privacy Shield's Browser-specific authority"
+    "security_identity_relationship": "Wardveil Security by GoreeCloud is the platform-wide security and protection identity. Privacy Shield is the platform-wide privacy identity and privacy-capability authority. The two may cross-reference relevant status without replacing one another."
   },
   "visual_identity": {
     "canonical_asset": "branding/privacy-shield/privacy-shield-icon.svg",
@@ -26,12 +26,13 @@
     "identity_distinction_review_satisfied": true
   },
   "implementation": {
-    "portable_core_authority": "GoreeCloud/goreecloud-privacy-shield",
-    "portable_core_path": "src/privacy-shield-core.mjs",
-    "reviewed_config_path": "config/privacy-shield.v2.json",
-    "current_privileged_runtime_authority": "GoreeCloud/goreecloud-browser",
-    "standalone_repository_role": "portable core, reviewed configuration and rules, identity, conformance, documentation, and shared subsystem governance",
-    "compiled_runtime_acceptance_required": true,
+    "platform_contract_authority": "GoreeCloud/goreecloud-privacy-shield",
+    "platform_contract_path": "contracts/privacy-shield.platform.json",
+    "portable_browser_core_path": "src/privacy-shield-core.mjs",
+    "reviewed_browser_config_path": "config/privacy-shield.v2.json",
+    "browser_privileged_runtime_authority": "GoreeCloud/goreecloud-browser",
+    "standalone_repository_role": "platform privacy capability authority, shared contracts, portable Browser core, reviewed Browser configuration and rules, identity, conformance, documentation, and adoption governance",
+    "component_specific_runtime_acceptance_required": true,
     "production_ready": false
   }
 }
