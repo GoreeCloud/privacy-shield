@@ -17,16 +17,19 @@ The approved canonical Privacy Shield icon is stored at `branding/privacy-shield
 
 ## Current foundation
 
-This repository contains the portable Privacy Shield core, reviewed Browser rules contract, platform privacy contract, lifecycle governance, identity governance, branding authority, and source validation:
+This repository contains the portable Privacy Shield core, reviewed Browser rules contract, platform privacy contract, canonical capability registry, lifecycle governance, identity governance, branding authority, and source validation:
 
 - `config/privacy-shield.v2.json` — reviewed Browser configuration and seed rules contract;
 - `src/privacy-shield-core.mjs` — portable Firefox-independent Browser privacy behavior;
 - `contracts/privacy-shield.ruleset-lifecycle.json` — Browser ruleset ownership, versioning, review, and Browser-consumption contract;
 - `contracts/privacy-shield.identity.json` — machine-readable product and visual-identity contract;
 - `contracts/privacy-shield.platform.json` — platform-wide privacy authority, domains, adapter model, and privacy principles;
+- `contracts/privacy-shield.capabilities.json` — canonical Privacy Shield capability identifiers, definitions, initial runtime ownership, and governance;
+- `contracts/privacy-shield.adapter.schema.json` — machine-readable adapter declaration contract whose capability enum must match the canonical registry exactly;
+- `contracts/privacy-shield.status.schema.json` — minimized producer-to-consumer privacy-status contract;
 - `branding/privacy-shield/privacy-shield-icon.svg` — approved canonical visual identity;
 - `docs/PLATFORM-ARCHITECTURE.md` — platform-wide authority and distributed-adapter architecture;
-- `docs/PLATFORM-ADOPTION.md` — initial adoption targets and capability vocabulary;
+- `docs/PLATFORM-ADOPTION.md` — current adoption state and canonical capability vocabulary;
 - `docs/APPROVED-ICON.md` — explicit icon approval and review record;
 - `tools/` and `scripts/` — fail-closed source validation;
 - `tests/` — portable-core and contract coverage;
@@ -44,17 +47,19 @@ Privacy Shield may govern these privacy domains when implemented by a supported 
 - metadata minimization and tracking-parameter resistance;
 - privacy status, explanations, exceptions, and user controls.
 
-A component must not claim a Privacy Shield capability that it has not implemented and validated.
+A component must not claim a Privacy Shield capability that it has not implemented and validated. The canonical capability IDs are controlled by `contracts/privacy-shield.capabilities.json`; branding or adjacent functionality does not confer undeclared capabilities.
 
 ## Distributed adapter model
 
 Privacy Shield is not a centralized privileged proxy. Runtime authority remains with the component that actually performs the work:
 
 - GoreeCloud Browser owns Firefox/Gecko-specific request interception and browsing privacy behavior.
-- GoreeCloud DNS owns DNS privacy filtering and DNS-policy execution.
-- GoreeCloud Network owns privacy-relevant encrypted networking and DNS-routing behavior.
+- GoreeCloud DNS owns DNS privacy filtering and DNS-policy execution when its `dns-privacy` adapter is accepted.
+- GoreeCloud Network owns privacy-relevant encrypted networking when its `network-privacy` adapter is accepted.
 - Native and maintained-fork applications own their storage, permissions, telemetry, retention, deletion, and export implementations.
-- GoreeCloud Manager and Wardveil Security may aggregate bounded Privacy Shield status without collecting raw private activity merely for dashboard presentation.
+- GoreeCloud Manager and Wardveil Security may consume bounded Privacy Shield status without collecting raw private activity merely for dashboard presentation.
+
+The central `adapters/` directory is not a wishlist. Draft downstream candidates remain outside that canonical directory until their source-side contract reaches the approved central-integration point.
 
 ## Browser responsibilities
 
@@ -64,11 +69,11 @@ The native blocker replaces the managed uBlock Origin dependency in the GoreeClo
 
 ## Privacy and security boundaries
 
-Privacy Shield does not replace Wardveil Security, GoreeCloud Identity, VPN/private-network transport, host/network firewalls, malware scanning, vulnerability management, authentication, authorization, backup, or recovery.
+Privacy Shield does not replace Wardveil Security, GoreeCloud Identity, VPN/private-network transport, GoreeCloud DNS, host/network firewalls, malware scanning, vulnerability management, authentication, authorization, backup, or recovery.
 
 For Browser behavior, Privacy Shield does not replace or weaken Firefox/Gecko Safe Browsing, TLS, certificate validation, sandboxing, process isolation, site permissions, or the application update system.
 
-Privacy Shield remains local-first. Remote tracker learning and remote tracker telemetry are not approved. Platform status aggregation should prefer minimal derived state over raw browsing history, DNS history, content, message bodies, files, clipboard contents, typed text, location history, credentials, or similarly sensitive payloads.
+Privacy Shield remains local-first. Remote tracker learning and remote tracker telemetry are not approved. Platform status aggregation should prefer minimal derived state over raw browsing history, DNS history, network flows, content, message bodies, files, clipboard contents, typed text, location history, credentials, or similarly sensitive payloads.
 
 ## Glaze UI and branding
 
@@ -80,6 +85,9 @@ Derived toolbar, monochrome, favicon-sized, settings, documentation, and high-re
 
 - [Platform architecture](docs/PLATFORM-ARCHITECTURE.md)
 - [Platform adoption](docs/PLATFORM-ADOPTION.md)
+- [Canonical capability registry](contracts/privacy-shield.capabilities.json)
+- [Adapter declaration schema](contracts/privacy-shield.adapter.schema.json)
+- [Sanitized status schema](contracts/privacy-shield.status.schema.json)
 - [Browser architecture](docs/ARCHITECTURE.md)
 - [Ruleset lifecycle](docs/RULESET-LIFECYCLE.md)
 - [Identity and icon standard](docs/IDENTITY.md)
@@ -97,12 +105,15 @@ Derived toolbar, monochrome, favicon-sized, settings, documentation, and high-re
 | Reviewed Browser v2 configuration and lifecycle contract | Complete |
 | Canonical Privacy Shield icon | Approved and canonicalized |
 | Browser contract synchronization | Source-integrated |
-| Platform-wide privacy role | Approved |
-| Platform contract and adoption architecture | Initial foundation implemented |
-| Manager/Wardveil privacy posture integration | Planned |
-| DNS/Network privacy adapter integration | Planned |
-| Application privacy adapters | Planned/incremental |
+| Platform-wide privacy role | Approved and merged |
+| Platform contract and adapter/status architecture | Merged |
+| Canonical capability registry | In validation on current reconciliation branch |
+| GoreeCloud Manager status consumer | Merged; no accepted runtime producer active yet |
+| Wardveil Security status presenter | Merged; read-only authority separation enforced |
+| GoreeCloud DNS `dns-privacy` adapter | Draft downstream candidate; not centrally promoted or production-approved |
+| GoreeCloud Network `network-privacy` adapter | Draft downstream candidate; not centrally promoted or production-approved |
+| Additional application privacy adapters | Planned/incremental |
 | Compiled Browser runtime/UI acceptance | Pending |
 | Overall platform production approval | Not a single global gate; adapter-specific acceptance required |
 
-Privacy Shield is now a platform-wide GoreeCloud privacy foundation, but each runtime integration retains an independent implementation and production-acceptance boundary. Shared contract validation, successful CI, or branding approval do not independently authorize an adapter as production-ready.
+Privacy Shield is a platform-wide GoreeCloud privacy foundation, but each runtime integration retains an independent implementation and production-acceptance boundary. Shared contract validation, successful CI, branding approval, or a downstream draft declaration do not independently authorize an adapter as production-ready.
