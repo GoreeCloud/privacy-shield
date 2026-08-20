@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "canonical_name": "GoreeCloud Privacy Shield",
+  "short_name": "Privacy Shield",
+  "scope": "goreecloud-platform-privacy-protection",
+  "authority": "GoreeCloud/goreecloud-privacy-shield",
+  "design_language": "Glaze UI",
+  "security_relationship": {
+    "security_identity": "Wardveil Security by GoreeCloud",
+    "boundary": "Privacy Shield owns privacy-specific policy, controls, status, and user-facing privacy explanations. Wardveil owns security and protection identity. Neither identity replaces the other."
+  },
+  "adoption_model": {
+    "mode": "capability-based",
+    "required_for_every_application": false,
+    "requirement": "A GoreeCloud component adopts only the Privacy Shield capabilities relevant to the data, network, telemetry, sharing, metadata, external-content, or client-surface behaviors it actually implements.",
+    "fail_closed_contract_validation": true,
+    "application_runtime_remains_authoritative": true
+  },
+  "capabilities": [
+    {
+      "id": "data-minimization",
+      "description": "Minimize collection, retention, exposure, and propagation of user or operational data beyond the component's documented purpose."
+    },
+    {
+      "id": "telemetry-control",
+      "description": "Make telemetry, analytics, diagnostics, and externally transmitted usage data explicit, bounded, reviewable, and disabled by default unless required and approved."
+    },
+    {
+      "id": "metadata-protection",
+      "description": "Reduce unnecessary metadata creation, retention, export, sharing, and cross-service correlation."
+    },
+    {
+      "id": "external-content-protection",
+      "description": "Control third-party resources, embeds, trackers, remote content, and external requests according to the consuming component's runtime capabilities."
+    },
+    {
+      "id": "sharing-and-export-privacy",
+      "description": "Apply privacy-aware defaults and explicit user intent to sharing, export, link generation, synchronization, and interoperability workflows."
+    },
+    {
+      "id": "local-processing-preference",
+      "description": "Prefer local processing when materially practical and privacy-preserving, and identify external processing boundaries when local execution is unavailable."
+    },
+    {
+      "id": "privacy-status-and-explanation",
+      "description": "Expose understandable Privacy Shield status, active protections, limitations, exceptions, and user-controlled overrides in Glaze UI when a component has a user interface."
+    },
+    {
+      "id": "privacy-event-contract",
+      "description": "Provide normalized privacy-relevant events suitable for local audit, diagnostics, Manager visibility, or future platform orchestration without exposing sensitive payloads by default."
+    }
+  ],
+  "initial_adoption_targets": [
+    "GoreeCloud/goreecloud-browser",
+    "GoreeCloud/goreecloud-search",
+    "GoreeCloud/goreecloud-dns",
+    "GoreeCloud/goreecloud-network",
+    "GoreeCloud/goreecloud-manager",
+    "GoreeCloud/goreecloud-notes",
+    "GoreeCloud/goreecloud-memos",
+    "GoreeCloud/goreecloud-contacts",
+    "GoreeCloud/goreecloud-tasks",
+    "GoreeCloud/goreecloud-gallery",
+    "GoreeCloud/goreecloud-keyboard",
+    "GoreeCloud/goreecloud-feed",
+    "GoreeCloud/goreecloud-notify",
+    "GoreeCloud/goreecloud-backup",
+    "GoreeCloud/goreecloud-identity"
+  ],
+  "non_goals": [
+    "Replacing application authorization or authentication",
+    "Replacing Wardveil Security",
+    "Replacing DNS filtering with browser rules",
+    "Centralizing all application data into Privacy Shield",
+    "Forcing Browser-specific blocking semantics onto non-browser applications"
+  ]
+}
