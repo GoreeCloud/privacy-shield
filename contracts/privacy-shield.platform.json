@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "platform": {
+    "canonical_name": "GoreeCloud Privacy Shield",
+    "scope": "platform-wide-privacy-foundation",
+    "design_language": "Glaze UI",
+    "security_relationship": "Privacy Shield governs privacy policy, privacy enforcement, data minimization, tracking resistance, privacy status, and application privacy conformance. Wardveil Security remains the platform-wide security and protection identity and may consume Privacy Shield status without replacing Privacy Shield authority."
+  },
+  "domains": [
+    "application-privacy",
+    "browser-content-protection",
+    "network-and-dns-privacy",
+    "telemetry-and-diagnostics-privacy",
+    "data-minimization-and-retention",
+    "metadata-and-tracking-resistance",
+    "privacy-status-and-user-controls"
+  ],
+  "adapter_model": {
+    "shared_core_repository": "GoreeCloud/goreecloud-privacy-shield",
+    "application_adapters_required": true,
+    "adapters_must_declare_capabilities": true,
+    "adapters_must_fail_closed_on_unsupported_policy_contract": true,
+    "adapters_must_not_claim_unimplemented_protection": true,
+    "browser_privileged_runtime_authority": "GoreeCloud/goreecloud-browser",
+    "network_dns_runtime_authorities": [
+      "GoreeCloud/goreecloud-dns",
+      "GoreeCloud/goreecloud-network"
+    ],
+    "platform_visibility_authorities": [
+      "GoreeCloud/goreecloud-manager",
+      "GoreeCloud/goreecloud-wardveil-security"
+    ]
+  },
+  "privacy_principles": {
+    "local_first": true,
+    "remote_tracker_learning_allowed": false,
+    "remote_tracker_telemetry_allowed": false,
+    "privacy_telemetry_opt_in_only": true,
+    "data_minimization_required": true,
+    "purpose_bound_collection_required": true,
+    "retention_limits_required": true,
+    "user_visible_exceptions_required": true,
+    "portable_export_required_where_state_is_persisted": true
+  },
+  "release_boundary": {
+    "shared_contract_validation_is_runtime_acceptance": false,
+    "adapter_specific_acceptance_required": true,
+    "production_ready": false
+  }
+}
