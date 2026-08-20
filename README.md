@@ -1,45 +1,58 @@
 # GoreeCloud Privacy Shield
 
-GoreeCloud Privacy Shield is the first-party privacy and content-protection subsystem for GoreeCloud Browser. It provides a GoreeCloud-owned foundation for native ad and tracker blocking, tracking-parameter cleanup, reviewed local-resource substitution, privacy-focused browsing controls, compatibility handling, and understandable protection status without requiring a third-party extension for the core experience.
+GoreeCloud Privacy Shield is the shared first-party privacy capability and privacy identity for the GoreeCloud platform. GoreeCloud Browser is its first and deepest runtime integration, but Privacy Shield is not limited to Browser. It provides reusable privacy contracts, capability definitions, identity governance, source validation, and application-specific adoption guidance for GoreeCloud applications and services.
 
 ## Product identity
 
-Privacy Shield is distinct from GoreeCloud Browser and Wardveil Security:
+Privacy Shield is distinct from both individual GoreeCloud applications and Wardveil Security:
 
-- **GoreeCloud Browser** is the browser application and privileged Firefox/Gecko runtime authority.
-- **Privacy Shield** is the Browser-specific privacy and content-protection subsystem.
+- **GoreeCloud Privacy Shield** is the platform-wide privacy capability and privacy-specific identity.
+- **GoreeCloud Browser** is a Privacy Shield consumer and remains the privileged Firefox/Gecko authority for Browser-specific enforcement.
 - **Wardveil Security by GoreeCloud** is the platform-wide security and protection identity.
+- **Glaze UI** is the shared design language used to present Privacy Shield controls and status.
 
 The approved canonical Privacy Shield icon is stored at `branding/privacy-shield/privacy-shield-icon.svg`. Candidate 01 was explicitly approved on August 19, 2026 after direct review of a rendered PNG. PR #20 merged the authored design as `44d47982d154e0a0a9a913d232a2eae835c6905f`; PR #22 promoted it to the canonical path and merged as `164310648a140a97df006146949fc0c59272eda8`.
 
 ## Current foundation
 
-This repository contains the portable Privacy Shield core, reviewed rules contract, lifecycle governance, identity governance, branding authority, and source validation:
+This repository contains the shared Privacy Shield platform contract, portable Browser privacy core, reviewed Browser rules contract, lifecycle governance, identity governance, branding authority, and source validation:
 
-- `config/privacy-shield.v2.json` — reviewed configuration and seed rules contract;
-- `src/privacy-shield-core.mjs` — portable Firefox-independent core behavior;
-- `contracts/privacy-shield.ruleset-lifecycle.json` — machine-readable ruleset ownership, versioning, review, and Browser-consumption contract;
+- `contracts/privacy-shield.platform.json` — machine-readable platform-wide Privacy Shield capability and adoption contract;
+- `docs/PLATFORM-ADOPTION.md` — platform adoption architecture and initial application map;
+- `config/privacy-shield.v2.json` — reviewed Browser configuration and seed rules contract;
+- `src/privacy-shield-core.mjs` — portable Firefox-independent Browser privacy behavior;
+- `contracts/privacy-shield.ruleset-lifecycle.json` — Browser ruleset ownership, versioning, review, and consumption contract;
 - `contracts/privacy-shield.identity.json` — machine-readable product and visual-identity contract;
 - `branding/privacy-shield/privacy-shield-icon.svg` — approved canonical visual identity;
 - `docs/APPROVED-ICON.md` — explicit icon approval and review record;
-- `tools/validate_config.py` and `tools/validate_ruleset_lifecycle.py` — fail-closed source validation;
+- `tools/validate_config.py` and `tools/validate_ruleset_lifecycle.py` — fail-closed Browser source validation;
 - `scripts/validate_privacy_shield_identity.py` — fail-closed identity/showcase validator;
 - `tests/` — portable-core and contract coverage;
 - `.github/workflows/` — automated validation.
 
 Portable-core hardening was merged through PR #18 as `34bcbe9ee6a99c2381bf204b7411286e63abb7a1`. Repository acceptance-state reconciliation was merged through PR #19 as `a8a98be3c2a4f5dff706761a80cca8b704a65af9`.
 
-## Core responsibilities
+## Platform responsibilities
 
-Privacy Shield covers first-party native ad and tracker request blocking, local behavioral tracker protection, tracking-parameter cleanup, reviewed exact-match local-resource substitution, site compatibility controls, persistent per-site exceptions through the Browser adapter, understandable blocking/protection reporting, and native GoreeCloud Browser privacy controls.
+Privacy Shield provides reusable privacy capabilities for data minimization, telemetry control, metadata protection, external-content protection, sharing and export privacy, local-processing preference, privacy status and explanation, and normalized privacy events.
 
-The native blocker replaces the managed uBlock Origin dependency in the GoreeCloud Browser model. AdGuard Home remains a separate DNS/network filtering layer.
+Adoption is capability-based. A component implements only the Privacy Shield capabilities relevant to its documented role. Application runtimes remain authoritative for their own enforcement, permissions, data models, and user workflows.
+
+The initial adoption targets include Browser, Search, DNS, Network, Manager, Identity, Notes, Memos, Tasks, Contacts, Gallery, Feed, Keyboard, Notify, and Backup. Adoption must be implemented and validated in each consuming repository before that product is described as Privacy Shield-integrated.
+
+## Browser responsibilities
+
+Browser remains the mature Tier 3 Privacy Shield consumer. Browser-specific Privacy Shield behavior covers first-party native ad and tracker request blocking, local behavioral tracker protection, tracking-parameter cleanup, reviewed exact-match local-resource substitution, site compatibility controls, persistent per-site exceptions through the Browser adapter, understandable blocking/protection reporting, and native GoreeCloud Browser privacy controls.
+
+The native blocker replaces the managed uBlock Origin dependency in the GoreeCloud Browser model. AdGuard Home and GoreeCloud DNS remain separate DNS/network filtering layers.
 
 ## Privacy and security boundaries
 
-Privacy Shield does not replace or weaken Firefox/Gecko Safe Browsing, TLS, certificate validation, sandboxing, process isolation, site permissions, or the application update system.
+Privacy Shield does not replace authentication, authorization, encryption, TLS, certificate validation, sandboxing, process isolation, application permissions, application update systems, host security, or Wardveil Security.
 
-Behavioral tracker learning stays local and session-scoped in the portable core. Remote tracker learning and remote tracker telemetry are not part of the approved contract. Local-resource substitution remains exact-match only and fails open to the original network request.
+Browser behavioral tracker learning stays local and session-scoped in the portable core. Remote tracker learning and remote tracker telemetry are not part of the approved Browser contract. Local-resource substitution remains exact-match only and fails open to the original network request.
+
+Platform-wide Privacy Shield adoption must minimize sensitive event payloads. Shared privacy events must not include private content, credentials, clipboard contents, note text, contact data, DNS query payloads, message contents, or other sensitive information by default.
 
 ## Glaze UI and branding
 
@@ -49,6 +62,7 @@ Derived toolbar, monochrome, favicon-sized, settings, documentation, and high-re
 
 ## Documentation
 
+- [Platform adoption](docs/PLATFORM-ADOPTION.md)
 - [Architecture](docs/ARCHITECTURE.md)
 - [Ruleset lifecycle](docs/RULESET-LIFECYCLE.md)
 - [Identity and icon standard](docs/IDENTITY.md)
@@ -62,13 +76,15 @@ Derived toolbar, monochrome, favicon-sized, settings, documentation, and high-re
 
 | Gate | State |
 | --- | --- |
-| Portable core foundation | Complete |
-| Reviewed v2 configuration and lifecycle contract | Complete |
+| Platform-wide Privacy Shield role | Approved and contract-defined |
+| Shared capability/adoption contract | Implemented on platform-expansion branch |
+| Portable Browser core foundation | Complete |
+| Reviewed Browser v2 configuration and lifecycle contract | Complete |
 | Portable-core hardening | Merged and source-validated |
 | Fail-closed identity/showcase contract | Complete |
 | Canonical Privacy Shield icon | Approved and canonicalized |
 | Browser contract synchronization | Source-integrated |
 | Compiled Browser runtime/UI acceptance | Pending |
-| Overall production approval | Pending compiled Browser acceptance |
+| Non-Browser application adoption | Implementation and acceptance pending per repository |
 
-Privacy Shield remains active development until exact compiled GoreeCloud Browser runtime/UI acceptance is executed, reviewed, and recorded. Source validation, Browser source synchronization, successful CI, and icon approval do not independently authorize production-ready classification.
+Privacy Shield is now architected as a platform-wide capability. Production claims remain component-specific: each consuming application or service must implement, validate, and record its own Privacy Shield integration. Browser's compiled runtime/UI acceptance remains a Browser-specific gate rather than a blocker for the shared platform architecture.
