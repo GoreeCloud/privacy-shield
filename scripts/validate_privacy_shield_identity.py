@@ -8,6 +8,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 CONTRACT_PATH = ROOT / "contracts" / "privacy-shield.identity.json"
+PLATFORM_CONTRACT = ROOT / "contracts" / "privacy-shield.platform.json"
 CANONICAL_ICON = ROOT / "branding" / "privacy-shield" / "privacy-shield-icon.svg"
 APPROVAL_RECORD = ROOT / "docs" / "APPROVED-ICON.md"
 
@@ -25,6 +26,9 @@ def main() -> None:
     except (OSError, json.JSONDecodeError) as exc:
         fail(f"identity contract is unreadable or invalid JSON: {exc}")
 
+    if contract.get("schema_version") != 2:
+        fail("unsupported identity schema version")
+
     product = contract.get("product", {})
     visual = contract.get("visual_identity", {})
     implementation = contract.get("implementation", {})
@@ -33,6 +37,8 @@ def main() -> None:
         fail("canonical product name drifted")
     if product.get("short_name") != "Privacy Shield":
         fail("short product name drifted")
+    if product.get("scope") != "goreecloud-platform-privacy-protection":
+        fail("platform-wide identity scope drifted")
     if product.get("design_language") != "Glaze UI":
         fail("Glaze UI must remain the design language")
 
@@ -75,12 +81,18 @@ def main() -> None:
             if visual.get(key) is not True:
                 fail(f"approved icon requires {key}=true")
 
-    if implementation.get("current_privileged_runtime_authority") != "GoreeCloud/goreecloud-browser":
-        fail("current privileged Browser runtime authority drifted")
-    if implementation.get("compiled_runtime_acceptance_required") is not True:
-        fail("compiled runtime acceptance must remain required")
+    if implementation.get("platform_contract_authority") != "GoreeCloud/goreecloud-privacy-shield":
+        fail("platform contract authority drifted")
+    if implementation.get("platform_contract_path") != "contracts/privacy-shield.platform.json":
+        fail("platform contract path drifted")
+    if not PLATFORM_CONTRACT.is_file():
+        fail("missing platform-wide Privacy Shield contract")
+    if implementation.get("browser_privileged_runtime_authority") != "GoreeCloud/goreecloud-browser":
+        fail("Browser privileged runtime authority drifted")
+    if implementation.get("component_specific_runtime_acceptance_required") is not True:
+        fail("component-specific runtime acceptance must remain required")
     if implementation.get("production_ready") is not False:
-        fail("repository must not claim production readiness before compiled acceptance")
+        fail("repository must not claim platform-wide production readiness")
 
     print("Privacy Shield identity contract is consistent.")
 

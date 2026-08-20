@@ -27,6 +27,8 @@ jobs:
         run: python3 tools/validate_config.py
       - name: Validate ruleset lifecycle contract
         run: python3 tools/validate_ruleset_lifecycle.py
+      - name: Validate platform and adapter contracts
+        run: python3 tools/validate_platform.py
       - name: Run configuration and lifecycle tests
         run: python3 -m unittest discover -s tests -p 'test_*.py'
       - name: Run portable core tests
@@ -35,11 +37,16 @@ jobs:
         run: |
           python3 -m json.tool config/privacy-shield.v2.json >/dev/null
           python3 -m json.tool contracts/privacy-shield.ruleset-lifecycle.json >/dev/null
+          python3 -m json.tool contracts/privacy-shield.platform.json >/dev/null
+          python3 -m json.tool contracts/privacy-shield.adapter.schema.json >/dev/null
+          python3 -m json.tool contracts/privacy-shield.status.schema.json >/dev/null
+          for adapter in adapters/*.json; do python3 -m json.tool "$adapter" >/dev/null; done
       - name: Compile Python validation tools
         run: >-
           python3 -m py_compile
           tools/validate_config.py
           tools/validate_ruleset_lifecycle.py
+          tools/validate_platform.py
           tests/test_config.py
           tests/test_ruleset_lifecycle.py
           website/build.py

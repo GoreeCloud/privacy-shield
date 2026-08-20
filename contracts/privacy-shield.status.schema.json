@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://goreecloud.com/schemas/privacy-shield.status.schema.json",
+  "title": "GoreeCloud Privacy Shield Status Contract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "producer", "generated_at", "state", "capabilities", "privacy", "acceptance"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "producer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["adapter_id", "product", "runtime_authority", "adapter_contract_version"],
+      "properties": {
+        "adapter_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$"},
+        "product": {"type": "string", "minLength": 1},
+        "runtime_authority": {"type": "string", "pattern": "^GoreeCloud/[A-Za-z0-9._-]+$"},
+        "adapter_contract_version": {"type": "integer", "minimum": 1}
+      }
+    },
+    "generated_at": {"type": "string", "format": "date-time"},
+    "state": {"enum": ["protected", "partial", "attention", "unavailable", "development"]},
+    "capabilities": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "state"],
+        "properties": {
+          "id": {"type": "string", "minLength": 1},
+          "state": {"enum": ["active", "inactive", "pending-acceptance", "unavailable"]}
+        }
+      }
+    },
+    "privacy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["raw_private_activity_included", "contains_credentials", "contains_identifiers"],
+      "properties": {
+        "raw_private_activity_included": {"const": false},
+        "contains_credentials": {"const": false},
+        "contains_identifiers": {"const": false}
+      }
+    },
+    "acceptance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["runtime_acceptance_required", "production_approved"],
+      "properties": {
+        "runtime_acceptance_required": {"const": true},
+        "production_approved": {"type": "boolean"}
+      }
+    }
+  }
+}
