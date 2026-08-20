@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "registry": "GoreeCloud Privacy Shield capabilities",
+  "capabilities": {
+    "content-blocking": {
+      "domain": "browser-content",
+      "description": "Block approved advertising, tracker, or other privacy-invasive content requests at an implementing runtime.",
+      "initial_runtime": "GoreeCloud/goreecloud-browser"
+    },
+    "tracking-resistance": {
+      "domain": "tracking",
+      "description": "Reduce supported tracking behavior using local-first, privacy-minimized runtime controls.",
+      "initial_runtime": "GoreeCloud/goreecloud-browser"
+    },
+    "url-cleaning": {
+      "domain": "tracking",
+      "description": "Remove reviewed tracking parameters from supported URL handling paths.",
+      "initial_runtime": "GoreeCloud/goreecloud-browser"
+    },
+    "dns-privacy": {
+      "domain": "dns",
+      "description": "Provide privacy-oriented DNS filtering or policy behavior at an authoritative DNS runtime without exporting raw DNS activity for central status.",
+      "initial_runtime": "GoreeCloud/goreecloud-dns"
+    },
+    "network-privacy": {
+      "domain": "network",
+      "description": "Provide privacy-preserving encrypted private-network connectivity at an authoritative networking runtime without exporting raw network activity for central status.",
+      "initial_runtime": "GoreeCloud/goreecloud-network"
+    },
+    "telemetry-minimization": {
+      "domain": "application-data",
+      "description": "Minimize optional telemetry or diagnostics collection according to an implementing application's explicit privacy contract.",
+      "initial_runtime": null
+    },
+    "data-minimization": {
+      "domain": "application-data",
+      "description": "Limit collected or processed data to what an implementing application requires for its documented purpose.",
+      "initial_runtime": null
+    },
+    "retention-controls": {
+      "domain": "application-data",
+      "description": "Expose or enforce bounded data-retention controls at the authoritative application runtime.",
+      "initial_runtime": null
+    },
+    "deletion-controls": {
+      "domain": "application-data",
+      "description": "Expose or enforce user-authorized deletion controls at the authoritative application runtime.",
+      "initial_runtime": null
+    },
+    "portable-export": {
+      "domain": "application-data",
+      "description": "Provide a documented portable export for the implementing application's approved Privacy Shield-owned or privacy-relevant state.",
+      "initial_runtime": null
+    },
+    "privacy-status": {
+      "domain": "presentation",
+      "description": "Produce minimized Privacy Shield status conforming to the shared status contract without exporting raw private activity.",
+      "initial_runtime": null
+    },
+    "user-visible-exceptions": {
+      "domain": "user-control",
+      "description": "Expose approved Privacy Shield exceptions or overrides to authorized users without leaking unrelated private activity.",
+      "initial_runtime": null
+    }
+  },
+  "governance": {
+    "adapter_declaration_required": true,
+    "branding_alone_is_adoption": false,
+    "runtime_acceptance_required": true,
+    "capability_additions_require_contract_review": true
+  }
+}
