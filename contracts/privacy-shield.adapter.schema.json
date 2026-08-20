@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://goreecloud.com/schemas/privacy-shield.adapter.schema.json",
+  "title": "GoreeCloud Privacy Shield Adapter Declaration",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "adapter", "capabilities", "privacy", "acceptance"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "adapter": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "product", "runtime_authority", "contract_version"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$"},
+        "product": {"type": "string", "minLength": 1},
+        "runtime_authority": {"type": "string", "pattern": "^GoreeCloud/[A-Za-z0-9._-]+$"},
+        "contract_version": {"type": "integer", "minimum": 1}
+      }
+    },
+    "capabilities": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "content-blocking",
+          "tracking-resistance",
+          "url-cleaning",
+          "dns-privacy",
+          "network-privacy",
+          "telemetry-minimization",
+          "data-minimization",
+          "retention-controls",
+          "deletion-controls",
+          "portable-export",
+          "privacy-status",
+          "user-visible-exceptions"
+        ]
+      }
+    },
+    "privacy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["local_first", "raw_private_activity_exported_for_status", "remote_tracker_learning", "remote_tracker_telemetry"],
+      "properties": {
+        "local_first": {"const": true},
+        "raw_private_activity_exported_for_status": {"const": false},
+        "remote_tracker_learning": {"const": false},
+        "remote_tracker_telemetry": {"const": false}
+      }
+    },
+    "acceptance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["runtime_acceptance_required", "production_approved"],
+      "properties": {
+        "runtime_acceptance_required": {"const": true},
+        "production_approved": {"type": "boolean"}
+      }
+    }
+  }
+}
