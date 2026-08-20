@@ -39,6 +39,7 @@ jobs:
           python3 -m json.tool contracts/privacy-shield.ruleset-lifecycle.json >/dev/null
           python3 -m json.tool contracts/privacy-shield.platform.json >/dev/null
           python3 -m json.tool contracts/privacy-shield.adapter.schema.json >/dev/null
+          python3 -m json.tool contracts/privacy-shield.status.schema.json >/dev/null
           for adapter in adapters/*.json; do python3 -m json.tool "$adapter" >/dev/null; done
       - name: Compile Python validation tools
         run: >-
