@@ -1,0 +1,21 @@
+{
+  "contract_version": 1,
+  "design_system": "Glaze UI",
+  "presentation_only": true,
+  "privacy_authority_transferred": false,
+  "runtime_acceptance_inferred_from_color": false,
+  "color_only_allowed": false,
+  "state_to_semantic_role": {
+    "protected": "protected",
+    "partial": "warning",
+    "attention": "warning",
+    "unavailable": "unavailable",
+    "development": "information"
+  },
+  "capability_state_to_semantic_role": {
+    "active": "success",
+    "inactive": "surface",
+    "pending-acceptance": "information",
+    "unavailable": "unavailable"
+  }
+}
