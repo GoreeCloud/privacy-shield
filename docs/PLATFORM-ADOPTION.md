@@ -69,6 +69,22 @@ Privacy Shield dashboards and aggregators should consume only purpose-bound stat
 
 A status consumer must not synthesize implementation from branding, configuration presence, product identity, or a neighboring capability. For example, a DNS adapter does not gain `tracking-resistance` merely because it blocks some tracker domains, and a Network adapter does not gain `dns-privacy` merely because it can distribute DNS configuration.
 
+## Compact and wearable privacy presentation
+
+Privacy Shield status may be surfaced on compact, glanceable, wearable, notification, tile, complication, or similarly constrained Glaze UI surfaces only through the same minimized status boundary used by larger consumers.
+
+A constrained privacy surface must:
+
+- present only declared capabilities actually implemented by the authoritative runtime;
+- preserve non-passing, unavailable, unsupported, exception, or stale conditions instead of collapsing them into a generic protected-looking icon;
+- avoid exporting raw browsing history, DNS queries, network flows, message content, files, clipboard data, typed text, location history, credentials, identifiers, or unrestricted diagnostics merely to enrich the surface;
+- preserve enough authority and scope context for the user to understand which runtime and capability the status describes, directly or through an accessible focused detail path;
+- keep user-visible exceptions and overrides distinguishable from normal protection state when they materially alter the represented capability;
+- use deep links to the authoritative application for detailed controls rather than duplicating privileged privacy controls in a status-only wearable or glance surface;
+- follow the current Stable Glaze UI contract for the target form factor before a consuming application claims production conformance.
+
+A compact Privacy Shield surface is a minimized view of existing privacy state. It does not become a new enforcement adapter and cannot grant capabilities, production approval, or privacy authority to the presenting application.
+
 ## Non-goals
 
 Privacy Shield does not replace:
@@ -87,5 +103,7 @@ Privacy Shield does not replace:
 ## Acceptance
 
 No adapter may report Stable, `production_ready`, or `production_approved=true` solely because the shared Privacy Shield repository passes validation. Each runtime must demonstrate its own implementation and acceptance evidence.
+
+A consumer that adds a compact or wearable Privacy Shield surface must additionally validate minimized payload use, capability truthfulness, exception/non-passing presentation, accessible state communication, and the absence of raw private activity at the exact intended source revision.
 
 The canonical `adapters/` directory should contain only adapter declarations whose source-side contract has reached the approved central-integration point. Draft downstream candidates may remain documented here without being promoted into the canonical central adapter directory.
