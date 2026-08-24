@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "platform": "privacy-shield",
+  "producer_repository": "GoreeCloud/goreecloud-privacy-shield",
+  "consumer_repository": "GoreeCloud/goreecloud-mesh",
+  "authoritative_contract": "contracts/privacy-shield.platform.json",
+  "integration_mode": "read-only-coordination",
+  "authority_transfer": false,
+  "runtime_acceptance_implied": false,
+  "stable_acceptance_implied": false,
+  "sensitive_information_allowed": false,
+  "purpose": "Allows GoreeCloud Mesh to consume bounded Privacy Shield governance and status evidence while Privacy Shield remains authoritative for privacy controls, data minimization, retention expectations, and privacy capability governance."
+}
