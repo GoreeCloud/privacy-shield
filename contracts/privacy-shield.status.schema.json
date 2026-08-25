@@ -19,6 +19,7 @@
       }
     },
     "generated_at": {"type": "string", "format": "date-time"},
+    "valid_until": {"type": "string", "format": "date-time"},
     "state": {"enum": ["protected", "partial", "attention", "unavailable", "development"]},
     "capabilities": {
       "type": "array",
@@ -52,5 +53,26 @@
         "production_approved": {"type": "boolean"}
       }
     }
-  }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {"state": {"const": "protected"}},
+        "required": ["state"]
+      },
+      "then": {"required": ["valid_until"]}
+    },
+    {
+      "if": {
+        "properties": {
+          "acceptance": {
+            "properties": {"production_approved": {"const": true}},
+            "required": ["production_approved"]
+          }
+        },
+        "required": ["acceptance"]
+      },
+      "then": {"required": ["valid_until"]}
+    }
+  ]
 }
