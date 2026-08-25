@@ -8,7 +8,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 SCHEMA = ROOT / "contracts" / "privacy-shield.status.schema.json"
-DOC = ROOT / "docs" / "EVIDENCE-VALIDITY.md"
+DOC = ROOT / "docs" / "evidence-validity.md"
 
 
 def fail(message: str) -> None:
