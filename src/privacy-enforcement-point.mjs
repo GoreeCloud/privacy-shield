@@ -11,7 +11,7 @@ export class PrivacyEnforcementPoint {
     this.evidenceLedger = evidenceLedger;
   }
 
-  authorize(request, { capability_ttl_seconds = 300 } = {}) {
+  authorize(request, { capability_ttl_seconds = 300, replay_policy = "reusable" } = {}) {
     const decision = this.decisionPoint.evaluate(request);
     let token = null;
     let claims = null;
@@ -27,7 +27,7 @@ export class PrivacyEnforcementPoint {
         processing_zone: decision.processing_zone,
         destination: request.destination,
         retention_mode: decision.retention?.mode ?? "none"
-      }, { ttl_seconds: capability_ttl_seconds });
+      }, { ttl_seconds: capability_ttl_seconds, replay_policy });
       claims = this.capabilityAuthority.verify(token);
       decision.capability_token_reference = claims.jti;
     }
@@ -40,16 +40,25 @@ export class PrivacyEnforcementPoint {
     return { decision, capability_token: token, evidence, receipt };
   }
 
+  constraintsFor(claims) {
+    return {
+      processing_zone: claims.processing_zone,
+      destination: claims.destination,
+      retention_mode: claims.retention_mode
+    };
+  }
+
   enforce(token, expected) {
     const claims = this.capabilityAuthority.verify(token, expected);
-    return {
-      authorized: true,
-      claims,
-      constraints: {
-        processing_zone: claims.processing_zone,
-        destination: claims.destination,
-        retention_mode: claims.retention_mode
-      }
-    };
+    return { authorized: true, claims, constraints: this.constraintsFor(claims) };
+  }
+
+  enforceOnce(token, expected) {
+    const claims = this.capabilityAuthority.consume(token, expected);
+    return { authorized: true, claims, constraints: this.constraintsFor(claims) };
+  }
+
+  revokeCapability(tokenOrJti) {
+    return this.capabilityAuthority.revoke(tokenOrJti);
   }
 }
