@@ -17,6 +17,9 @@ export class PrivacyEnforcementPoint {
     let claims = null;
 
     if (decision.outcome === PrivacyDecision.ALLOW || decision.outcome === PrivacyDecision.ALLOW_WITH_CONSTRAINTS) {
+      const effectiveTtl = decision.max_capability_ttl_seconds
+        ? Math.min(capability_ttl_seconds, decision.max_capability_ttl_seconds)
+        : capability_ttl_seconds;
       token = this.capabilityAuthority.issue({
         decision_id: decision.decision_id,
         request_id: request.request_id,
@@ -27,7 +30,7 @@ export class PrivacyEnforcementPoint {
         processing_zone: decision.processing_zone,
         destination: request.destination,
         retention_mode: decision.retention?.mode ?? "none"
-      }, { ttl_seconds: capability_ttl_seconds, replay_policy });
+      }, { ttl_seconds: effectiveTtl, replay_policy });
       claims = this.capabilityAuthority.verify(token);
       decision.capability_token_reference = claims.jti;
     }
