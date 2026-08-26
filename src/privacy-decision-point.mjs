@@ -1,4 +1,5 @@
 import crypto from "node:crypto";
+import { PrivacyPolicyEngine, policyConstraintViolation } from "./privacy-policy-engine.mjs";
 
 export const PrivacyDecision = Object.freeze({
   ALLOW: "ALLOW",
@@ -33,6 +34,7 @@ function deny(request, reasonCode, policyReferences = []) {
     consent_required: false,
     obligations: ["record_privacy_evidence"],
     policy_references: policyReferences,
+    max_capability_ttl_seconds: null,
     capability_token_reference: null,
     evidence_reference: id("pse")
   };
@@ -53,6 +55,7 @@ function requiresUserDecision(request, reasonCode, policyReferences = []) {
     consent_required: true,
     obligations: ["obtain_explicit_consent", "record_privacy_evidence"],
     policy_references: policyReferences,
+    max_capability_ttl_seconds: null,
     capability_token_reference: null,
     evidence_reference: id("pse")
   };
@@ -74,7 +77,7 @@ export class PrivacyDecisionPoint {
   constructor({ manifests = new Map(), consents = new Map(), policies = [] } = {}) {
     this.manifests = manifests;
     this.consents = consents;
-    this.policies = policies;
+    this.policyEngine = policies instanceof PrivacyPolicyEngine ? policies : new PrivacyPolicyEngine(policies);
   }
 
   evaluate(request) {
@@ -102,8 +105,8 @@ export class PrivacyDecisionPoint {
       return deny(request, "PROCESSING_ZONE_NOT_PERMITTED", ["core.processing-zone"]);
     }
 
-    const permittedDestinations = declaration.destinations ?? [];
-    if (permittedDestinations.length && !permittedDestinations.includes(request.destination)) {
+    const manifestDestinations = declaration.destinations ?? [];
+    if (manifestDestinations.length && !manifestDestinations.includes(request.destination)) {
       return deny(request, "DESTINATION_NOT_PERMITTED", ["core.destination-limitation"]);
     }
 
@@ -111,39 +114,57 @@ export class PrivacyDecisionPoint {
       return deny(request, "EXTERNAL_DISCLOSURE_ZONE_MISMATCH", ["core.external-disclosure"]);
     }
 
+    const policy = this.policyEngine.evaluate(request);
+    if (policy.effect === "DENY") {
+      return deny(request, policy.reason_code, policy.policy_references);
+    }
+    if (policy.effect === "REQUIRE_USER_DECISION") {
+      return requiresUserDecision(request, policy.reason_code, policy.policy_references);
+    }
+    const policyViolation = policyConstraintViolation(policy, request);
+    if (policyViolation) {
+      return deny(request, policyViolation, policy.policy_references);
+    }
+
     const consentKey = request.consent_reference ?? `${request.requester.id}:${request.resource.id}:${request.purpose}`;
     const consent = this.consents.get(consentKey);
     if (!consent) {
-      return requiresUserDecision(request, "CONSENT_REQUIRED", ["core.consent"]);
+      return requiresUserDecision(request, "CONSENT_REQUIRED", ["core.consent", ...policy.policy_references]);
     }
 
     if (consent.revoked === true) {
-      return deny(request, "CONSENT_REVOKED", ["core.consent"]);
+      return deny(request, "CONSENT_REVOKED", ["core.consent", ...policy.policy_references]);
     }
 
     if (consent.expires_at && Date.parse(consent.expires_at) <= Date.now()) {
-      return deny(request, "CONSENT_EXPIRED", ["core.consent"]);
+      return deny(request, "CONSENT_EXPIRED", ["core.consent", ...policy.policy_references]);
     }
 
     if (consent.purpose && consent.purpose !== request.purpose) {
-      return deny(request, "CONSENT_PURPOSE_MISMATCH", ["core.purpose-limitation"]);
+      return deny(request, "CONSENT_PURPOSE_MISMATCH", ["core.purpose-limitation", ...policy.policy_references]);
     }
 
     if (consent.processing_zones && !consent.processing_zones.includes(request.processing_zone)) {
-      return deny(request, "CONSENT_ZONE_MISMATCH", ["core.processing-zone"]);
+      return deny(request, "CONSENT_ZONE_MISMATCH", ["core.processing-zone", ...policy.policy_references]);
     }
 
     if (consent.destinations && !consent.destinations.includes(request.destination)) {
-      return deny(request, "CONSENT_DESTINATION_MISMATCH", ["core.destination-limitation"]);
+      return deny(request, "CONSENT_DESTINATION_MISMATCH", ["core.destination-limitation", ...policy.policy_references]);
     }
 
-    const obligations = ["record_privacy_evidence", "generate_privacy_receipt"];
+    const obligations = ["record_privacy_evidence", "generate_privacy_receipt", ...policy.obligations];
     let outcome = PrivacyDecision.ALLOW;
 
-    if (request.processing_zone !== "local" || request.retention?.mode !== "none") {
+    if (request.processing_zone !== "local" || request.retention?.mode !== "none" || policy.effect === "CONSTRAIN") {
       outcome = PrivacyDecision.ALLOW_WITH_CONSTRAINTS;
-      obligations.push("enforce_processing_zone", "enforce_retention");
+      if (request.processing_zone !== "local" && !obligations.includes("enforce_processing_zone")) obligations.push("enforce_processing_zone");
+      if (request.retention?.mode !== "none" && !obligations.includes("enforce_retention")) obligations.push("enforce_retention");
     }
+
+    const policyDestinations = policy.constraints.allowed_destinations;
+    const permittedDestinations = policyDestinations
+      ? policyDestinations.filter(destination => !manifestDestinations.length || manifestDestinations.includes(destination))
+      : manifestDestinations.length ? manifestDestinations : [request.destination];
 
     return {
       decision_id: id("psd"),
@@ -153,12 +174,13 @@ export class PrivacyDecisionPoint {
       effective_scope: request.resource.scope ?? null,
       permitted_operations: [request.operation],
       processing_zone: request.processing_zone,
-      permitted_destinations: permittedDestinations.length ? permittedDestinations : [request.destination],
+      permitted_destinations: permittedDestinations,
       retention: request.retention,
       expires_at: consent.expires_at ?? null,
       consent_required: false,
-      obligations,
-      policy_references: ["core.manifest", "core.consent", "core.purpose-limitation"],
+      obligations: [...new Set(obligations)],
+      policy_references: ["core.manifest", "core.consent", "core.purpose-limitation", ...policy.policy_references],
+      max_capability_ttl_seconds: policy.constraints.max_capability_ttl_seconds,
       capability_token_reference: id("psc"),
       evidence_reference: id("pse")
     };
