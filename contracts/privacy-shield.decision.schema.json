@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://goreecloud.dev/schemas/privacy-shield/decision/v1",
+  "title": "Privacy Shield Authorization Decision Contract",
+  "type": "object",
+  "required": ["request_id", "requester", "resource", "operation", "purpose", "processing_zone", "destination", "retention"],
+  "properties": {
+    "request_id": { "type": "string", "minLength": 1 },
+    "requester": {
+      "type": "object",
+      "required": ["id", "type"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "type": { "enum": ["application", "service", "user", "agent", "model", "system"] },
+        "acting_user": { "type": ["string", "null"] }
+      },
+      "additionalProperties": false
+    },
+    "resource": {
+      "type": "object",
+      "required": ["id", "classification"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "classification": { "type": "string", "minLength": 1 },
+        "scope": { "type": ["object", "array", "string", "null"] }
+      },
+      "additionalProperties": true
+    },
+    "operation": { "type": "string", "minLength": 1 },
+    "purpose": { "type": "string", "minLength": 1 },
+    "processing_zone": { "enum": ["local", "private_goreecloud", "trusted_service", "external"] },
+    "destination": { "type": "string", "minLength": 1 },
+    "retention": {
+      "type": "object",
+      "required": ["mode"],
+      "properties": {
+        "mode": { "enum": ["none", "session", "temporary", "user_defined", "application_defined", "organizational", "permanent"] },
+        "expires_at": { "type": ["string", "null"], "format": "date-time" }
+      },
+      "additionalProperties": false
+    },
+    "external_disclosure": { "type": "boolean", "default": false },
+    "context": { "type": "object" },
+    "delegation_chain": { "type": "array", "items": { "type": "string" } },
+    "consent_reference": { "type": ["string", "null"] },
+    "manifest_reference": { "type": ["string", "null"] },
+    "wardveil_evidence_reference": { "type": ["string", "null"] }
+  },
+  "$defs": {
+    "response": {
+      "type": "object",
+      "required": ["decision_id", "request_id", "outcome", "reason_code", "effective_scope", "permitted_operations", "processing_zone", "permitted_destinations", "retention", "obligations"],
+      "properties": {
+        "decision_id": { "type": "string", "minLength": 1 },
+        "request_id": { "type": "string", "minLength": 1 },
+        "outcome": { "enum": ["ALLOW", "DENY", "ALLOW_WITH_CONSTRAINTS", "REQUIRE_USER_DECISION"] },
+        "reason_code": { "type": "string", "minLength": 1 },
+        "effective_scope": { "type": ["object", "array", "string", "null"] },
+        "permitted_operations": { "type": "array", "items": { "type": "string" } },
+        "processing_zone": { "enum": ["local", "private_goreecloud", "trusted_service", "external"] },
+        "permitted_destinations": { "type": "array", "items": { "type": "string" } },
+        "retention": { "type": "object" },
+        "expires_at": { "type": ["string", "null"], "format": "date-time" },
+        "consent_required": { "type": "boolean" },
+        "obligations": { "type": "array", "items": { "type": "string" } },
+        "policy_references": { "type": "array", "items": { "type": "string" } },
+        "capability_token_reference": { "type": ["string", "null"] },
+        "evidence_reference": { "type": ["string", "null"] }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
