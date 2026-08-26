@@ -33,17 +33,12 @@ jobs:
         run: python3 tools/validate_evidence_validity.py
       - name: Run configuration and lifecycle tests
         run: python3 -m unittest discover -s tests -p 'test_*.py'
-      - name: Run portable core tests
-        run: node --test tests/core.test.mjs
-      - name: Run platform authorization pipeline tests
-        run: node --test tests/authorization-pipeline.test.mjs
+      - name: Run JavaScript Privacy Shield tests
+        run: node --test tests/*.test.mjs
       - name: Validate JSON syntax
         run: |
           python3 -m json.tool config/privacy-shield.v2.json >/dev/null
-          python3 -m json.tool contracts/privacy-shield.ruleset-lifecycle.json >/dev/null
-          python3 -m json.tool contracts/privacy-shield.platform.json >/dev/null
-          python3 -m json.tool contracts/privacy-shield.adapter.schema.json >/dev/null
-          python3 -m json.tool contracts/privacy-shield.status.schema.json >/dev/null
+          for contract in contracts/*.json; do python3 -m json.tool "$contract" >/dev/null; done
           for adapter in adapters/*.json; do python3 -m json.tool "$adapter" >/dev/null; done
       - name: Compile Python validation tools
         run: >-
