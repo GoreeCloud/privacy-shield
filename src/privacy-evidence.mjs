@@ -34,7 +34,7 @@ export class PrivacyEvidenceLedger {
   }
 
   list({ request_id, requester_id, resource_id } = {}) {
-    return this.store.list("evidence").map(({ value }) => value).filter(event => (!request_id || event.request_id===request_id)&&(!requester_id||event.requester_id===requester_id)&&(!resource_id||event.resource_id===resource_id)).map(structuredClone);
+    return this.store.list("evidence").map(({ value }) => value).filter(event => (!request_id || event.request_id===request_id)&&(!requester_id||event.requester_id===requester_id)&&(!resource_id||event.resource_id===resource_id)).map(event => structuredClone(event));
   }
 
   verifyIntegrity() {
