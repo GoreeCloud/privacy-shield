@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://goreecloud.dev/schemas/privacy-shield/capability-token/v1",
+  "title": "Privacy Shield Capability Token",
+  "type": "object",
+  "required": ["token_id", "issuer", "subject", "resource", "purpose", "operations", "processing_zone", "destinations", "retention", "issued_at", "expires_at", "decision_id"],
+  "properties": {
+    "token_id": { "type": "string", "minLength": 1 },
+    "issuer": { "const": "privacy-shield" },
+    "subject": { "type": "string", "minLength": 1 },
+    "acting_user": { "type": ["string", "null"] },
+    "resource": { "type": "string", "minLength": 1 },
+    "resource_scope": { "type": ["object", "array", "string", "null"] },
+    "purpose": { "type": "string", "minLength": 1 },
+    "operations": { "type": "array", "minItems": 1, "items": { "type": "string" }, "uniqueItems": true },
+    "processing_zone": { "enum": ["local", "private_goreecloud", "trusted_service", "external"] },
+    "destinations": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+    "retention": { "type": "object" },
+    "issued_at": { "type": "string", "format": "date-time" },
+    "expires_at": { "type": "string", "format": "date-time" },
+    "decision_id": { "type": "string", "minLength": 1 },
+    "consent_reference": { "type": ["string", "null"] },
+    "policy_references": { "type": "array", "items": { "type": "string" } },
+    "delegation": {
+      "type": "object",
+      "properties": {
+        "chain": { "type": "array", "items": { "type": "string" } },
+        "further_delegation": { "type": "boolean", "default": false }
+      },
+      "additionalProperties": false
+    },
+    "nonce": { "type": ["string", "null"] }
+  },
+  "additionalProperties": false
+}
