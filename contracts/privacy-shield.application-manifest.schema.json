@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://goreecloud.dev/schemas/privacy-shield/application-manifest/v1",
+  "title": "Privacy Shield Application Privacy Manifest",
+  "type": "object",
+  "required": ["manifest_version", "application_id", "purposes", "resources"],
+  "properties": {
+    "manifest_version": { "const": 1 },
+    "application_id": { "type": "string", "minLength": 1 },
+    "display_name": { "type": "string" },
+    "purposes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "description"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "description": { "type": "string", "minLength": 1 }
+        },
+        "additionalProperties": false
+      }
+    },
+    "resources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["resource", "purposes", "operations", "processing_zones", "retention"],
+        "properties": {
+          "resource": { "type": "string", "minLength": 1 },
+          "purposes": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+          "operations": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+          "processing_zones": {
+            "type": "array",
+            "items": { "enum": ["local", "private_goreecloud", "trusted_service", "external"] },
+            "minItems": 1,
+            "uniqueItems": true
+          },
+          "destinations": { "type": "array", "items": { "type": "string" } },
+          "retention": { "type": "object" },
+          "ai_usage": { "type": "boolean", "default": false },
+          "external_processors": { "type": "array", "items": { "type": "string" } }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}
