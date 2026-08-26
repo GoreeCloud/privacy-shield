@@ -1,6 +1,6 @@
 # GoreeCloud Privacy Shield
 
-GoreeCloud Privacy Shield is the platform-wide privacy foundation for GoreeCloud. It defines shared privacy contracts, reusable privacy behavior, tracking resistance, data-minimization expectations, privacy-safe telemetry and retention controls, user-visible privacy status, and runtime-specific adapter requirements across supported GoreeCloud applications and services.
+GoreeCloud Privacy Shield is the platform-wide privacy, consent, data-governance, minimization, transparency, and user-control authority for GoreeCloud. It defines shared privacy contracts, data-use authorization, tracking resistance, data-minimization expectations, privacy-safe telemetry and retention controls, user-visible privacy status, and runtime-specific adapter requirements across supported GoreeCloud applications and services.
 
 GoreeCloud Browser remains a privileged Privacy Shield runtime and continues to provide Browser-specific native ad and tracker blocking, tracking-parameter cleanup, reviewed local-resource substitution, site exceptions, and privacy-focused browsing controls.
 
@@ -8,19 +8,31 @@ GoreeCloud Browser remains a privileged Privacy Shield runtime and continues to 
 
 Privacy Shield is distinct from GoreeCloud Browser and Wardveil Security:
 
-- **GoreeCloud Privacy Shield** is the platform-wide privacy authority and shared privacy-control identity.
+- **GoreeCloud Privacy Shield** is the platform-wide privacy and data-use authority and shared privacy-control identity.
 - **GoreeCloud Browser** is the browser application and privileged Firefox/Gecko runtime authority for Browser-specific Privacy Shield behavior.
-- **Wardveil Security by GoreeCloud** is the platform-wide security and protection authority. It may present Privacy Shield status without replacing Privacy Shield privacy authority.
+- **Wardveil Security by GoreeCloud** is the platform-wide security and protection authority. It may provide security evidence to Privacy Shield and present Privacy Shield status without replacing Privacy Shield privacy authority.
+- **GoreeCloud Mesh** is the coordination and governance plane. It may transport or correlate Privacy Shield decisions and evidence but cannot create, extend, or upgrade privacy authority.
+- **Everkeep** is the resilience and preservation authority and coordinates lifecycle effects such as deletion across backups and recovery material.
 - **Glaze UI** is the shared GoreeCloud visual and interaction language.
 
 The approved canonical Privacy Shield icon is stored at `branding/privacy-shield/privacy-shield-icon.svg`. Candidate 01 was explicitly approved on August 19, 2026 after direct review of a rendered PNG. PR #20 merged the authored design as `44d47982d154e0a0a9a913d232a2eae835c6905f`; PR #22 promoted it to the canonical path and merged as `164310648a140a97df006146949fc0c59272eda8`.
 
 ## Current foundation
 
-This repository contains the portable Privacy Shield core, reviewed Browser rules contract, platform privacy contract, canonical capability registry, lifecycle governance, identity governance, branding authority, and source validation:
+This repository contains the portable Browser Privacy Shield core, the platform authorization core, reviewed Browser rules contract, platform privacy contract, canonical capability registry, lifecycle governance, identity governance, branding authority, and source validation:
 
 - `config/privacy-shield.v2.json` — reviewed Browser configuration and seed rules contract;
 - `src/privacy-shield-core.mjs` — portable Firefox-independent Browser privacy behavior;
+- `src/privacy-decision-point.mjs` — platform Privacy Decision Point for manifest, policy, consent, purpose, zone, destination, and lifecycle authorization;
+- `src/privacy-policy-engine.mjs` — restrictive machine-enforceable policy evaluation and constraint intersection;
+- `src/consent-authority.mjs` — scoped consent grant, expiration, and revocation authority prototype;
+- `src/capability-token.mjs` — signed, operation-bound capability authority with key rotation, revocation, and replay controls;
+- `src/privacy-enforcement-point.mjs` — reference Privacy Enforcement Point that issues and verifies constrained capabilities;
+- `src/privacy-evidence.mjs` — minimized evidence and Privacy Receipt prototype;
+- `contracts/privacy-shield.policy.schema.json` — machine-readable privacy-policy rule-set contract;
+- `contracts/privacy-shield.application-manifest.schema.json` — application privacy declaration contract;
+- `contracts/privacy-shield.decision.schema.json` — authorization request/decision contract;
+- `contracts/privacy-shield.capability-token.schema.json` — capability-token contract, including signing-key and replay semantics;
 - `contracts/privacy-shield.ruleset-lifecycle.json` — Browser ruleset ownership, versioning, review, and Browser-consumption contract;
 - `contracts/privacy-shield.identity.json` — machine-readable product and visual-identity contract;
 - `contracts/privacy-shield.platform.json` — platform-wide privacy authority, domains, adapter model, and privacy principles;
@@ -30,33 +42,61 @@ This repository contains the portable Privacy Shield core, reviewed Browser rule
 - `branding/privacy-shield/privacy-shield-icon.svg` — approved canonical visual identity;
 - `docs/PLATFORM-ARCHITECTURE.md` — platform-wide authority and distributed-adapter architecture;
 - `docs/PLATFORM-ADOPTION.md` — current adoption state and canonical capability vocabulary;
-- `docs/APPROVED-ICON.md` — explicit icon approval and review record;
 - `tools/` and `scripts/` — fail-closed source validation;
-- `tests/` — portable-core and contract coverage;
+- `tests/` — Browser core, platform authorization, policy, and contract coverage;
 - `.github/workflows/` — automated validation.
+
+## Privacy Shield 2.0 authorization core
+
+Privacy Shield 2.0 adds an enforceable data-use authorization path alongside the existing Browser privacy runtime. Its foundational invariant is:
+
+> Authorization travels with the operation—not merely with the identity requesting it.
+
+The current source-level decision path is:
+
+`Application / AI / Service → Privacy Enforcement Point → Privacy Decision Point → Manifest + Policy + Consent + Purpose + Zone + Destination + Retention Evaluation → Operation-Bound Capability → Enforcement → Privacy Evidence → Privacy Receipt`
+
+The Decision Point supports four outcomes: `ALLOW`, `DENY`, `ALLOW_WITH_CONSTRAINTS`, and `REQUIRE_USER_DECISION`.
+
+Policy rules can currently:
+
+- deny matching operations;
+- require a fresh user decision even when prior consent exists;
+- restrict permitted processing zones;
+- restrict permitted destinations;
+- restrict retention modes;
+- prohibit external disclosure;
+- inject enforcement obligations;
+- cap capability lifetimes.
+
+Constraints intersect rather than broaden authority. A policy cannot use this engine to add a destination, processing zone, operation, purpose, or resource that the application manifest and consent state did not already authorize.
+
+Operation-bound capabilities support explicit signing-key identifiers, rotation, revocation, reusable or single-use replay policy, and key retirement. This is still a source-level prototype: production key custody, durable distributed replay/revocation state, durable evidence persistence, runtime integration, and component-specific acceptance remain required.
 
 ## Platform responsibilities
 
 Privacy Shield may govern these privacy domains when implemented by a supported runtime adapter:
 
-- application privacy and permission minimization;
+- application privacy and contextual permissions;
+- purpose limitation and data-use authorization;
 - Browser content protection and tracking resistance;
 - network and DNS privacy policy integration;
+- AI retrieval, context, agent delegation, model-destination, and retention authority;
 - telemetry, diagnostics, and observability minimization;
 - data collection, retention, deletion, and export expectations;
 - metadata minimization and tracking-parameter resistance;
-- privacy status, explanations, exceptions, and user controls.
+- privacy status, explanations, receipts, exceptions, and user controls.
 
 A component must not claim a Privacy Shield capability that it has not implemented and validated. The canonical capability IDs are controlled by `contracts/privacy-shield.capabilities.json`; branding or adjacent functionality does not confer undeclared capabilities.
 
 ## Distributed adapter model
 
-Privacy Shield is not a centralized privileged proxy. Runtime authority remains with the component that actually performs the work:
+Privacy Shield is not a centralized privileged proxy. Runtime authority remains with the component that actually performs the work while Privacy Shield supplies privacy authorization and shared contracts:
 
 - GoreeCloud Browser owns Firefox/Gecko-specific request interception and browsing privacy behavior.
 - GoreeCloud DNS owns DNS privacy filtering and DNS-policy execution when its `dns-privacy` adapter is accepted.
 - GoreeCloud Network owns privacy-relevant encrypted networking when its `network-privacy` adapter is accepted.
-- Native and maintained-fork applications own their storage, permissions, telemetry, retention, deletion, and export implementations.
+- Native GoreeCloud applications own their storage and runtime implementation while using Privacy Shield for applicable privacy authorization and evidence contracts.
 - GoreeCloud Manager and Wardveil Security may consume bounded Privacy Shield status without collecting raw private activity merely for dashboard presentation.
 
 The central `adapters/` directory is not a wishlist. Draft downstream candidates remain outside that canonical directory until their source-side contract reaches the approved central-integration point.
@@ -69,7 +109,7 @@ The native blocker replaces the managed uBlock Origin dependency in the GoreeClo
 
 ## Privacy and security boundaries
 
-Privacy Shield does not replace Wardveil Security, GoreeCloud Identity, VPN/private-network transport, GoreeCloud DNS, host/network firewalls, malware scanning, vulnerability management, authentication, authorization, backup, or recovery.
+Privacy Shield does not replace Wardveil Security, GoreeCloud Identity, VPN/private-network transport, GoreeCloud DNS, host/network firewalls, malware scanning, vulnerability management, authentication, backup, or recovery. Authentication identifies an actor; it does not by itself authorize that actor to use information for an arbitrary purpose.
 
 For Browser behavior, Privacy Shield does not replace or weaken Firefox/Gecko Safe Browsing, TLS, certificate validation, sandboxing, process isolation, site permissions, or the application update system.
 
@@ -86,6 +126,10 @@ Derived toolbar, monochrome, favicon-sized, settings, documentation, and high-re
 - [Platform architecture](docs/PLATFORM-ARCHITECTURE.md)
 - [Platform adoption](docs/PLATFORM-ADOPTION.md)
 - [Canonical capability registry](contracts/privacy-shield.capabilities.json)
+- [Application privacy manifest schema](contracts/privacy-shield.application-manifest.schema.json)
+- [Privacy policy schema](contracts/privacy-shield.policy.schema.json)
+- [Privacy decision schema](contracts/privacy-shield.decision.schema.json)
+- [Capability-token schema](contracts/privacy-shield.capability-token.schema.json)
 - [Adapter declaration schema](contracts/privacy-shield.adapter.schema.json)
 - [Sanitized status schema](contracts/privacy-shield.status.schema.json)
 - [Browser architecture](docs/ARCHITECTURE.md)
@@ -107,7 +151,11 @@ Derived toolbar, monochrome, favicon-sized, settings, documentation, and high-re
 | Browser contract synchronization | Source-integrated |
 | Platform-wide privacy role | Approved and merged |
 | Platform contract and adapter/status architecture | Merged |
-| Canonical capability registry | In validation on current reconciliation branch |
+| Canonical capability registry | Merged and machine-validated |
+| Privacy Shield 2.0 PDP/PEP authorization prototype | Implemented; source-level validation required for each revision |
+| Policy engine and restrictive policy contract | Implemented; source-level prototype |
+| Capability rotation, revocation, and replay controls | Implemented; production key/revocation infrastructure pending |
+| Durable consent/evidence/replay persistence | Pending |
 | GoreeCloud Manager status consumer | Merged; no accepted runtime producer active yet |
 | Wardveil Security status presenter | Merged; read-only authority separation enforced |
 | GoreeCloud DNS `dns-privacy` adapter | Draft downstream candidate; not centrally promoted or production-approved |
@@ -116,4 +164,4 @@ Derived toolbar, monochrome, favicon-sized, settings, documentation, and high-re
 | Compiled Browser runtime/UI acceptance | Pending |
 | Overall platform production approval | Not a single global gate; adapter-specific acceptance required |
 
-Privacy Shield is a platform-wide GoreeCloud privacy foundation, but each runtime integration retains an independent implementation and production-acceptance boundary. Shared contract validation, successful CI, branding approval, or a downstream draft declaration do not independently authorize an adapter as production-ready.
+Privacy Shield is a platform-wide GoreeCloud privacy foundation, but each runtime integration retains an independent implementation and production-acceptance boundary. Shared contract validation, successful CI, source-level authorization tests, branding approval, or a downstream draft declaration do not independently authorize an adapter as production-ready.
