@@ -6,7 +6,7 @@ import { PrivacyCapabilityAuthority } from "../src/capability-token.mjs";
 import { PrivacyEvidenceLedger } from "../src/privacy-evidence.mjs";
 import { PrivacyEnforcementPoint } from "../src/privacy-enforcement-point.mjs";
 
-function fixture() {
+function fixture({ capabilityAuthority } = {}) {
   const requester = "goreecloud-ai";
   const resource = "drive:project-alpha";
   const purpose = "answer-current-conversation";
@@ -29,7 +29,7 @@ function fixture() {
   }]]);
   const consents = new Map([[consent.consent_id, consent]]);
   const decisionPoint = new PrivacyDecisionPoint({ manifests, consents });
-  const capabilityAuthority = new PrivacyCapabilityAuthority("0123456789abcdef0123456789abcdef");
+  capabilityAuthority ??= new PrivacyCapabilityAuthority("0123456789abcdef0123456789abcdef");
   const evidenceLedger = new PrivacyEvidenceLedger();
   const enforcementPoint = new PrivacyEnforcementPoint({ decisionPoint, capabilityAuthority, evidenceLedger });
   const request = {
@@ -44,7 +44,7 @@ function fixture() {
     external_disclosure: false,
     consent_reference: consent.consent_id
   };
-  return { request, enforcementPoint, evidenceLedger, consentAuthority, consent };
+  return { request, enforcementPoint, evidenceLedger, consentAuthority, consent, capabilityAuthority };
 }
 
 test("authorization pipeline issues and enforces an operation-bound capability", () => {
@@ -84,4 +84,58 @@ test("revoked consent is denied after PDP state is refreshed", () => {
   assert.equal(result.decision.outcome, PrivacyDecision.DENY);
   assert.equal(result.capability_token, null);
   assert.equal(result.receipt, null);
+});
+
+test("capability revocation blocks subsequent enforcement", () => {
+  const { request, enforcementPoint } = fixture();
+  const result = enforcementPoint.authorize(request);
+  enforcementPoint.revokeCapability(result.capability_token);
+  assert.throws(() => enforcementPoint.enforce(result.capability_token, {
+    requester_id: request.requester.id
+  }), /CAPABILITY_REVOKED/);
+});
+
+test("single-use capability cannot be enforced twice", () => {
+  const { request, enforcementPoint } = fixture();
+  const result = enforcementPoint.authorize(request, { replay_policy: "single_use" });
+  const first = enforcementPoint.enforceOnce(result.capability_token, {
+    requester_id: request.requester.id,
+    purpose: request.purpose
+  });
+  assert.equal(first.authorized, true);
+  assert.throws(() => enforcementPoint.enforceOnce(result.capability_token, {
+    requester_id: request.requester.id,
+    purpose: request.purpose
+  }), /CAPABILITY_ALREADY_CONSUMED/);
+});
+
+test("key rotation preserves verification with retained old keys", () => {
+  const authority = new PrivacyCapabilityAuthority({
+    active_key_id: "key-a",
+    keys: {
+      "key-a": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "key-b": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    }
+  });
+  const { request, enforcementPoint } = fixture({ capabilityAuthority: authority });
+  const oldToken = enforcementPoint.authorize(request).capability_token;
+  authority.rotate("key-c", "cccccccccccccccccccccccccccccccc");
+  const newToken = enforcementPoint.authorize({ ...request, request_id: "req-2" }).capability_token;
+  assert.equal(authority.verify(oldToken).kid, "key-a");
+  assert.equal(authority.verify(newToken).kid, "key-c");
+});
+
+test("retiring a non-active key invalidates capabilities signed by it", () => {
+  const authority = new PrivacyCapabilityAuthority({
+    active_key_id: "key-a",
+    keys: {
+      "key-a": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "key-b": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    }
+  });
+  const { request, enforcementPoint } = fixture({ capabilityAuthority: authority });
+  const token = enforcementPoint.authorize(request).capability_token;
+  authority.rotate("key-b", "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb");
+  authority.retire("key-a");
+  assert.throws(() => authority.verify(token), /UNKNOWN_CAPABILITY_KEY/);
 });
