@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://goreecloud.dev/schemas/privacy-shield/policy/v1",
+  "title": "Privacy Shield Policy Rule Set",
+  "type": "object",
+  "required": ["schema_version", "rules"],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "rules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "effect"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "priority": { "type": "integer", "minimum": 0 },
+          "effect": { "enum": ["DENY", "REQUIRE_USER_DECISION", "CONSTRAIN"] },
+          "reason_code": { "type": "string", "minLength": 1 },
+          "when": {
+            "type": "object",
+            "properties": {
+              "requester_ids": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+              "requester_types": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+              "resource_ids": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+              "resource_classifications": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+              "purposes": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+              "operations": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+              "processing_zones": { "type": "array", "items": { "enum": ["local", "private_goreecloud", "trusted_service", "external"] }, "uniqueItems": true },
+              "destinations": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+              "external_disclosure": { "type": "boolean" }
+            },
+            "additionalProperties": false
+          },
+          "constraints": {
+            "type": "object",
+            "properties": {
+              "allowed_processing_zones": { "type": "array", "items": { "enum": ["local", "private_goreecloud", "trusted_service", "external"] }, "uniqueItems": true },
+              "allowed_destinations": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+              "allowed_retention_modes": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+              "require_no_external_disclosure": { "type": "boolean" },
+              "max_capability_ttl_seconds": { "type": "integer", "minimum": 1 },
+              "obligations": { "type": "array", "items": { "type": "string" }, "uniqueItems": true }
+            },
+            "additionalProperties": false
+          }
+        },
+        "allOf": [
+          {
+            "if": { "properties": { "effect": { "const": "CONSTRAIN" } }, "required": ["effect"] },
+            "then": { "required": ["constraints"] }
+          }
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}
