@@ -1,0 +1,51 @@
+{
+  "schema_version": "1.0.0",
+  "system": "privacy-shield",
+  "producer_repository": "GoreeCloud/goreecloud-privacy-shield",
+  "authority_domains": ["privacy"],
+  "mesh_envelope": {
+    "version": "goreecloud.evidence-envelope.v1",
+    "repository": "GoreeCloud/goreecloud-mesh",
+    "revision": "f1b1b8256773f67ce6ac10a9a9a682ee5192a5fa",
+    "path": "contracts/mesh.evidence-envelope.schema.json"
+  },
+  "producer_contracts": [
+    "contracts/privacy-shield.decision.schema.json",
+    "contracts/privacy-shield.status.schema.json",
+    "contracts/privacy-shield.capability-token.schema.json",
+    "contracts/privacy-shield.application-manifest.schema.json",
+    "contracts/privacy-shield.policy.schema.json"
+  ],
+  "permitted_assertion_families": [
+    "privacy-decision",
+    "privacy-status",
+    "consent-state",
+    "purpose-authorization",
+    "lifecycle-obligation",
+    "retention-authorization",
+    "deletion-obligation",
+    "privacy-receipt",
+    "ai-context-authorization",
+    "ai-context-disposal",
+    "rag-boundary-evaluation"
+  ],
+  "minimization": {
+    "allowed_data_classes": ["public", "operational", "derived"],
+    "raw_user_content": "prohibited",
+    "prompts_and_model_context": "prohibited",
+    "retrieved_document_content": "prohibited",
+    "browsing_dns_network_history": "prohibited",
+    "message_or_file_bodies": "prohibited",
+    "credentials_keys_tokens": "prohibited",
+    "preferred_content": "derived authorization state, reason codes, obligations, freshness, opaque receipt/evidence references, and optional digests"
+  },
+  "authority_rules": [
+    "Privacy Shield remains authoritative for privacy authorization, consent, purpose, lifecycle, and privacy-status assertions.",
+    "Mesh may transport and correlate minimized Privacy Shield evidence but cannot create, extend, or upgrade privacy authority.",
+    "Wardveil Security may consume bounded Privacy Shield status but does not become authoritative for privacy truth.",
+    "Everkeep may consume lifecycle obligations such as retention or deletion requirements without replacing Privacy Shield authority.",
+    "A valid Mesh envelope is not by itself sufficient to authorize a data-use operation."
+  ],
+  "status": "source-profile",
+  "production_acceptance": false
+}
