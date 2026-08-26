@@ -1,12 +1,13 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://goreecloud.dev/schemas/privacy-shield/capability-token/v1",
+  "$id": "https://goreecloud.dev/schemas/privacy-shield/capability-token/v2",
   "title": "Privacy Shield Capability Token",
   "type": "object",
-  "required": ["token_id", "issuer", "subject", "resource", "purpose", "operations", "processing_zone", "destinations", "retention", "issued_at", "expires_at", "decision_id"],
+  "required": ["token_id", "issuer", "signing_key_id", "subject", "resource", "purpose", "operations", "processing_zone", "destinations", "retention", "issued_at", "expires_at", "decision_id", "replay_policy"],
   "properties": {
     "token_id": { "type": "string", "minLength": 1 },
     "issuer": { "const": "privacy-shield" },
+    "signing_key_id": { "type": "string", "minLength": 1 },
     "subject": { "type": "string", "minLength": 1 },
     "acting_user": { "type": ["string", "null"] },
     "resource": { "type": "string", "minLength": 1 },
@@ -21,6 +22,8 @@
     "decision_id": { "type": "string", "minLength": 1 },
     "consent_reference": { "type": ["string", "null"] },
     "policy_references": { "type": "array", "items": { "type": "string" } },
+    "replay_policy": { "enum": ["reusable", "single_use"] },
+    "revocable": { "type": "boolean", "default": true },
     "delegation": {
       "type": "object",
       "properties": {
