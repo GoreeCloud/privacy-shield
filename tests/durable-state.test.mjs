@@ -4,6 +4,7 @@ import os from "node:os";
 import path from "node:path";
 import test from "node:test";
 
+import { PrivacyCapabilityAuthority } from "../src/capability-token.mjs";
 import { ConsentAuthority } from "../src/consent-authority.mjs";
 import { PrivacyEvidenceLedger } from "../src/privacy-evidence.mjs";
 import { FilePrivacyStateStore } from "../src/privacy-state-store.mjs";
@@ -39,4 +40,26 @@ test("privacy evidence survives ledger restart", () => {
   const events = ledger.list({ request_id: "req-1" });
   assert.equal(events.length, 1);
   assert.equal(events[0].decision_id, "dec-1");
+});
+
+test("capability revocation survives authority restart", () => {
+  const file = temporaryStateFile();
+  const secret = "0123456789abcdef0123456789abcdef";
+  let authority = new PrivacyCapabilityAuthority(secret, { store: new FilePrivacyStateStore(file) });
+  const token = authority.issue({ requester_id: "app.notes", resource_id: "note:1", purpose: "summarize" });
+  authority.revoke(token);
+
+  authority = new PrivacyCapabilityAuthority(secret, { store: new FilePrivacyStateStore(file) });
+  assert.throws(() => authority.verify(token), /CAPABILITY_REVOKED/);
+});
+
+test("single-use capability consumption survives authority restart", () => {
+  const file = temporaryStateFile();
+  const secret = "0123456789abcdef0123456789abcdef";
+  let authority = new PrivacyCapabilityAuthority(secret, { store: new FilePrivacyStateStore(file) });
+  const token = authority.issue({ requester_id: "app.notes", resource_id: "note:1", purpose: "summarize" }, { replay_policy: "single_use" });
+  authority.consume(token, { requester_id: "app.notes" });
+
+  authority = new PrivacyCapabilityAuthority(secret, { store: new FilePrivacyStateStore(file) });
+  assert.throws(() => authority.verify(token), /CAPABILITY_ALREADY_CONSUMED/);
 });
