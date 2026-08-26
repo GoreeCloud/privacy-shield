@@ -1,12 +1,13 @@
 import crypto from "node:crypto";
+import { MemoryPrivacyStateStore } from "./privacy-state-store.mjs";
 
 function id(prefix) {
   return `${prefix}_${crypto.randomUUID()}`;
 }
 
 export class ConsentAuthority {
-  constructor(initial = []) {
-    this.records = new Map();
+  constructor(initial = [], { store = new MemoryPrivacyStateStore() } = {}) {
+    this.store = store;
     for (const record of initial) this.put(record);
   }
 
@@ -24,18 +25,17 @@ export class ConsentAuthority {
       revoked: false,
       ...record
     };
-    this.records.set(this.key(stored), stored);
+    this.store.set("consent", this.key(stored), stored);
     return structuredClone(stored);
   }
 
   get({ requester_id, resource_id, purpose }) {
-    const value = this.records.get(this.key({ requester_id, resource_id, purpose }));
-    return value ? structuredClone(value) : null;
+    return this.store.get("consent", this.key({ requester_id, resource_id, purpose }));
   }
 
   revoke({ requester_id, resource_id, purpose, reason = "USER_REVOKED" }) {
     const key = this.key({ requester_id, resource_id, purpose });
-    const existing = this.records.get(key);
+    const existing = this.store.get("consent", key);
     if (!existing) return null;
     const updated = {
       ...existing,
@@ -43,7 +43,7 @@ export class ConsentAuthority {
       revoked_at: new Date().toISOString(),
       revocation_reason: reason
     };
-    this.records.set(key, updated);
+    this.store.set("consent", key, updated);
     return structuredClone(updated);
   }
 
