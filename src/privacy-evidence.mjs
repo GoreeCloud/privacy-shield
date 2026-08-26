@@ -37,7 +37,7 @@ export class PrivacyEvidenceLedger {
       (!request_id || event.request_id === request_id) &&
       (!requester_id || event.requester_id === requester_id) &&
       (!resource_id || event.resource_id === resource_id)
-    ).map(structuredClone);
+    ).map(event => structuredClone(event));
   }
 }
 
