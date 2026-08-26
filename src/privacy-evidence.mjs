@@ -1,12 +1,13 @@
 import crypto from "node:crypto";
+import { MemoryPrivacyStateStore } from "./privacy-state-store.mjs";
 
 function id(prefix) {
   return `${prefix}_${crypto.randomUUID()}`;
 }
 
 export class PrivacyEvidenceLedger {
-  constructor() {
-    this.events = [];
+  constructor({ store = new MemoryPrivacyStateStore() } = {}) {
+    this.store = store;
   }
 
   record({ request, decision, capability = null, metadata = {} }) {
@@ -28,12 +29,12 @@ export class PrivacyEvidenceLedger {
       capability_jti: capability?.jti ?? null,
       metadata
     };
-    this.events.push(event);
+    this.store.set("evidence", event.evidence_id, event);
     return structuredClone(event);
   }
 
   list({ request_id, requester_id, resource_id } = {}) {
-    return this.events.filter(event =>
+    return this.store.list("evidence").map(({ value }) => value).filter(event =>
       (!request_id || event.request_id === request_id) &&
       (!requester_id || event.requester_id === requester_id) &&
       (!resource_id || event.resource_id === resource_id)
