@@ -1,4 +1,5 @@
 import crypto from "node:crypto";
+import { MemoryPrivacyStateStore } from "./privacy-state-store.mjs";
 
 function encode(value) {
   return Buffer.from(JSON.stringify(value)).toString("base64url");
@@ -16,10 +17,9 @@ function requireSecret(secret, label) {
 }
 
 export class PrivacyCapabilityAuthority {
-  constructor(configuration) {
+  constructor(configuration, { store = new MemoryPrivacyStateStore() } = {}) {
     this.keys = new Map();
-    this.revoked = new Set();
-    this.consumed = new Set();
+    this.store = store;
 
     if (typeof configuration === "string") {
       this.activeKeyId = "development-v1";
@@ -102,8 +102,8 @@ export class PrivacyCapabilityAuthority {
 
     if (claims.iss !== "goreecloud-privacy-shield" || !claims.jti) throw new Error("INVALID_CAPABILITY_CLAIMS");
     if (claims.exp <= Math.floor(Date.now() / 1000)) throw new Error("CAPABILITY_EXPIRED");
-    if (check_state && this.revoked.has(claims.jti)) throw new Error("CAPABILITY_REVOKED");
-    if (check_state && this.consumed.has(claims.jti)) throw new Error("CAPABILITY_ALREADY_CONSUMED");
+    if (check_state && this.store.get("capability_revoked", claims.jti)) throw new Error("CAPABILITY_REVOKED");
+    if (check_state && this.store.get("capability_consumed", claims.jti)) throw new Error("CAPABILITY_ALREADY_CONSUMED");
     return claims;
   }
 
@@ -119,14 +119,14 @@ export class PrivacyCapabilityAuthority {
     const value = String(tokenOrJti ?? "");
     const jti = value.includes(".") ? this.parseAndVerify(value, { check_state: false }).jti : value;
     if (!jti.startsWith("psc_")) throw new Error("INVALID_CAPABILITY_ID");
-    this.revoked.add(jti);
+    this.store.set("capability_revoked", jti, { revoked: true, revoked_at: new Date().toISOString() });
     return jti;
   }
 
   consume(token, expected = {}) {
     const claims = this.verify(token, expected);
     if (claims.replay_policy !== "single_use") throw new Error("CAPABILITY_NOT_SINGLE_USE");
-    this.consumed.add(claims.jti);
+    this.store.set("capability_consumed", claims.jti, { consumed: true, consumed_at: new Date().toISOString() });
     return claims;
   }
 }
