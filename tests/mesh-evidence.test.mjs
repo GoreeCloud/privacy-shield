@@ -1,6 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { createPrivacyMeshEvidenceEnvelope } from "../src/mesh-evidence.mjs";
+import {
+  createPrivacyMeshEvidenceEnvelope,
+  validatePrivacyMeshEvidenceRefreshIntent,
+} from "../src/mesh-evidence.mjs";
 
 const now = new Date("2026-08-26T23:30:00.000Z");
 const evidence = {
@@ -61,4 +64,53 @@ test("rejects cross-producer contract and expired evidence", () => {
     valid_until: "2026-08-26T23:29:30.000Z",
     now,
   }));
+});
+
+function refreshIntent(overrides = {}) {
+  return {
+    version: "goreecloud.evidence-refresh-intent.v1",
+    id: "refresh-privacy-document-42",
+    coordinator: {
+      system: "goreecloud-mesh",
+      repository: "GoreeCloud/goreecloud-mesh",
+      revision: "c".repeat(40),
+      contract: "contracts/mesh.evidence-refresh-intent.schema.json",
+    },
+    producer: "privacy-shield",
+    authority_domain: "privacy",
+    subject: { kind: "document", id: "document-42", scope: "ai-rag" },
+    assertion: "privacy-decision",
+    reason: "stale",
+    requested_at: now.toISOString(),
+    latest_observed_at: "2026-08-26T21:30:00.000Z",
+    contains_user_content: false,
+    contains_secret_material: false,
+    authority_transferred: false,
+    execution_authorized: false,
+    ...overrides,
+  };
+}
+
+test("accepts bounded Mesh refresh coordination without creating privacy truth", () => {
+  const intent = validatePrivacyMeshEvidenceRefreshIntent(refreshIntent(), { now });
+  assert.equal(intent.producer, "privacy-shield");
+  assert.equal(intent.authority_domain, "privacy");
+  assert.equal(intent.execution_authorized, false);
+  assert.equal(intent.authority_transferred, false);
+  assert.equal("outcome" in intent, false);
+  assert.equal("privacy_decision" in intent, false);
+});
+
+test("rejects cross-authority and effect-authorizing refresh intents", () => {
+  assert.throws(() => validatePrivacyMeshEvidenceRefreshIntent(refreshIntent({ authority_domain: "security" }), { now }));
+  assert.throws(() => validatePrivacyMeshEvidenceRefreshIntent(refreshIntent({ execution_authorized: true }), { now }));
+  assert.throws(() => validatePrivacyMeshEvidenceRefreshIntent(refreshIntent({ authority_transferred: true }), { now }));
+});
+
+test("enforces stale and empty lifecycle semantics on refresh requests", () => {
+  assert.throws(() => validatePrivacyMeshEvidenceRefreshIntent(refreshIntent({ latest_observed_at: undefined }), { now }));
+  const empty = refreshIntent({ reason: "empty" });
+  delete empty.latest_observed_at;
+  assert.equal(validatePrivacyMeshEvidenceRefreshIntent(empty, { now }).reason, "empty");
+  assert.throws(() => validatePrivacyMeshEvidenceRefreshIntent(refreshIntent({ reason: "empty" }), { now }));
 });
