@@ -50,6 +50,7 @@ test("delivers Privacy Shield evidence with Identity bearer authorization", asyn
   });
 
   assert.equal(captured.url, "https://mesh.goreecloud.test/v1/evidence/envelopes");
+  assert.equal(captured.init.redirect, "error");
   assert.equal(captured.init.headers.Authorization, "Bearer test-identity-credential");
   assert.deepEqual(JSON.parse(captured.init.body), envelope);
   assert.equal(captured.init.body.includes("private prompt"), false);
@@ -59,7 +60,7 @@ test("delivers Privacy Shield evidence with Identity bearer authorization", asyn
   assert.equal(JSON.stringify(receipt).includes("test-identity-credential"), false);
 });
 
-test("rejects cross-producer envelopes and non-loopback plaintext HTTP", async () => {
+test("rejects cross-producer envelopes and unsafe Mesh destinations", async () => {
   await assert.rejects(
     deliverPrivacyMeshEvidence({
       envelope: { ...envelope, producer: { ...envelope.producer, system: "wardveil-security" } },
@@ -70,15 +71,40 @@ test("rejects cross-producer envelopes and non-loopback plaintext HTTP", async (
     /only accepts privacy-shield envelopes/,
   );
 
+  for (const [url, expected] of [
+    ["http://mesh.goreecloud.test", /requires HTTPS/],
+    ["https://user:pass@mesh.goreecloud.test", /user information/],
+    ["https://mesh.goreecloud.test?target=other", /query or fragment/],
+    ["https://mesh.goreecloud.test#fragment", /query or fragment/],
+  ]) {
+    await assert.rejects(
+      deliverPrivacyMeshEvidence({
+        envelope,
+        meshBaseUrl: url,
+        bearerToken: "secret",
+        fetchImpl: async () => { throw new Error("must not run"); },
+      }),
+      expected,
+    );
+  }
+});
+
+test("fails closed when fetch refuses a redirect", async () => {
+  let captured;
   await assert.rejects(
     deliverPrivacyMeshEvidence({
       envelope,
-      meshBaseUrl: "http://mesh.goreecloud.test",
-      bearerToken: "secret",
-      fetchImpl: async () => { throw new Error("must not run"); },
+      meshBaseUrl: "https://mesh.goreecloud.test",
+      bearerToken: "redirect-sensitive-proof",
+      fetchImpl: async (url, init) => {
+        captured = { url, init };
+        throw new TypeError("redirect mode is error");
+      },
     }),
-    /requires HTTPS/,
+    /failed before acceptance/,
   );
+  assert.equal(captured.init.redirect, "error");
+  assert.equal(captured.init.headers.Authorization, "Bearer redirect-sensitive-proof");
 });
 
 test("accepts exact Mesh replay without treating it as a new producer outcome", async () => {
