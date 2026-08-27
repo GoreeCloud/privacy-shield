@@ -1,195 +1,154 @@
-import { chmod, copyFile, mkdir, readFile, rename, writeFile } from "node:fs/promises";
-import { dirname } from "node:path";
+import fs from "node:fs";
+import path from "node:path";
 
 const STATE_VERSION = 1;
-const STATE_KEYS = new Set([
-  "version",
-  "consentGrants",
-  "usedCapabilityIds",
-  "revokedCapabilityIds",
-  "evidenceRecords",
-]);
-
-function emptyState() {
-  return {
-    version: STATE_VERSION,
-    consentGrants: {},
-    usedCapabilityIds: {},
-    revokedCapabilityIds: {},
-    evidenceRecords: [],
-  };
-}
+const STATE_FIELDS = new Set(["version", "entries"]);
 
 function clone(value) {
-  return JSON.parse(JSON.stringify(value));
+  return value == null ? value : structuredClone(value);
 }
 
 function isRecord(value) {
   return Boolean(value) && typeof value === "object" && !Array.isArray(value);
 }
 
-function validateState(parsed) {
-  if (!isRecord(parsed)) throw new Error("Privacy state must be a JSON object");
-  if (parsed.version !== STATE_VERSION) {
-    throw new Error(`Unsupported Privacy Shield state version: ${String(parsed.version)}`);
-  }
-  for (const key of Object.keys(parsed)) {
-    if (!STATE_KEYS.has(key)) throw new Error(`Unexpected Privacy Shield state field: ${key}`);
-  }
-  if (!isRecord(parsed.consentGrants)) throw new Error("Privacy state consentGrants must be an object");
-  if (!isRecord(parsed.usedCapabilityIds)) throw new Error("Privacy state usedCapabilityIds must be an object");
-  if (!isRecord(parsed.revokedCapabilityIds)) throw new Error("Privacy state revokedCapabilityIds must be an object");
-  if (!Array.isArray(parsed.evidenceRecords)) throw new Error("Privacy state evidenceRecords must be an array");
-  return clone(parsed);
-}
-
-async function readValidatedState(filePath) {
-  const raw = await readFile(filePath, "utf8");
+function parseState(raw, filePath) {
   let parsed;
   try {
     parsed = JSON.parse(raw);
   } catch (error) {
     throw new Error(`Privacy state JSON is invalid at ${filePath}`, { cause: error });
   }
-  return validateState(parsed);
+  if (!isRecord(parsed)) throw new Error(`Privacy state must be an object at ${filePath}`);
+
+  // Backward compatibility: pre-versioned Privacy Shield state was a flat map
+  // of namespace:key entries. It remains readable and is upgraded on the next write.
+  if (!("version" in parsed)) return parsed;
+
+  for (const key of Object.keys(parsed)) {
+    if (!STATE_FIELDS.has(key)) throw new Error(`Unexpected Privacy Shield state field: ${key}`);
+  }
+  if (parsed.version !== STATE_VERSION) {
+    throw new Error(`Unsupported Privacy Shield state version: ${String(parsed.version)}`);
+  }
+  if (!isRecord(parsed.entries)) throw new Error("Privacy Shield state entries must be an object");
+  return parsed.entries;
 }
 
-export class InMemoryPrivacyStateStore {
+function readValidatedState(filePath) {
+  const raw = fs.readFileSync(filePath, "utf8").trim();
+  if (!raw) throw new Error(`Privacy state is empty at ${filePath}`);
+  return parseState(raw, filePath);
+}
+
+function stateDocument(entries) {
+  return { version: STATE_VERSION, entries };
+}
+
+export class MemoryPrivacyStateStore {
   constructor(initial = {}) {
-    this.state = { ...emptyState(), ...clone(initial) };
+    this.state = new Map(Object.entries(initial));
   }
 
-  async snapshot() {
-    return clone(this.state);
+  get(namespace, key) {
+    return clone(this.state.get(`${namespace}:${key}`) ?? null);
   }
 
-  async readConsentGrant(grantId) {
-    return clone(this.state.consentGrants[grantId] ?? null);
+  set(namespace, key, value) {
+    this.state.set(`${namespace}:${key}`, clone(value));
+    return clone(value);
   }
 
-  async putConsentGrant(grant) {
-    this.state.consentGrants[grant.id] = clone(grant);
-    return clone(grant);
+  delete(namespace, key) {
+    return this.state.delete(`${namespace}:${key}`);
   }
 
-  async deleteConsentGrant(grantId) {
-    delete this.state.consentGrants[grantId];
-  }
-
-  async hasUsedCapabilityId(capabilityId) {
-    return Boolean(this.state.usedCapabilityIds[capabilityId]);
-  }
-
-  async markCapabilityUsed(capabilityId, usedAt = new Date().toISOString()) {
-    this.state.usedCapabilityIds[capabilityId] = usedAt;
-  }
-
-  async isCapabilityRevoked(capabilityId) {
-    return Boolean(this.state.revokedCapabilityIds[capabilityId]);
-  }
-
-  async revokeCapability(capabilityId, revokedAt = new Date().toISOString()) {
-    this.state.revokedCapabilityIds[capabilityId] = revokedAt;
-  }
-
-  async appendEvidence(record) {
-    this.state.evidenceRecords.push(clone(record));
-    return clone(record);
-  }
-
-  async listEvidence() {
-    return clone(this.state.evidenceRecords);
+  list(namespace) {
+    const prefix = `${namespace}:`;
+    return [...this.state.entries()]
+      .filter(([key]) => key.startsWith(prefix))
+      .map(([key, value]) => ({ key: key.slice(prefix.length), value: clone(value) }));
   }
 }
 
-export class JsonFilePrivacyStateStore extends InMemoryPrivacyStateStore {
+export class FilePrivacyStateStore extends MemoryPrivacyStateStore {
   constructor(filePath) {
-    if (!String(filePath ?? "").trim()) throw new Error("Privacy state file path is required");
-    super();
-    this.filePath = filePath;
-    this.backupPath = `${filePath}.bak`;
-  }
-
-  static async open(filePath) {
-    const store = new JsonFilePrivacyStateStore(filePath);
-    await store.#load();
-    return store;
-  }
-
-  async #load() {
+    if (!filePath) throw new TypeError("FilePrivacyStateStore requires filePath");
+    const resolved = path.resolve(filePath);
+    const backupPath = `${resolved}.bak`;
+    let initial = {};
     let primaryError = null;
-    try {
-      this.state = await readValidatedState(this.filePath);
-      return;
-    } catch (error) {
-      primaryError = error;
-    }
 
-    try {
-      this.state = await readValidatedState(this.backupPath);
-      await this.#writePrimary({ updateBackup: false });
-      return;
-    } catch (backupError) {
-      if (primaryError?.code === "ENOENT" && backupError?.code === "ENOENT") {
-        this.state = emptyState();
-        return;
-      }
-      throw new Error("Privacy Shield durable state is unavailable or invalid; refusing to continue without a validated primary or backup state", {
-        cause: primaryError?.code === "ENOENT" ? backupError : primaryError,
-      });
-    }
-  }
-
-  async #writePrimary({ updateBackup = true } = {}) {
-    await mkdir(dirname(this.filePath), { recursive: true });
-    if (updateBackup) {
+    if (fs.existsSync(resolved)) {
       try {
-        await readValidatedState(this.filePath);
-        await copyFile(this.filePath, this.backupPath);
-        await chmod(this.backupPath, 0o600);
+        initial = readValidatedState(resolved);
       } catch (error) {
-        if (error?.code !== "ENOENT") throw error;
+        primaryError = error;
       }
     }
 
-    const tempPath = `${this.filePath}.${process.pid}.${Date.now()}.tmp`;
-    await writeFile(tempPath, `${JSON.stringify(this.state, null, 2)}\n`, {
-      encoding: "utf8",
-      mode: 0o600,
-    });
-    await rename(tempPath, this.filePath);
-    await chmod(this.filePath, 0o600);
+    if (primaryError || (!fs.existsSync(resolved) && fs.existsSync(backupPath))) {
+      try {
+        initial = readValidatedState(backupPath);
+        FilePrivacyStateStore.writeDocument(resolved, stateDocument(initial));
+      } catch (backupError) {
+        throw new Error(
+          "Privacy Shield durable state is unavailable or invalid; refusing to continue without a validated primary or backup state",
+          { cause: primaryError ?? backupError },
+        );
+      }
+    }
+
+    super(initial);
+    this.filePath = resolved;
+    this.backupPath = backupPath;
   }
 
-  async #persistMutation(mutate) {
-    const previous = clone(this.state);
+  static writeDocument(filePath, document) {
+    fs.mkdirSync(path.dirname(filePath), { recursive: true });
+    const temporary = `${filePath}.${process.pid}.${Date.now()}.tmp`;
+    fs.writeFileSync(temporary, `${JSON.stringify(document, null, 2)}\n`, { mode: 0o600 });
+    fs.renameSync(temporary, filePath);
+    fs.chmodSync(filePath, 0o600);
+  }
+
+  persist() {
+    fs.mkdirSync(path.dirname(this.filePath), { recursive: true });
+    if (fs.existsSync(this.filePath)) {
+      readValidatedState(this.filePath);
+      fs.copyFileSync(this.filePath, this.backupPath);
+      fs.chmodSync(this.backupPath, 0o600);
+    }
+    const entries = Object.fromEntries(this.state.entries());
+    FilePrivacyStateStore.writeDocument(this.filePath, stateDocument(entries));
+  }
+
+  set(namespace, key, value) {
+    const storageKey = `${namespace}:${key}`;
+    const hadPrevious = this.state.has(storageKey);
+    const previous = clone(this.state.get(storageKey));
+    const stored = super.set(namespace, key, value);
     try {
-      const result = await mutate();
-      await this.#writePrimary();
-      return result;
+      this.persist();
+      return stored;
     } catch (error) {
-      this.state = previous;
+      if (hadPrevious) this.state.set(storageKey, previous);
+      else this.state.delete(storageKey);
       throw error;
     }
   }
 
-  async putConsentGrant(grant) {
-    return this.#persistMutation(() => super.putConsentGrant(grant));
-  }
-
-  async deleteConsentGrant(grantId) {
-    return this.#persistMutation(() => super.deleteConsentGrant(grantId));
-  }
-
-  async markCapabilityUsed(capabilityId, usedAt) {
-    return this.#persistMutation(() => super.markCapabilityUsed(capabilityId, usedAt));
-  }
-
-  async revokeCapability(capabilityId, revokedAt) {
-    return this.#persistMutation(() => super.revokeCapability(capabilityId, revokedAt));
-  }
-
-  async appendEvidence(record) {
-    return this.#persistMutation(() => super.appendEvidence(record));
+  delete(namespace, key) {
+    const storageKey = `${namespace}:${key}`;
+    if (!this.state.has(storageKey)) return false;
+    const previous = clone(this.state.get(storageKey));
+    super.delete(namespace, key);
+    try {
+      this.persist();
+      return true;
+    } catch (error) {
+      this.state.set(storageKey, previous);
+      throw error;
+    }
   }
 }
