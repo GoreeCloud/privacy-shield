@@ -1,69 +1,67 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { mkdtemp, readFile, writeFile } from "node:fs/promises";
-import { join } from "node:path";
-import { tmpdir } from "node:os";
-import { JsonFilePrivacyStateStore } from "../src/privacy-state-store.mjs";
+import fs from "node:fs";
+import os from "node:os";
+import path from "node:path";
+import { FilePrivacyStateStore } from "../src/privacy-state-store.mjs";
 
-async function statePath() {
-  const directory = await mkdtemp(join(tmpdir(), "privacy-shield-state-"));
-  return join(directory, "state.json");
+function statePath() {
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), "privacy-shield-state-"));
+  return path.join(directory, "state.json");
 }
 
-test("durable state rejects unsupported versions instead of silently widening semantics", async () => {
-  const filePath = await statePath();
-  await writeFile(filePath, JSON.stringify({
-    version: 999,
-    consentGrants: {},
-    usedCapabilityIds: {},
-    revokedCapabilityIds: {},
-    evidenceRecords: [],
-  }));
-  await assert.rejects(
-    JsonFilePrivacyStateStore.open(filePath),
+test("durable state rejects unsupported versions instead of silently widening semantics", () => {
+  const filePath = statePath();
+  fs.writeFileSync(filePath, JSON.stringify({ version: 999, entries: {} }));
+  assert.throws(
+    () => new FilePrivacyStateStore(filePath),
     /refusing to continue without a validated primary or backup state/,
   );
 });
 
-test("durable state rejects malformed primary and backup state", async () => {
-  const filePath = await statePath();
-  await writeFile(filePath, "{truncated");
-  await writeFile(`${filePath}.bak`, "[]");
-  await assert.rejects(
-    JsonFilePrivacyStateStore.open(filePath),
+test("durable state rejects malformed primary and backup state", () => {
+  const filePath = statePath();
+  fs.writeFileSync(filePath, "{truncated");
+  fs.writeFileSync(`${filePath}.bak`, "[]");
+  assert.throws(
+    () => new FilePrivacyStateStore(filePath),
     /refusing to continue without a validated primary or backup state/,
   );
 });
 
-test("durable state recovers the last validated backup after a torn primary write", async () => {
-  const filePath = await statePath();
-  const first = await JsonFilePrivacyStateStore.open(filePath);
-  await first.putConsentGrant({ id: "grant-1", purpose: "sync" });
-  await first.putConsentGrant({ id: "grant-2", purpose: "export" });
+test("durable state recovers the last validated backup after a torn primary write", () => {
+  const filePath = statePath();
+  const first = new FilePrivacyStateStore(filePath);
+  first.set("consent", "grant-1", { purpose: "sync" });
+  first.set("consent", "grant-2", { purpose: "export" });
 
-  const backupBeforeCorruption = JSON.parse(await readFile(`${filePath}.bak`, "utf8"));
-  assert.equal(backupBeforeCorruption.consentGrants["grant-1"].purpose, "sync");
-  assert.equal(backupBeforeCorruption.consentGrants["grant-2"], undefined);
+  const backupBeforeCorruption = JSON.parse(fs.readFileSync(`${filePath}.bak`, "utf8"));
+  assert.equal(backupBeforeCorruption.entries["consent:grant-1"].purpose, "sync");
+  assert.equal(backupBeforeCorruption.entries["consent:grant-2"], undefined);
 
-  await writeFile(filePath, "{\"version\":1,\"consentGrants\":");
-  const recovered = await JsonFilePrivacyStateStore.open(filePath);
-  assert.equal((await recovered.readConsentGrant("grant-1")).purpose, "sync");
-  assert.equal(await recovered.readConsentGrant("grant-2"), null);
+  fs.writeFileSync(filePath, "{\"version\":1,\"entries\":");
+  const recovered = new FilePrivacyStateStore(filePath);
+  assert.equal(recovered.get("consent", "grant-1").purpose, "sync");
+  assert.equal(recovered.get("consent", "grant-2"), null);
 
-  const repairedPrimary = JSON.parse(await readFile(filePath, "utf8"));
+  const repairedPrimary = JSON.parse(fs.readFileSync(filePath, "utf8"));
   assert.equal(repairedPrimary.version, 1);
-  assert.equal(repairedPrimary.consentGrants["grant-1"].purpose, "sync");
+  assert.equal(repairedPrimary.entries["consent:grant-1"].purpose, "sync");
 });
 
-test("durable state rejects unexpected fields", async () => {
-  const filePath = await statePath();
-  await writeFile(filePath, JSON.stringify({
-    version: 1,
-    consentGrants: {},
-    usedCapabilityIds: {},
-    revokedCapabilityIds: {},
-    evidenceRecords: [],
-    implicitAuthority: true,
-  }));
-  await assert.rejects(JsonFilePrivacyStateStore.open(filePath));
+test("durable state reads legacy flat-map state and upgrades it on write", () => {
+  const filePath = statePath();
+  fs.writeFileSync(filePath, JSON.stringify({ "consent:legacy": { purpose: "sync" } }));
+  const store = new FilePrivacyStateStore(filePath);
+  assert.equal(store.get("consent", "legacy").purpose, "sync");
+  store.set("consent", "new", { purpose: "export" });
+  const upgraded = JSON.parse(fs.readFileSync(filePath, "utf8"));
+  assert.equal(upgraded.version, 1);
+  assert.equal(upgraded.entries["consent:legacy"].purpose, "sync");
+});
+
+test("durable state rejects unexpected versioned wrapper fields", () => {
+  const filePath = statePath();
+  fs.writeFileSync(filePath, JSON.stringify({ version: 1, entries: {}, implicitAuthority: true }));
+  assert.throws(() => new FilePrivacyStateStore(filePath));
 });
