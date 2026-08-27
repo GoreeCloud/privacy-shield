@@ -34,9 +34,10 @@ export async function deliverPrivacyMeshEvidence({
   if (!token) throw new Error("GoreeCloud Identity bearer credential is required");
   if (typeof fetchImpl !== "function") throw new Error("fetch implementation is required");
 
+  const endpoint = meshEndpoint(meshBaseUrl);
   let response;
   try {
-    response = await fetchImpl(meshEndpoint(meshBaseUrl), {
+    response = await fetchImpl(endpoint, {
       method: "POST",
       redirect: "error",
       headers: {
