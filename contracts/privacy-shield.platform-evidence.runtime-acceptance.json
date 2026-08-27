@@ -1,12 +1,14 @@
 {
-  "schema_version": "1.1.0",
+  "schema_version": "1.2.0",
   "system": "privacy-shield",
   "authority_domain": "privacy",
   "purpose": "Defines runtime acceptance gates for minimized Privacy Shield evidence delivery through GoreeCloud Mesh without converting transport acceptance into privacy authorization.",
   "identity_contract": "GoreeCloud/goreecloud-mesh:contracts/mesh.identity-verification.json",
+  "identity_profile": "GoreeCloud/goreecloud-identity:contracts/mesh-service-token.v1.json",
   "required_gates": [
     "authenticated producer identity equals privacy-shield",
     "identity issuer equals goreecloud-identity",
+    "identity audience equals goreecloud-mesh",
     "mesh.evidence.write scope is verified by GoreeCloud Identity",
     "delivery uses HTTPS except explicit loopback development",
     "envelope contains no prompts, model context, retrieved document content, browsing history, credentials, or raw user content",
@@ -16,12 +18,12 @@
     "Mesh transport validity never creates consent, purpose authorization, retention authorization, or deletion authority"
   ],
   "negative_cases": [
-    "credential from an issuer other than goreecloud-identity",
-    "another producer credential attempts privacy-shield delivery",
+    "identity proof outside the approved GoreeCloud Identity profile",
+    "another producer identity attempts privacy-shield delivery",
     "receipt id mismatch",
     "producer service receipt mismatch",
     "non-loopback plaintext HTTP destination",
-    "missing bearer credential",
+    "missing service identity proof",
     "privacy envelope includes prohibited sensitive content",
     "expired positive privacy decision treated as current authorization"
   ],
