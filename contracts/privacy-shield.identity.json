@@ -9,6 +9,10 @@
   },
   "visual_identity": {
     "canonical_asset": "branding/privacy-shield/privacy-shield-icon.svg",
+    "canonical_asset_scope": "repository-synchronized-derivative",
+    "branding_authority_repository": "GoreeCloud/goreecloud-branding-assets",
+    "branding_authority_asset": "systems/privacy-shield/privacy-shield-icon.svg",
+    "local_derivative_asset": "branding/privacy-shield/privacy-shield-icon.svg",
     "canonical_visual_identity_status": "approved-canonical-icon",
     "showcase_status": "approved",
     "temporary_icon_substitution_allowed": false,
