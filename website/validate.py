@@ -22,7 +22,16 @@ headers = (DIST / "_headers").read_text(encoding="utf-8")
 source_icon = (ROOT / "branding" / "privacy-shield" / "privacy-shield-icon.svg").read_bytes()
 built_icon = (DIST / "assets" / "privacy-shield-icon.svg").read_bytes()
 
-for needle in ("GoreeCloud Privacy Shield", "Privacy by Default", "Compiled Browser acceptance pending", "Wardveil Security", "does not replace or weaken"):
+for needle in (
+    "GoreeCloud Privacy Shield",
+    "Privacy by Default",
+    "Compiled Browser acceptance pending",
+    "Wardveil Security",
+    "Sentinel Fold",
+    "Mesh refresh handoff · Established in source",
+    "separately produced current Privacy Shield evidence",
+    "does not replace or weaken",
+):
     if needle not in html:
         raise SystemExit(f"required public content missing: {needle}")
 
