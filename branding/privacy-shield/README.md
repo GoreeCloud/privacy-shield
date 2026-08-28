@@ -1,14 +1,18 @@
 # Privacy Shield Branding Assets
 
-This directory contains the GoreeCloud Privacy Shield visual identity.
+This directory contains synchronized GoreeCloud Privacy Shield branding derivatives used by the Privacy Shield repository.
 
 ## Canonical source
 
-The explicitly approved canonical source is:
+The authoritative branding source is maintained in the unified GoreeCloud branding repository:
 
-`branding/privacy-shield/privacy-shield-icon.svg`
+- Repository: `GoreeCloud/goreecloud-branding-assets`
+- Canonical path: `systems/privacy-shield/privacy-shield-icon.svg`
+- Local synchronized derivative: `branding/privacy-shield/privacy-shield-icon.svg`
 
-Candidate 01 was approved on August 19, 2026 after direct review of a 1024×1024 PNG rendered from the exact authored SVG. PR #20 merged the authored design and PR #22 promoted the approved geometry to the canonical path.
+The local SVG must remain byte-equivalent to the approved canonical source unless an intentional branding revision is first approved and committed in `GoreeCloud/goreecloud-branding-assets`.
+
+Candidate 01 was approved on August 19, 2026 after direct review of a 1024×1024 PNG rendered from the exact authored SVG. PR #20 merged the authored design and PR #22 promoted the approved geometry in this repository before the branding authority was centralized.
 
 The original authored candidate and monochrome review derivative remain under `branding/privacy-shield/candidates/` as traceable design history; they are not competing canonical assets.
 
@@ -24,7 +28,9 @@ The approved design has recorded review for compact 16–24 px presentation, ful
 
 ## Asset rules
 
-- `privacy-shield-icon.svg` is the single source of truth.
+- `GoreeCloud/goreecloud-branding-assets` is the branding authority.
+- `systems/privacy-shield/privacy-shield-icon.svg` is the canonical source of truth.
+- The local `privacy-shield-icon.svg` is a synchronized consumer derivative for repository/runtime needs.
 - Derived PNG, toolbar, settings, monochrome, favicon-sized, documentation, and high-resolution assets must originate from the canonical SVG.
 - Do not maintain unrelated alternate designs as equivalent canonical assets.
 - Do not substitute inherited Browser, Wardveil, generic, temporary, or placeholder artwork.
