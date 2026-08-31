@@ -1,4 +1,4 @@
-name: Validate Privacy Center Glaze UI 2.0 Stable
+name: Validate Privacy Center Glaze UI 2.1 Stable
 
 on:
   pull_request:
