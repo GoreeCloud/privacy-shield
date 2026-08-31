@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import { createHash } from "node:crypto";
 
 const STATE_VERSION = 1;
 const STATE_FIELDS = new Set(["version", "entries"]);
@@ -35,14 +36,25 @@ function parseState(raw, filePath) {
   return parsed.entries;
 }
 
+function fingerprint(raw) {
+  return createHash("sha256").update(raw, "utf8").digest("hex");
+}
+
 function readValidatedState(filePath) {
-  const raw = fs.readFileSync(filePath, "utf8").trim();
-  if (!raw) throw new Error(`Privacy state is empty at ${filePath}`);
-  return parseState(raw, filePath);
+  const raw = fs.readFileSync(filePath, "utf8");
+  if (!raw.trim()) throw new Error(`Privacy state is empty at ${filePath}`);
+  return {
+    entries: parseState(raw.trim(), filePath),
+    fingerprint: fingerprint(raw),
+  };
 }
 
 function stateDocument(entries) {
   return { version: STATE_VERSION, entries };
+}
+
+function encodeDocument(document) {
+  return `${JSON.stringify(document, null, 2)}\n`;
 }
 
 export class MemoryPrivacyStateStore {
@@ -77,11 +89,14 @@ export class FilePrivacyStateStore extends MemoryPrivacyStateStore {
     const resolved = path.resolve(filePath);
     const backupPath = `${resolved}.bak`;
     let initial = {};
+    let diskFingerprint = null;
     let primaryError = null;
 
     if (fs.existsSync(resolved)) {
       try {
-        initial = readValidatedState(resolved);
+        const loaded = readValidatedState(resolved);
+        initial = loaded.entries;
+        diskFingerprint = loaded.fingerprint;
       } catch (error) {
         primaryError = error;
       }
@@ -89,8 +104,12 @@ export class FilePrivacyStateStore extends MemoryPrivacyStateStore {
 
     if (primaryError || (!fs.existsSync(resolved) && fs.existsSync(backupPath))) {
       try {
-        initial = readValidatedState(backupPath);
-        FilePrivacyStateStore.writeDocument(resolved, stateDocument(initial));
+        const recovered = readValidatedState(backupPath);
+        initial = recovered.entries;
+        diskFingerprint = FilePrivacyStateStore.writeDocument(
+          resolved,
+          stateDocument(initial),
+        );
       } catch (backupError) {
         throw new Error(
           "Privacy Shield durable state is unavailable or invalid; refusing to continue without a validated primary or backup state",
@@ -102,25 +121,48 @@ export class FilePrivacyStateStore extends MemoryPrivacyStateStore {
     super(initial);
     this.filePath = resolved;
     this.backupPath = backupPath;
+    this.diskFingerprint = diskFingerprint;
   }
 
   static writeDocument(filePath, document) {
     fs.mkdirSync(path.dirname(filePath), { recursive: true });
     const temporary = `${filePath}.${process.pid}.${Date.now()}.tmp`;
-    fs.writeFileSync(temporary, `${JSON.stringify(document, null, 2)}\n`, { mode: 0o600 });
+    const encoded = encodeDocument(document);
+    fs.writeFileSync(temporary, encoded, { mode: 0o600 });
     fs.renameSync(temporary, filePath);
     fs.chmodSync(filePath, 0o600);
+    return fingerprint(encoded);
   }
 
   persist() {
     fs.mkdirSync(path.dirname(this.filePath), { recursive: true });
-    if (fs.existsSync(this.filePath)) {
-      readValidatedState(this.filePath);
+    const exists = fs.existsSync(this.filePath);
+
+    if (exists) {
+      const current = readValidatedState(this.filePath);
+      if (this.diskFingerprint === null) {
+        throw new Error(
+          "Privacy Shield durable state was created by another runtime after this store loaded; refusing stale write",
+        );
+      }
+      if (current.fingerprint !== this.diskFingerprint) {
+        throw new Error(
+          "Privacy Shield durable state changed since this runtime loaded it; refusing stale write",
+        );
+      }
       fs.copyFileSync(this.filePath, this.backupPath);
       fs.chmodSync(this.backupPath, 0o600);
+    } else if (this.diskFingerprint !== null) {
+      throw new Error(
+        "Privacy Shield durable state disappeared after this runtime loaded it; refusing to recreate from stale memory",
+      );
     }
+
     const entries = Object.fromEntries(this.state.entries());
-    FilePrivacyStateStore.writeDocument(this.filePath, stateDocument(entries));
+    this.diskFingerprint = FilePrivacyStateStore.writeDocument(
+      this.filePath,
+      stateDocument(entries),
+    );
   }
 
   set(namespace, key, value) {
