@@ -102,7 +102,7 @@ test("generic runtime uses exactly the injected state provider", () => {
     resource_id: "note:2",
     purpose: "summarize",
   });
-  assert.equal(store.list("consents").length, 1);
+  assert.equal(store.list("consent").length, 1);
 });
 
 test("runtime factories fail closed on missing or unsafe state providers", () => {
