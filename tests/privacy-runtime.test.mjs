@@ -4,7 +4,11 @@ import os from "node:os";
 import path from "node:path";
 import test from "node:test";
 
-import { createDurablePrivacyRuntime } from "../src/privacy-runtime.mjs";
+import {
+  createDurablePrivacyRuntime,
+  createPrivacyRuntime,
+} from "../src/privacy-runtime.mjs";
+import { MemoryPrivacyStateStore } from "../src/privacy-state-store.mjs";
 
 function stateFile() {
   const directory = fs.mkdtempSync(path.join(os.tmpdir(), "privacy-runtime-"));
@@ -85,7 +89,23 @@ test("durable runtime shares consent, capability, evidence, and policy state acr
   );
 });
 
-test("durable runtime refuses missing state path or capability key configuration", () => {
+test("generic runtime uses exactly the injected state provider", () => {
+  const store = new MemoryPrivacyStateStore();
+  const runtime = createPrivacyRuntime({
+    store,
+    capability_keys: capabilityKeys,
+  });
+
+  assert.equal(runtime.store, store);
+  runtime.consent.put({
+    requester_id: "app.notes",
+    resource_id: "note:2",
+    purpose: "summarize",
+  });
+  assert.equal(store.list("consents").length, 1);
+});
+
+test("runtime factories fail closed on missing or unsafe state providers", () => {
   assert.throws(
     () => createDurablePrivacyRuntime({ capability_keys: capabilityKeys }),
     /requires state_file/,
@@ -93,5 +113,26 @@ test("durable runtime refuses missing state path or capability key configuration
   assert.throws(
     () => createDurablePrivacyRuntime({ state_file: stateFile() }),
     /Capability authority requires/,
+  );
+  assert.throws(
+    () => createPrivacyRuntime({ capability_keys: capabilityKeys }),
+    /requires an injected state store/,
+  );
+  assert.throws(
+    () =>
+      createPrivacyRuntime({
+        store: { get() {}, set() {} },
+        capability_keys: capabilityKeys,
+      }),
+    /must implement delete\(\)/,
+  );
+  assert.throws(
+    () =>
+      createDurablePrivacyRuntime({
+        state_file: stateFile(),
+        capability_keys: capabilityKeys,
+        production: true,
+      }),
+    /single-host only/,
   );
 });
