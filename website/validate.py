@@ -18,6 +18,7 @@ EXPECTED_DIST_FILES = {
     "404.html",
     "_headers",
     "assets/site.css",
+    "assets/site-polish.css",
     "assets/site.js",
     f"assets/{GLAZE_ASSET}",
     "assets/privacy-shield-icon.svg",
@@ -30,17 +31,12 @@ def require(condition: bool, message: str) -> None:
 
 
 def expected_dist_bytes() -> dict[str, bytes]:
-    combined_css = (
-        (SITE / "site.css").read_text(encoding="utf-8")
-        + "\n"
-        + (SITE / "site-polish.css").read_text(encoding="utf-8")
-        + "\n"
-    ).encode("utf-8")
     return {
         "index.html": (SITE / "index.html").read_bytes(),
         "404.html": (SITE / "404.html").read_bytes(),
         "_headers": (SITE / "_headers").read_bytes(),
-        "assets/site.css": combined_css,
+        "assets/site.css": (SITE / "site.css").read_bytes(),
+        "assets/site-polish.css": (SITE / "site-polish.css").read_bytes(),
         "assets/site.js": (SITE / "site.js").read_bytes(),
         f"assets/{GLAZE_ASSET}": (SITE / GLAZE_ASSET).read_bytes(),
         "assets/privacy-shield-icon.svg": ICON.read_bytes(),
@@ -96,6 +92,7 @@ not_found = (DIST / "404.html").read_text(encoding="utf-8")
 headers = (DIST / "_headers").read_text(encoding="utf-8")
 glaze_css = (DIST / "assets" / GLAZE_ASSET).read_text(encoding="utf-8")
 site_css = (DIST / "assets" / "site.css").read_text(encoding="utf-8")
+polish_css = (DIST / "assets" / "site-polish.css").read_text(encoding="utf-8")
 site_js = (DIST / "assets" / "site.js").read_text(encoding="utf-8")
 adoption = ADOPTION.read_text(encoding="utf-8")
 readme = README.read_text(encoding="utf-8")
@@ -131,12 +128,12 @@ for document in (html, not_found):
         require(stale not in document, f"stale Privacy Center public content remains: {stale}")
 
 require(
-    html.index('/assets/glaze-ui-2.1.0.css') < html.index('/assets/site.css'),
-    "Glaze UI Stable subset must load before Privacy Shield product styling",
+    html.index('/assets/glaze-ui-2.1.0.css') < html.index('/assets/site.css') < html.index('/assets/site-polish.css'),
+    "Glaze UI Stable subset and Privacy Shield product CSS must load in design-system/base/polish order",
 )
 require(
-    not_found.index('/assets/glaze-ui-2.1.0.css') < not_found.index('/assets/site.css'),
-    "404 page must load Glaze UI Stable subset before product styling",
+    not_found.index('/assets/glaze-ui-2.1.0.css') < not_found.index('/assets/site.css') < not_found.index('/assets/site-polish.css'),
+    "404 page must load design-system/base/polish CSS in order",
 )
 require(
     html.count('data-glaze-material-level="soft-glaze"') == 1,
@@ -183,7 +180,11 @@ require(
     "Privacy Center content cards must remain solid product surfaces",
 )
 for reduced_target in ("min-height:38px", "min-height:40px", "min-height:44px"):
-    require(reduced_target not in site_css, f"Privacy Center responsive CSS reduces target floor: {reduced_target}")
+    require(reduced_target not in site_css + polish_css, f"Privacy Center responsive CSS reduces target floor: {reduced_target}")
+require(
+    "min-height:48px" in polish_css,
+    "Privacy Center product polish must preserve the 48px interaction floor",
+)
 require(
     "dataset.glazeAppearance" in site_js and "removeAttribute('data-glaze-appearance')" in site_js,
     "Privacy Center appearance control must map to Glaze UI appearance state",
@@ -205,7 +206,7 @@ for needle in (
     require(needle in adoption, f"Glaze UI 2.1 adoption record missing boundary: {needle}")
 for needle in (
     "Glaze UI 2.1.0 Stable",
-    "source, committed generated artifact, and deployed bytes",
+    "Source, committed generated artifact, and deployed bytes",
     "does not itself authorize broader Privacy Shield claims",
 ):
     require(needle in readme, f"Privacy Center README missing 2.1 acceptance boundary: {needle}")
