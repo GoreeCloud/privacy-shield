@@ -30,7 +30,7 @@ Privacy Center is an administration/control surface. Its 2.1 material budget the
 
 `website/index.html` and `website/404.html` declare `goreecloud-glaze-ui=2.1.0`. `website/site.css` and `website/site-polish.css` remain Privacy Shield-owned product styling layered after the design-system subset.
 
-The checked-in `website/dist` is part of the publication contract. Validation requires its committed bytes and file set to already match the current source build **before** the validator regenerates anything. A stale generated artifact therefore fails source validation rather than being silently repaired by the validation step.
+The committed `website/dist` is part of the publication contract. Validation requires its checked-in bytes and file set to already match the current source build **before** the validator regenerates anything. A stale generated artifact therefore fails source validation rather than being silently repaired by the validation step.
 
 ## Authority boundary
 
