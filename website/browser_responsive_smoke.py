@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Exercise Privacy Center geometry at screenshot-relevant viewport widths."""
+"""Exercise the built Privacy Center at screenshot-relevant viewport widths."""
 from __future__ import annotations
 import json
 from pathlib import Path
@@ -11,6 +11,7 @@ from typing import Any
 from urllib.request import Request, urlopen
 
 ROOT=Path(__file__).resolve().parent
+SITE=ROOT/"dist"
 WEB_PORT=8765
 DRIVER_PORT=9518
 BASE=f"http://127.0.0.1:{DRIVER_PORT}"
@@ -54,8 +55,8 @@ def driver_bin()->str:
 def main()->int:
     server=driver=None; session=None; log_path=None
     try:
-        require((ROOT/"index.html").is_file(),"Privacy Center index.html missing")
-        server=subprocess.Popen(["python3","-m","http.server",str(WEB_PORT),"--bind","127.0.0.1","--directory",str(ROOT)],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+        require((SITE/"index.html").is_file(),"built Privacy Center missing; run website/validate.py first")
+        server=subprocess.Popen(["python3","-m","http.server",str(WEB_PORT),"--bind","127.0.0.1","--directory",str(SITE)],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
         wait(TARGET)
         with tempfile.NamedTemporaryFile(prefix="privacy-chromedriver-",suffix=".log",delete=False) as log:
             log_path=log.name
@@ -81,7 +82,7 @@ def main()->int:
             require(state.get("pos") not in {"sticky","fixed"},f"header overlays content at {w}px: {state}")
             require(float(state.get("mt",0))+1>=float(state.get("hb",0)),f"main overlaps header at {w}px: {state}")
             require(float(state.get("minNav",0))>=47.5,f"navigation target below 48px at {w}px: {state}")
-        print("Privacy Center responsive Chrome geometry passed at 1180, 768, 390, and 320px.")
+        print("Privacy Center responsive Chrome geometry passed at 1180, 768, 390, and 320px against the built artifact.")
         return 0
     except Exception as exc:
         print(f"Privacy Center responsive Chrome geometry failed: {exc}")
