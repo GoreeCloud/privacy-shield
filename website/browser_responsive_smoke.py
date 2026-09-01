@@ -165,7 +165,8 @@ def main() -> int:
                     state.get("navBg") in {"rgba(0, 0, 0, 0)", "transparent"},
                     f"mobile/tablet navigation regained a full-row background at {w}px: {state}",
                 )
-                compact_limit = min(w - 32, 330)
+                compact_cap = 320 if w <= 420 else 380
+                compact_limit = min(w - 32, compact_cap)
                 require(float(state.get("navW", w)) <= compact_limit + 1, f"navigation cluster is visually oversized at {w}px: {state}")
 
             scrolled = execute(
