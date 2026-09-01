@@ -132,14 +132,18 @@ def main() -> int:
                 """
                 const h=document.querySelector('header'),m=document.querySelector('main'),n=document.querySelector('header nav');
                 const hr=h?.getBoundingClientRect(),mr=m?.getBoundingClientRect(),nr=n?.getBoundingClientRect();
+                const ns=n?getComputedStyle(n):null;
                 const links=[...document.querySelectorAll('header nav a')]
                   .map(x=>x.getBoundingClientRect()).filter(r=>r.width>0&&r.height>0);
                 const navRows=[...new Set(links.map(r=>Math.round(r.top)))].length;
                 return {
                   ready:document.readyState,w:innerWidth,sw:document.documentElement.scrollWidth,
                   pos:h?getComputedStyle(h).position:'',hb:hr?.bottom||0,mt:mr?.top||0,
-                  minNav:links.length?Math.min(...links.map(r=>r.height)):0,
-                  navRows,navH:nr?.height||0,docH:document.documentElement.scrollHeight
+                  minNavH:links.length?Math.min(...links.map(r=>r.height)):0,
+                  minNavW:links.length?Math.min(...links.map(r=>r.width)):0,
+                  navRows,navH:nr?.height||0,navW:nr?.width||0,
+                  navBorder:ns?.borderTopWidth||'',navBg:ns?.backgroundColor||'',
+                  docH:document.documentElement.scrollHeight
                 };
                 """,
             )
@@ -149,9 +153,21 @@ def main() -> int:
             require(int(state.get("sw", w + 2)) <= w + 1, f"horizontal overflow at {w}px: {state}")
             require(state.get("pos") not in {"sticky", "fixed"}, f"header overlays content at {w}px: {state}")
             require(float(state.get("mt", 0)) + 1 >= float(state.get("hb", 0)), f"main overlaps header at {w}px: {state}")
-            require(float(state.get("minNav", 0)) >= 47.5, f"navigation target below 48px at {w}px: {state}")
+            require(float(state.get("minNavH", 0)) >= 47.5, f"navigation target height below 48px at {w}px: {state}")
+            require(float(state.get("minNavW", 0)) >= 47.5, f"navigation target width below 48px at {w}px: {state}")
             require(int(state.get("navRows", 2)) == 1, f"navigation wrapped into multiple rows at {w}px: {state}")
-            require(float(state.get("navH", 0)) <= 66, f"navigation capsule is taller than one control row at {w}px: {state}")
+            require(float(state.get("navH", 0)) <= 66, f"navigation is taller than one control row at {w}px: {state}")
+
+            if w <= 980:
+                border = str(state.get("navBorder", "0")).removesuffix("px") or "0"
+                require(float(border) < 0.5, f"mobile/tablet navigation regained an outer border at {w}px: {state}")
+                require(
+                    state.get("navBg") in {"rgba(0, 0, 0, 0)", "transparent"},
+                    f"mobile/tablet navigation regained a full-row background at {w}px: {state}",
+                )
+                compact_cap = 320 if w <= 420 else 380
+                compact_limit = min(w - 32, compact_cap)
+                require(float(state.get("navW", w)) <= compact_limit + 1, f"navigation cluster is visually oversized at {w}px: {state}")
 
             scrolled = execute(
                 session,
@@ -169,7 +185,8 @@ def main() -> int:
 
         print(
             "Privacy Center responsive Chrome geometry passed at 1180, 768, 390, and 320px: "
-            "normal-flow header, single-row navigation, 48px targets, no document overflow, and scroll-away behavior verified."
+            "normal-flow header, compact quiet single-row navigation, 48px two-dimensional targets, "
+            "no document overflow, and scroll-away behavior verified."
         )
         return 0
     except Exception as exc:
