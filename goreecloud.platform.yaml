@@ -1,120 +1,158 @@
 schema_version: '0.2'
+
 component:
   type: service
   id: goreecloud-privacy-shield
   product_name: GoreeCloud Privacy Shield
   repository: GoreeCloud/goreecloud-privacy-shield
+
 lifecycle: development
 version: '0.1'
+
 supported_platforms:
-- web
-- firefox
+  - web
+  - firefox
+
 api:
   versions: []
   endpoints: []
+
 platform_systems:
   manager:
-    result: applicable-migration-required
+    result: applicable-blocked
     version: null
     evidence:
-    - docs/PLATFORM-ADOPTION.md
-    - contracts/privacy-shield.status.schema.json
-    notes: GoreeCloud Manager has a merged privacy-safe read-only status consumer, but no accepted Privacy Shield runtime status producer is currently active for that path and current-contract acceptance remains incomplete.
+      - docs/PLATFORM-ADOPTION.md
+      - contracts/privacy-shield.status.schema.json
+    notes: GoreeCloud Manager has a privacy-safe read-only status consumer, but no accepted Privacy Shield runtime producer currently establishes live end-to-end status delivery on the current contract.
   privacy_shield:
     result: not-applicable-justified
     version: '0.1'
     evidence:
-    - contracts/privacy-shield.platform.json
-    - contracts/privacy-shield.identity.json
-    notes: This repository implements the GoreeCloud Privacy Shield platform privacy authority itself; a separate Privacy-Shield-to-Privacy-Shield integration is not applicable.
+      - contracts/privacy-shield.platform.json
+      - contracts/privacy-shield.identity.json
+    notes: This repository implements the GoreeCloud Privacy Shield privacy authority itself; a separate Privacy-Shield-to-Privacy-Shield integration is not applicable.
   wardveil_security:
-    result: applicable-migration-required
+    result: applicable-blocked
     version: null
     evidence:
-    - docs/PLATFORM-ADOPTION.md
-    - contracts/privacy-shield.platform.json
-    notes: Wardveil Security has a merged read-only Privacy Shield presentation boundary, while runtime-specific Privacy Shield production and current-contract acceptance remain independent and incomplete.
+      - docs/PLATFORM-ADOPTION.md
+      - contracts/privacy-shield.platform.json
+    notes: Wardveil Security has a read-only Privacy Shield presentation boundary, while runtime delivery, enforcement integration, and current-contract acceptance remain independently unverified.
   everkeep:
     result: applicable-blocked
     version: null
     evidence:
-    - README.md
-    notes: Everkeep is the resilience and preservation authority for applicable lifecycle, backup, restore, deletion, export, and succession effects, but no accepted Everkeep runtime integration is claimed here.
+      - README.md
+    notes: Everkeep is the resilience and preservation authority for applicable backup, restore, deletion, export, portability, and succession effects, but no accepted live Everkeep integration is established by current Privacy Shield source.
   glaze_ui:
-    result: applicable-migration-required
-    version: 2.1.0
+    result: applicable-blocked
+    version: '1.1.0'
     evidence:
-    - website/GLAZE-UI-2.1-ADOPTION.md
-    - website/glaze-ui-2.1.0.css
-    notes: The accepted Privacy Center source declares Glaze UI 2.1.0. The current Platform Contract baseline is 1.1.0, so repository-specific reconciliation and exact-revision acceptance remain required.
+      - website/GLAZE-UI-V1.1-ADOPTION.md
+      - website/glaze.lock.json
+      - website/glaze/glaze-v1.1.0.css
+      - website/build.py
+      - website/validate_glaze_import_closure.py
+      - website/validate.py
+      - .github/workflows/glaze-ui-v1.1-validation.yml
+    notes: Privacy Center source targets GLAZE UI V1.1 / 1.1.0, but immutable v1.1.0 contains a transitive import to missing glaze-v1.candidate.css. Publication is fail-closed before dist replacement, and the checked-in publication artifact remains at current-main bytes until a corrected immutable Stable release is explicitly re-pinned and validated. Rendered, human Visual Excellence, central consumer, deployed-byte, and production acceptance remain pending.
   mesh:
-    result: applicable-migration-required
+    result: applicable-blocked
     version: null
     evidence:
-    - contracts/mesh.integration.json
-    - contracts/privacy-shield.mesh-evidence-profile.json
-    - contracts/privacy-shield.platform-evidence.runtime-acceptance.json
-    notes: Source-level minimized evidence delivery and coordination contracts exist with authority_transfer=false; production delivery still requires deployed GoreeCloud Identity credentials/JWKS, live Mesh acceptance, and current-contract validation.
-    capabilities: []
+      - contracts/mesh.integration.json
+      - contracts/privacy-shield.mesh-evidence-profile.json
+      - contracts/privacy-shield.platform-evidence.runtime-acceptance.json
+      - src/mesh-delivery.mjs
+      - tests/mesh-credential-boundary.test.mjs
+      - src/platform-registry-delivery.mjs
+      - tests/platform-registry-delivery.test.mjs
+    notes: Minimized evidence delivery and producer-bound Platform Registry publication are implemented at source level with authority_transfer=false and separate least-privilege scopes. Production delivery still requires deployed GoreeCloud Identity credentials/JWKS, live Mesh acceptance, and target-network acceptance.
+    capabilities:
+      - privacy-evidence-delivery
+      - platform-registry-publication
     dependencies:
-    - goreecloud-identity
+      - goreecloud-identity
+      - goreecloud-mesh
     published_events: []
     consumed_events: []
   identity:
-    result: applicable-migration-required
+    result: applicable-blocked
     version: null
     evidence:
-    - contracts/privacy-shield.platform-evidence.runtime-acceptance.json
-    - contracts/privacy-shield.mesh-evidence-profile.json
-    notes: The accepted source contract requires short-lived GoreeCloud Identity-issued service credentials for production Mesh delivery, while deployed issuance, JWKS/key custody, live acceptance, and current-contract validation remain pending.
+      - contracts/privacy-shield.platform-evidence.runtime-acceptance.json
+      - contracts/privacy-shield.mesh-evidence-profile.json
+      - contracts/mesh.integration.json
+      - src/mesh-delivery.mjs
+      - tests/mesh-credential-boundary.test.mjs
+      - src/platform-registry-delivery.mjs
+      - tests/platform-registry-delivery.test.mjs
+    notes: Source-level clients request fresh, narrowly scoped GoreeCloud Identity service credentials separately for evidence delivery and Platform Registry publication, while deployed issuance, key custody, JWKS trust, rotation/revocation, and live acceptance remain pending.
+
 health:
   health_endpoint: null
   readiness_endpoint: null
+
 continuity:
   backup:
     required: true
     requirements:
-    - Protect any durable Privacy Shield-owned consent, policy, capability replay or revocation, and evidence state through an accepted Everkeep-aligned backup scope before production dependence.
+      - Protect any durable Privacy Shield-owned consent, policy, capability replay or revocation, and evidence state through an accepted Everkeep-aligned backup scope before production dependence.
   restore:
     required: true
     requirements:
-    - Validate clean restoration and integrity of durable Privacy Shield-owned authorization and evidence state before production or Stable qualification.
+      - Validate clean restoration and integrity of durable Privacy Shield-owned authorization and evidence state before production or Stable qualification.
   export:
     required: true
     requirements:
-    - Provide documented portable export for Privacy Shield-owned persisted state where state is retained.
+      - Provide documented portable export for Privacy Shield-owned persisted state where state is retained.
   portability:
     required: true
     requirements:
-    - Keep Privacy Shield contracts, policy state, consent state, and evidence independently understandable and portable without requiring a proprietary control plane.
+      - Keep Privacy Shield contracts, policy state, consent state, and evidence independently understandable and portable without requiring a proprietary control plane.
+
 external_dependencies: []
+
 compatibility:
   platform_contract: '0.2'
-  glaze_ui_required: 1.1.0
+  glaze_ui_required: '1.1.0'
   requires:
-  - goreecloud-platform-contract==0.2
-  - glaze-ui==1.1.0
+    - goreecloud-platform-contract==0.2
+    - glaze-ui==1.1.0
   provides: []
+
 evidence:
   acceptance_tests: []
   release: []
+
 conformance:
   status: nonconformant
   validated_at: null
   evidence:
-  - README.md
-  - contracts/privacy-shield.platform.json
-  - contracts/privacy-shield.identity.json
-  - contracts/mesh.integration.json
-  - contracts/privacy-shield.platform-evidence.runtime-acceptance.json
-  - docs/PLATFORM-ADOPTION.md
-  - website/GLAZE-UI-2.1-ADOPTION.md
+    - README.md
+    - contracts/privacy-shield.platform.json
+    - contracts/privacy-shield.identity.json
+    - contracts/mesh.integration.json
+    - contracts/privacy-shield.platform-evidence.runtime-acceptance.json
+    - src/mesh-delivery.mjs
+    - tests/mesh-credential-boundary.test.mjs
+    - src/platform-registry-delivery.mjs
+    - tests/platform-registry-delivery.test.mjs
+    - docs/PLATFORM-ADOPTION.md
+    - website/GLAZE-UI-V1.1-ADOPTION.md
+    - website/glaze.lock.json
+    - website/build.py
+    - website/validate_glaze_import_closure.py
+    - website/validate.py
   blockers:
-  - GoreeCloud Privacy Shield remains in Development and its platform authorization core is not production accepted.
-  - Privacy Center requires reconciliation and exact-revision acceptance against the current Platform Contract Glaze UI baseline.
-  - Durable consent, policy, capability replay or revocation, and privacy evidence state require production acceptance beyond source-level prototypes.
-  - Production signing-key custody and rotation operations remain pending.
-  - Live GoreeCloud Identity-issued service credentials, deployed JWKS trust, and end-to-end Mesh delivery acceptance remain pending.
-  - Everkeep production backup, restore, export, portability, and recovery acceptance remain pending.
-  - Runtime-specific Browser, DNS, Network, application, and other Privacy Shield adapters retain independent acceptance gates.
-  - Target-environment runtime, failure-mode, recovery, publication, and production acceptance remain pending.
+    - GoreeCloud Privacy Shield remains in Development and its platform authorization core is not production accepted.
+    - Published GLAZE UI V1.1 / 1.1.0 has an incomplete immutable CSS import graph; Privacy Center publication remains fail-closed until a corrected immutable Stable release is explicitly re-pinned and revalidated.
+    - Privacy Center V1.1 source migration does not yet have a regenerated accepted committed artifact, rendered browser acceptance, human Visual Excellence review, central consumer acceptance, or production deployed-byte verification.
+    - Durable consent, policy, capability replay or revocation, and privacy evidence state require acceptance beyond source-level prototypes.
+    - Production signing-key custody and rotation operations remain pending.
+    - Source-level Identity-scoped evidence and Platform Registry clients are implemented, but live GoreeCloud Identity issuance, deployed JWKS trust, rotation/revocation, target-network acceptance, and end-to-end Mesh acceptance remain pending.
+    - Everkeep production backup, restore, export, portability, and recovery acceptance remain pending.
+    - Runtime-specific Browser, DNS, Network, Firefox, application, and other Privacy Shield adapters retain independent acceptance gates.
+    - Target-environment runtime, failure-mode, recovery, publication, and production acceptance remain pending.
+    - Required Stable acceptance-test and published release evidence has not been produced for GoreeCloud Privacy Shield.

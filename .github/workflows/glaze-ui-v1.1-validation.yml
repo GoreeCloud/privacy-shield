@@ -1,15 +1,15 @@
-name: Validate Privacy Center Glaze UI 2.1 Stable
+name: Validate Privacy Center GLAZE UI V1.1 Stable
 
 on:
   pull_request:
     paths:
       - "website/**"
-      - ".github/workflows/glaze-ui-2-validation.yml"
+      - ".github/workflows/glaze-ui-v1.1-validation.yml"
   push:
     branches: [main]
     paths:
       - "website/**"
-      - ".github/workflows/glaze-ui-2-validation.yml"
+      - ".github/workflows/glaze-ui-v1.1-validation.yml"
   workflow_dispatch:
 
 permissions:
@@ -21,7 +21,7 @@ jobs:
     timeout-minutes: 8
     steps:
       - name: Check out exact source revision
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           persist-credentials: false
           ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
@@ -31,11 +31,15 @@ jobs:
           EXPECTED_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
         run: test "$(git rev-parse HEAD)" = "$EXPECTED_SHA"
 
-      - uses: actions/setup-python@v5
+      - name: Set up Python 3.13
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
           python-version: "3.13"
 
-      - name: Validate committed artifact and Glaze UI 2.1 adoption
+      - name: Validate locked GLAZE UI import closure
+        run: python3 website/validate_glaze_import_closure.py
+
+      - name: Validate committed artifact and GLAZE UI V1.1 source lock
         run: python3 website/validate.py
 
       - name: Validate responsive public-document layout
