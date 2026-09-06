@@ -1,6 +1,8 @@
 # GoreeCloud Privacy Shield Public Website
 
-This directory contains the source and checked-in publication artifact for the public Privacy Center at `https://privacy.goreecloud.com`.
+> **Static website source authority:** the canonical source for the public Privacy Center is now `GoreeCloud/goreecloud-static-websites/sites/privacy`. This `website/` directory is a protected transitional deployment copy while Cloudflare Pages still uses the legacy repository. Future authoritative public-site source changes belong in the centralized repository. Do not remove this copy until Cloudflare repository/root/build cutover and exact production verification have passed.
+
+The public Privacy Center is `https://privacy.goreecloud.com`.
 
 ## Current presentation boundary
 
@@ -10,7 +12,9 @@ These presentation changes do not create or upgrade Privacy Shield privacy autho
 
 Current source-level adoption status is **Adoption Candidate**. See `GLAZE-UI-2.1-ADOPTION.md`. Historical 2.0 evidence is retained only in `GLAZE-UI-2.0-HISTORICAL.md`.
 
-## Cloudflare Pages contract
+## Current legacy Cloudflare Pages contract
+
+Until the controlled deployment cutover is completed, production still uses this legacy contract:
 
 - Repository: `GoreeCloud/goreecloud-privacy-shield`
 - Production branch: `main`
@@ -19,24 +23,26 @@ Current source-level adoption status is **Adoption Candidate**. See `GLAZE-UI-2.
 - Build output directory: `website/dist`
 - Custom domain: `privacy.goreecloud.com`
 
-The build copies the approved canonical Privacy Shield identity from `branding/privacy-shield/privacy-shield-icon.svg` into the isolated public artifact. The public icon is therefore not independently redrawn or maintained.
+The target source authority after cutover is `GoreeCloud/goreecloud-static-websites/sites/privacy`; the final Pages root/build configuration must be verified through authenticated Cloudflare controls rather than inferred from source documentation.
 
-`website/dist` is checked in as publication evidence. It must be deterministic and byte-identical to the current source build. The validator checks that committed artifact before invoking the build, so a stale artifact cannot be silently regenerated into a passing CI result.
+The legacy build copies the approved canonical Privacy Shield identity from `branding/privacy-shield/privacy-shield-icon.svg` into the isolated public artifact. The public icon is therefore not independently redrawn or maintained.
+
+`website/dist` is legacy publication evidence, not canonical source authority. It must remain deterministic while the legacy deployment is in service. The canonical central package intentionally excludes generated `dist` as source authority.
 
 ## Validation
 
-Run:
+Legacy-repository validation remains available while this deployment source is active:
 
 ```bash
 python3 website/validate.py
 ```
 
-The validator checks the pre-build committed artifact, builds the site, verifies post-build determinism, verifies canonical icon integrity, enforces the Glaze UI 2.1 material/accessibility mapping and current-version markers, checks required public status/authority language, and requires the hardened Pages response-header contract.
+The centralized package has its own exact-candidate validation in `GoreeCloud/goreecloud-static-websites` and has reached `validated-in-central-repo`.
 
 ## Publication and acceptance boundary
 
-Only `website/dist` is intended for Cloudflare Pages publication. The repository remains the authoritative implementation and identity source; private source material, internal contracts, tests, and operational files are not implicitly published merely because the public website is deployed.
+Privacy Shield runtime, privacy contracts, and canonical product identity remain authoritative in this repository. **Static public website source authority does not.** The public-site source package is governed from `GoreeCloud/goreecloud-static-websites/sites/privacy`.
 
-A successful source validation or build does not itself authorize broader Privacy Shield claims or establish acceptance of the website revision. The exact candidate revision must pass the applicable branch-preview/deployment verification before merge, and the resulting `main` revision must be verified on `privacy.goreecloud.com` after deployment. **Source, committed generated artifact, and deployed bytes must agree** before this presentation migration can be recorded as production-accepted.
+The retained `website/dist` and this legacy source copy may continue serving rollback/deployment needs only until the Cloudflare Pages project is cut over and the exact resulting production deployment is accepted. A successful source validation or build does not establish that cutover or broader Privacy Shield production acceptance.
 
-Human Visual Excellence review and central Glaze UI consumer acceptance remain separate from automated source/build validation. Cloudflare project configuration and DNS changes remain separate controlled production operations from source changes in this repository.
+Human Visual Excellence review and central Glaze UI consumer acceptance remain separate from automated source/build validation. Cloudflare project configuration and DNS changes remain separate controlled production operations from source changes.
