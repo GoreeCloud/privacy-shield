@@ -63,3 +63,39 @@ test("single-use capability consumption survives authority restart", () => {
   authority = new PrivacyCapabilityAuthority(secret, { store: new FilePrivacyStateStore(file) });
   assert.throws(() => authority.verify(token), /CAPABILITY_ALREADY_CONSUMED/);
 });
+
+test("a runtime loaded before another writer creates state fails closed", () => {
+  const file = temporaryStateFile();
+  const first = new FilePrivacyStateStore(file);
+  const stale = new FilePrivacyStateStore(file);
+
+  first.set("consent", "first", { decision: "allow" });
+  assert.throws(
+    () => stale.set("consent", "stale", { decision: "deny" }),
+    /created by another runtime.*refusing stale write/,
+  );
+
+  const restored = new FilePrivacyStateStore(file);
+  assert.deepEqual(restored.get("consent", "first"), { decision: "allow" });
+  assert.equal(restored.get("consent", "stale"), null);
+});
+
+test("a runtime with an outdated durable snapshot cannot overwrite newer state", () => {
+  const file = temporaryStateFile();
+  const seed = new FilePrivacyStateStore(file);
+  seed.set("policy", "base", { version: 1 });
+
+  const current = new FilePrivacyStateStore(file);
+  const stale = new FilePrivacyStateStore(file);
+  current.set("policy", "current", { version: 2 });
+
+  assert.throws(
+    () => stale.set("policy", "stale", { version: 99 }),
+    /changed since this runtime loaded it.*refusing stale write/,
+  );
+
+  const restored = new FilePrivacyStateStore(file);
+  assert.deepEqual(restored.get("policy", "base"), { version: 1 });
+  assert.deepEqual(restored.get("policy", "current"), { version: 2 });
+  assert.equal(restored.get("policy", "stale"), null);
+});
