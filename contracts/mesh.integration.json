@@ -14,5 +14,20 @@
     "valid_until_required_for_validated": true,
     "consumer_override_allowed": false
   },
+  "identity_authenticated_delivery": {
+    "credential_authority": "goreecloud-identity",
+    "service_id": "privacy-shield",
+    "audience": "goreecloud-mesh",
+    "required_scope": "mesh.evidence.write",
+    "fresh_credential_provider_supported": true,
+    "credential_requested_per_delivery": true,
+    "credential_persisted_by_privacy_shield_client": false,
+    "credential_in_evidence_allowed": false,
+    "credential_in_receipt_allowed": false,
+    "arbitrary_remote_error_reflection_allowed": false,
+    "transport_error_chaining_allowed": false,
+    "production_identity_issuance_accepted": false,
+    "live_mesh_delivery_accepted": false
+  },
   "purpose": "Allows GoreeCloud Mesh to consume bounded Privacy Shield governance and status evidence while Privacy Shield remains authoritative for privacy controls, data minimization, retention expectations, privacy capability governance, and evidence validity."
 }
