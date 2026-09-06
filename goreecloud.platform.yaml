@@ -39,14 +39,15 @@ platform_systems:
     version: null
     evidence:
     - README.md
-    notes: Everkeep is the resilience and preservation authority for applicable lifecycle, backup, restore, deletion, export, and succession effects, but no accepted Everkeep runtime integration is claimed here.
+    - src/privacy-state-store.mjs
+    notes: Everkeep is the resilience and preservation authority for applicable lifecycle, backup, restore, deletion, export, and succession effects. Privacy Shield now has validated single-host durable state and local backup recovery primitives, but no accepted Everkeep runtime backup/restore integration is claimed here.
   glaze_ui:
     result: applicable-migration-required
     version: 2.1.0
     evidence:
     - website/GLAZE-UI-2.1-ADOPTION.md
     - website/glaze-ui-2.1.0.css
-    notes: The accepted Privacy Center source declares Glaze UI 2.1.0. The current Platform Contract baseline is 1.1.0, so repository-specific reconciliation and exact-revision acceptance remain required.
+    notes: The accepted Privacy Center source still declares the pre-reset Glaze UI 2.1.0 baseline. The current Platform Contract baseline is GLAZE UI V1.1 / 1.1.0; the upstream 1.1.1 corrective Release Candidate has repaired import closure but is not yet an immutable Stable release, so repository-specific re-pin, rendered acceptance, and production acceptance remain required.
   mesh:
     result: applicable-migration-required
     version: null
@@ -54,8 +55,12 @@ platform_systems:
     - contracts/mesh.integration.json
     - contracts/privacy-shield.mesh-evidence-profile.json
     - contracts/privacy-shield.platform-evidence.runtime-acceptance.json
-    notes: Source-level minimized evidence delivery and coordination contracts exist with authority_transfer=false; production delivery still requires deployed GoreeCloud Identity credentials/JWKS, live Mesh acceptance, and current-contract validation.
-    capabilities: []
+    - src/mesh-delivery.mjs
+    - src/platform-registry-delivery.mjs
+    notes: Source-level minimized privacy-evidence delivery and producer-bound Platform Registry delivery are implemented and exact-head validated with authority_transfer=false, scoped per-delivery Identity credentials, producer/receipt binding, and secret-safe error handling. Production delivery still requires deployed GoreeCloud Identity issuance/JWKS trust, live Mesh routing and acceptance, and current-contract runtime validation.
+    capabilities:
+    - privacy-evidence-producer
+    - platform-registry-producer
     dependencies:
     - goreecloud-identity
     published_events: []
@@ -66,7 +71,10 @@ platform_systems:
     evidence:
     - contracts/privacy-shield.platform-evidence.runtime-acceptance.json
     - contracts/privacy-shield.mesh-evidence-profile.json
-    notes: The accepted source contract requires short-lived GoreeCloud Identity-issued service credentials for production Mesh delivery, while deployed issuance, JWKS/key custody, live acceptance, and current-contract validation remain pending.
+    - contracts/mesh.integration.json
+    - src/mesh-delivery.mjs
+    - src/platform-registry-delivery.mjs
+    notes: Privacy Shield now implements source-validated fresh credential-provider boundaries for Mesh evidence and Platform Registry publication using narrowly scoped GoreeCloud Identity credentials. Deployed issuance, JWKS/key custody, rotation/revocation operations, live acceptance, and current-contract validation remain pending.
 health:
   health_endpoint: null
   readiness_endpoint: null
@@ -74,11 +82,13 @@ continuity:
   backup:
     required: true
     requirements:
-    - Protect any durable Privacy Shield-owned consent, policy, capability replay or revocation, and evidence state through an accepted Everkeep-aligned backup scope before production dependence.
+    - The validated single-host durable state store preserves Privacy Shield-owned consent, policy, capability replay or revocation, and evidence state with owner-only local persistence and bounded backup recovery behavior.
+    - Protect durable Privacy Shield-owned state through an accepted Everkeep-aligned backup scope before production dependence; local file durability alone is not production recovery acceptance.
   restore:
     required: true
     requirements:
-    - Validate clean restoration and integrity of durable Privacy Shield-owned authorization and evidence state before production or Stable qualification.
+    - Validate clean Everkeep-backed restoration and integrity of durable Privacy Shield-owned authorization and evidence state before production or Stable qualification.
+    - Preserve replay/revocation and evidence-integrity semantics across accepted restore operations rather than treating backup existence as verified recovery.
   export:
     required: true
     requirements:
@@ -94,9 +104,40 @@ compatibility:
   requires:
   - goreecloud-platform-contract==0.2
   - glaze-ui==1.1.0
-  provides: []
+  provides:
+  - privacy-shield-durable-runtime-single-host
+  - privacy-shield-mesh-evidence-delivery
+  - privacy-shield-platform-registry-delivery
 evidence:
-  acceptance_tests: []
+  acceptance_tests:
+  - id: privacy-durable-state-20260906
+    category: privacy
+    path: tests/durable-state.test.mjs
+    revision: 717b9fdbd08cbc6b3b680c96e4ba10ea17b28f4a
+    result: passed
+    observed_at: '2026-09-06T12:50:44Z'
+    notes: Included in successful Privacy Shield Validation run 34034300554 on the exact reconciliation head.
+  - id: privacy-runtime-state-20260906
+    category: privacy
+    path: tests/privacy-runtime.test.mjs
+    revision: 717b9fdbd08cbc6b3b680c96e4ba10ea17b28f4a
+    result: passed
+    observed_at: '2026-09-06T12:50:44Z'
+    notes: Included in successful Privacy Shield Validation run 34034300554 on the exact reconciliation head.
+  - id: privacy-mesh-credential-boundary-20260906
+    category: integration
+    path: tests/mesh-credential-boundary.test.mjs
+    revision: 717b9fdbd08cbc6b3b680c96e4ba10ea17b28f4a
+    result: passed
+    observed_at: '2026-09-06T12:50:44Z'
+    notes: Included in successful Privacy Shield Validation run 34034300554 on the exact reconciliation head.
+  - id: privacy-platform-registry-delivery-20260906
+    category: integration
+    path: tests/platform-registry-delivery.test.mjs
+    revision: 717b9fdbd08cbc6b3b680c96e4ba10ea17b28f4a
+    result: passed
+    observed_at: '2026-09-06T12:50:44Z'
+    notes: Included in successful Privacy Shield Validation run 34034300554 on the exact reconciliation head.
   release: []
 conformance:
   status: nonconformant
@@ -108,13 +149,21 @@ conformance:
   - contracts/mesh.integration.json
   - contracts/privacy-shield.platform-evidence.runtime-acceptance.json
   - docs/PLATFORM-ADOPTION.md
+  - src/privacy-runtime.mjs
+  - src/privacy-state-store.mjs
+  - src/mesh-delivery.mjs
+  - src/platform-registry-delivery.mjs
+  - tests/durable-state.test.mjs
+  - tests/privacy-runtime.test.mjs
+  - tests/mesh-credential-boundary.test.mjs
+  - tests/platform-registry-delivery.test.mjs
   - website/GLAZE-UI-2.1-ADOPTION.md
   blockers:
   - GoreeCloud Privacy Shield remains in Development and its platform authorization core is not production accepted.
-  - Privacy Center requires reconciliation and exact-revision acceptance against the current Platform Contract Glaze UI baseline.
-  - Durable consent, policy, capability replay or revocation, and privacy evidence state require production acceptance beyond source-level prototypes.
+  - Privacy Center requires reconciliation and exact-revision acceptance against the current Platform Contract Glaze UI baseline; the corrected GLAZE UI V1.1.1 release is not yet immutable Stable authority.
+  - Single-host durable consent, policy, capability replay or revocation, and privacy evidence state are implemented and source-tested, but production/distributed durability and accepted Everkeep-backed recovery remain open.
   - Production signing-key custody and rotation operations remain pending.
-  - Live GoreeCloud Identity-issued service credentials, deployed JWKS trust, and end-to-end Mesh delivery acceptance remain pending.
+  - Scoped Identity credential boundaries and Mesh/Platform Registry clients are source-validated, but live GoreeCloud Identity issuance, deployed JWKS trust, credential rotation/revocation, live Mesh publication, and end-to-end acceptance remain pending.
   - Everkeep production backup, restore, export, portability, and recovery acceptance remain pending.
   - Runtime-specific Browser, DNS, Network, application, and other Privacy Shield adapters retain independent acceptance gates.
-  - Target-environment runtime, failure-mode, recovery, publication, and production acceptance remain pending.
+  - Target-environment runtime, failure-mode, recovery, publication, and explicit production acceptance remain pending.
