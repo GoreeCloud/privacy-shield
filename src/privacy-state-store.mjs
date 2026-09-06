@@ -1,6 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
-import { createHash } from "node:crypto";
+import { createHash, randomUUID } from "node:crypto";
 
 const STATE_VERSION = 1;
 const STATE_FIELDS = new Set(["version", "entries"]);
@@ -46,6 +46,7 @@ function readValidatedState(filePath) {
   return {
     entries: parseState(raw.trim(), filePath),
     fingerprint: fingerprint(raw),
+    raw,
   };
 }
 
@@ -55,6 +56,53 @@ function stateDocument(entries) {
 
 function encodeDocument(document) {
   return `${JSON.stringify(document, null, 2)}\n`;
+}
+
+function syncDirectory(directory) {
+  const descriptor = fs.openSync(directory, "r");
+  try {
+    fs.fsyncSync(descriptor);
+  } finally {
+    fs.closeSync(descriptor);
+  }
+}
+
+function writeAtomicFile(filePath, encoded) {
+  const directory = path.dirname(filePath);
+  fs.mkdirSync(directory, { recursive: true });
+  const temporary = `${filePath}.${process.pid}.${Date.now()}.${randomUUID()}.tmp`;
+  let descriptor = null;
+  let renamed = false;
+  try {
+    descriptor = fs.openSync(temporary, "wx", 0o600);
+    fs.writeFileSync(descriptor, encoded, "utf8");
+    fs.fsyncSync(descriptor);
+    fs.closeSync(descriptor);
+    descriptor = null;
+    fs.renameSync(temporary, filePath);
+    renamed = true;
+    fs.chmodSync(filePath, 0o600);
+    // Persist the directory entry as well as the file contents. Without this,
+    // a successful rename can still disappear after a sudden host crash.
+    syncDirectory(directory);
+  } catch (error) {
+    if (descriptor !== null) {
+      try {
+        fs.closeSync(descriptor);
+      } catch {
+        // Preserve the original write failure.
+      }
+    }
+    if (!renamed) {
+      try {
+        fs.rmSync(temporary, { force: true });
+      } catch {
+        // Preserve the original write failure.
+      }
+    }
+    throw error;
+  }
+  return fingerprint(encoded);
 }
 
 export class MemoryPrivacyStateStore {
@@ -97,6 +145,7 @@ export class FilePrivacyStateStore extends MemoryPrivacyStateStore {
         const loaded = readValidatedState(resolved);
         initial = loaded.entries;
         diskFingerprint = loaded.fingerprint;
+        fs.chmodSync(resolved, 0o600);
       } catch (error) {
         primaryError = error;
       }
@@ -124,14 +173,12 @@ export class FilePrivacyStateStore extends MemoryPrivacyStateStore {
     this.diskFingerprint = diskFingerprint;
   }
 
+  static writeRaw(filePath, encoded) {
+    return writeAtomicFile(filePath, encoded);
+  }
+
   static writeDocument(filePath, document) {
-    fs.mkdirSync(path.dirname(filePath), { recursive: true });
-    const temporary = `${filePath}.${process.pid}.${Date.now()}.tmp`;
-    const encoded = encodeDocument(document);
-    fs.writeFileSync(temporary, encoded, { mode: 0o600 });
-    fs.renameSync(temporary, filePath);
-    fs.chmodSync(filePath, 0o600);
-    return fingerprint(encoded);
+    return FilePrivacyStateStore.writeRaw(filePath, encodeDocument(document));
   }
 
   persist() {
@@ -150,8 +197,10 @@ export class FilePrivacyStateStore extends MemoryPrivacyStateStore {
           "Privacy Shield durable state changed since this runtime loaded it; refusing stale write",
         );
       }
-      fs.copyFileSync(this.filePath, this.backupPath);
-      fs.chmodSync(this.backupPath, 0o600);
+      // Preserve the last validated primary through the same fsync + atomic
+      // rename sequence as the new primary. A torn backup must never be the
+      // only recovery path after a crash during a subsequent primary write.
+      FilePrivacyStateStore.writeRaw(this.backupPath, current.raw);
     } else if (this.diskFingerprint !== null) {
       throw new Error(
         "Privacy Shield durable state disappeared after this runtime loaded it; refusing to recreate from stale memory",
