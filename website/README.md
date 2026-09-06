@@ -29,6 +29,8 @@ The legacy build copies the approved canonical Privacy Shield identity from `bra
 
 `website/dist` is legacy publication evidence, not canonical source authority. It must remain deterministic while the legacy deployment is in service. The canonical central package intentionally excludes generated `dist` as source authority.
 
+Source, committed generated artifact, and deployed bytes remain distinct evidence classes during the migration. Matching the retained legacy source and `website/dist` does not establish that the centralized source package is deployed, and it does not itself authorize broader Privacy Shield claims.
+
 ## Validation
 
 Legacy-repository validation remains available while this deployment source is active:
