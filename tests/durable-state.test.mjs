@@ -99,3 +99,44 @@ test("a runtime with an outdated durable snapshot cannot overwrite newer state",
   assert.deepEqual(restored.get("policy", "current"), { version: 2 });
   assert.equal(restored.get("policy", "stale"), null);
 });
+
+test("primary and backup durable state files remain private", () => {
+  const file = temporaryStateFile();
+  const store = new FilePrivacyStateStore(file);
+  store.set("policy", "base", { version: 1 });
+  store.set("policy", "next", { version: 2 });
+
+  assert.equal(fs.statSync(file).mode & 0o777, 0o600);
+  assert.equal(fs.statSync(`${file}.bak`).mode & 0o777, 0o600);
+});
+
+test("a corrupted primary recovers only from the last validated atomic backup", () => {
+  const file = temporaryStateFile();
+  const store = new FilePrivacyStateStore(file);
+  store.set("policy", "base", { version: 1 });
+  store.set("policy", "next", { version: 2 });
+
+  fs.writeFileSync(file, "{corrupted-primary", "utf8");
+  const recovered = new FilePrivacyStateStore(file);
+  assert.deepEqual(recovered.get("policy", "base"), { version: 1 });
+  assert.equal(recovered.get("policy", "next"), null);
+
+  const persisted = JSON.parse(fs.readFileSync(file, "utf8"));
+  assert.equal(persisted.version, 1);
+  assert.deepEqual(persisted.entries["policy:base"], { version: 1 });
+});
+
+test("invalid primary and invalid backup fail closed", () => {
+  const file = temporaryStateFile();
+  const store = new FilePrivacyStateStore(file);
+  store.set("policy", "base", { version: 1 });
+  store.set("policy", "next", { version: 2 });
+
+  fs.writeFileSync(file, "{corrupted-primary", "utf8");
+  fs.writeFileSync(`${file}.bak`, "{corrupted-backup", "utf8");
+
+  assert.throws(
+    () => new FilePrivacyStateStore(file),
+    /durable state is unavailable or invalid.*refusing to continue/,
+  );
+});
