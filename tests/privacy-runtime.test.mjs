@@ -8,7 +8,11 @@ import {
   createDurablePrivacyRuntime,
   createPrivacyRuntime,
 } from "../src/privacy-runtime.mjs";
-import { MemoryPrivacyStateStore } from "../src/privacy-state-store.mjs";
+import {
+  FilePrivacyStateStore,
+  MemoryPrivacyStateStore,
+  PRIVACY_STATE_PROVIDER_CONTRACT,
+} from "../src/privacy-state-store.mjs";
 
 function stateFile() {
   const directory = fs.mkdtempSync(path.join(os.tmpdir(), "privacy-runtime-"));
@@ -21,6 +25,20 @@ const capabilityKeys = {
     "runtime-key-v1": "0123456789abcdef0123456789abcdef",
   },
 };
+
+class ContractTestProductionStore extends MemoryPrivacyStateStore {
+  stateProviderCapabilities() {
+    return {
+      contract: PRIVACY_STATE_PROVIDER_CONTRACT,
+      durable: true,
+      restart_recovery: true,
+      atomic_transactions: true,
+      multi_writer_serializable: true,
+      distributed: true,
+      fail_closed_on_conflict: true,
+    };
+  }
+}
 
 test("durable runtime shares consent, capability, evidence, and policy state across restart", () => {
   const file = stateFile();
@@ -82,7 +100,7 @@ test("durable runtime shares consent, capability, evidence, and policy state acr
   assert.equal(runtime.consent.isEffective(consent), true);
   assert.equal(runtime.policies.active("notes-summary")?.version, "1");
   assert.equal(runtime.evidence.list({ request_id: "req-runtime-1" }).length, 1);
-  assert.deepEqual(runtime.evidence.verifyIntegrity().valid, true);
+  assert.equal(runtime.evidence.verifyIntegrity().valid, true);
   assert.throws(
     () => runtime.capabilities.verify(token, { requester_id: "app.notes" }),
     /CAPABILITY_ALREADY_CONSUMED/,
@@ -97,12 +115,42 @@ test("generic runtime uses exactly the injected state provider", () => {
   });
 
   assert.equal(runtime.store, store);
+  assert.equal(runtime.production, false);
   runtime.consent.put({
     requester_id: "app.notes",
     resource_id: "note:2",
     purpose: "summarize",
   });
   assert.equal(store.list("consent").length, 1);
+});
+
+test("production runtime requires the complete V1 state-provider capability contract", () => {
+  assert.throws(
+    () => createPrivacyRuntime({
+      store: new MemoryPrivacyStateStore(),
+      capability_keys: capabilityKeys,
+      production: true,
+    }),
+    /PRIVACY_STATE_PROVIDER_CAPABILITY_REQUIRED:durable/,
+  );
+
+  assert.throws(
+    () => createPrivacyRuntime({
+      store: new FilePrivacyStateStore(stateFile()),
+      capability_keys: capabilityKeys,
+      production: true,
+    }),
+    /PRIVACY_STATE_PROVIDER_CAPABILITY_REQUIRED:multi_writer_serializable/,
+  );
+
+  const store = new ContractTestProductionStore();
+  const runtime = createPrivacyRuntime({
+    store,
+    capability_keys: capabilityKeys,
+    production: true,
+  });
+  assert.equal(runtime.production, true);
+  assert.equal(runtime.store, store);
 });
 
 test("runtime factories fail closed on missing or unsafe state providers", () => {
