@@ -1,5 +1,8 @@
 import crypto from "node:crypto";
-import { MemoryPrivacyStateStore } from "./privacy-state-store.mjs";
+import {
+  MemoryPrivacyStateStore,
+  mutatePrivacyState,
+} from "./privacy-state-store.mjs";
 
 function encode(value) {
   return Buffer.from(JSON.stringify(value)).toString("base64url");
@@ -14,6 +17,15 @@ function requireSecret(secret, label) {
     throw new TypeError(`${label} requires a secret of at least 32 characters`);
   }
   return String(secret);
+}
+
+function requireExpectedClaims(claims, expected = {}) {
+  for (const [key, value] of Object.entries(expected)) {
+    if (value !== undefined && claims[key] !== value) {
+      throw new Error(`CAPABILITY_${key.toUpperCase()}_MISMATCH`);
+    }
+  }
+  return claims;
 }
 
 export class PrivacyCapabilityAuthority {
@@ -75,7 +87,7 @@ export class PrivacyCapabilityAuthority {
     return `${body}.${signature}`;
   }
 
-  parseAndVerify(token, { check_state = true } = {}) {
+  parseAndVerify(token, { check_state = true, store = this.store } = {}) {
     const [body, signature, extra] = String(token ?? "").split(".");
     if (!body || !signature || extra !== undefined) throw new Error("INVALID_CAPABILITY_TOKEN");
 
@@ -102,31 +114,41 @@ export class PrivacyCapabilityAuthority {
 
     if (claims.iss !== "goreecloud-privacy-shield" || !claims.jti) throw new Error("INVALID_CAPABILITY_CLAIMS");
     if (claims.exp <= Math.floor(Date.now() / 1000)) throw new Error("CAPABILITY_EXPIRED");
-    if (check_state && this.store.get("capability_revoked", claims.jti)) throw new Error("CAPABILITY_REVOKED");
-    if (check_state && this.store.get("capability_consumed", claims.jti)) throw new Error("CAPABILITY_ALREADY_CONSUMED");
+    if (check_state && store.get("capability_revoked", claims.jti)) throw new Error("CAPABILITY_REVOKED");
+    if (check_state && store.get("capability_consumed", claims.jti)) throw new Error("CAPABILITY_ALREADY_CONSUMED");
     return claims;
   }
 
   verify(token, expected = {}) {
-    const claims = this.parseAndVerify(token);
-    for (const [key, value] of Object.entries(expected)) {
-      if (value !== undefined && claims[key] !== value) throw new Error(`CAPABILITY_${key.toUpperCase()}_MISMATCH`);
-    }
-    return claims;
+    return requireExpectedClaims(this.parseAndVerify(token), expected);
   }
 
   revoke(tokenOrJti) {
     const value = String(tokenOrJti ?? "");
-    const jti = value.includes(".") ? this.parseAndVerify(value, { check_state: false }).jti : value;
+    const claims = value.includes(".") ? this.parseAndVerify(value, { check_state: false }) : null;
+    const jti = claims?.jti ?? value;
     if (!jti.startsWith("psc_")) throw new Error("INVALID_CAPABILITY_ID");
-    this.store.set("capability_revoked", jti, { revoked: true, revoked_at: new Date().toISOString() });
+    mutatePrivacyState(this.store, store => {
+      store.set("capability_revoked", jti, { revoked: true, revoked_at: new Date().toISOString() });
+    });
     return jti;
   }
 
   consume(token, expected = {}) {
-    const claims = this.verify(token, expected);
+    const claims = requireExpectedClaims(
+      this.parseAndVerify(token, { check_state: false }),
+      expected,
+    );
     if (claims.replay_policy !== "single_use") throw new Error("CAPABILITY_NOT_SINGLE_USE");
-    this.store.set("capability_consumed", claims.jti, { consumed: true, consumed_at: new Date().toISOString() });
-    return claims;
+
+    return mutatePrivacyState(this.store, store => {
+      if (store.get("capability_revoked", claims.jti)) throw new Error("CAPABILITY_REVOKED");
+      if (store.get("capability_consumed", claims.jti)) throw new Error("CAPABILITY_ALREADY_CONSUMED");
+      store.set("capability_consumed", claims.jti, {
+        consumed: true,
+        consumed_at: new Date().toISOString(),
+      });
+      return claims;
+    });
   }
 }
