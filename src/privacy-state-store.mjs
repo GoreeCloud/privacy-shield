@@ -4,6 +4,7 @@ import { createHash, randomUUID } from "node:crypto";
 
 const STATE_VERSION = 1;
 const STATE_FIELDS = new Set(["version", "entries"]);
+export const PRIVACY_STATE_PROVIDER_CONTRACT = "goreecloud.privacy-shield.state-provider.v1";
 
 function clone(value) {
   return value == null ? value : structuredClone(value);
@@ -105,9 +106,46 @@ function writeAtomicFile(filePath, encoded) {
   return fingerprint(encoded);
 }
 
+function stagedStoreFrom(state) {
+  const initial = {};
+  for (const [key, value] of state.entries()) initial[key] = clone(value);
+  return new MemoryPrivacyStateStore(initial);
+}
+
+function rejectAsyncTransaction(result) {
+  if (result && typeof result.then === "function") {
+    throw new TypeError("Privacy Shield state transactions must be synchronous");
+  }
+  return result;
+}
+
+/**
+ * Run a logically grouped state mutation through the provider's transaction
+ * boundary when one is available. Development-only custom stores that implement
+ * only the legacy get/set/delete/list surface remain usable, but production
+ * runtime creation separately requires a real transaction boundary.
+ */
+export function mutatePrivacyState(store, mutation) {
+  if (typeof mutation !== "function") throw new TypeError("Privacy state mutation must be a function");
+  if (store && typeof store.transaction === "function") return store.transaction(mutation);
+  return mutation(store);
+}
+
 export class MemoryPrivacyStateStore {
   constructor(initial = {}) {
-    this.state = new Map(Object.entries(initial));
+    this.state = new Map(Object.entries(initial).map(([key, value]) => [key, clone(value)]));
+  }
+
+  stateProviderCapabilities() {
+    return Object.freeze({
+      contract: PRIVACY_STATE_PROVIDER_CONTRACT,
+      durable: false,
+      restart_recovery: false,
+      atomic_transactions: true,
+      multi_writer_serializable: false,
+      distributed: false,
+      fail_closed_on_conflict: false,
+    });
   }
 
   get(namespace, key) {
@@ -128,6 +166,14 @@ export class MemoryPrivacyStateStore {
     return [...this.state.entries()]
       .filter(([key]) => key.startsWith(prefix))
       .map(([key, value]) => ({ key: key.slice(prefix.length), value: clone(value) }));
+  }
+
+  transaction(mutation) {
+    if (typeof mutation !== "function") throw new TypeError("Privacy state transaction must be a function");
+    const staged = stagedStoreFrom(this.state);
+    const result = rejectAsyncTransaction(mutation(staged));
+    this.state = staged.state;
+    return result;
   }
 }
 
@@ -173,6 +219,18 @@ export class FilePrivacyStateStore extends MemoryPrivacyStateStore {
     this.diskFingerprint = diskFingerprint;
   }
 
+  stateProviderCapabilities() {
+    return Object.freeze({
+      contract: PRIVACY_STATE_PROVIDER_CONTRACT,
+      durable: true,
+      restart_recovery: true,
+      atomic_transactions: true,
+      multi_writer_serializable: false,
+      distributed: false,
+      fail_closed_on_conflict: true,
+    });
+  }
+
   static writeRaw(filePath, encoded) {
     return writeAtomicFile(filePath, encoded);
   }
@@ -214,32 +272,28 @@ export class FilePrivacyStateStore extends MemoryPrivacyStateStore {
     );
   }
 
-  set(namespace, key, value) {
-    const storageKey = `${namespace}:${key}`;
-    const hadPrevious = this.state.has(storageKey);
-    const previous = clone(this.state.get(storageKey));
-    const stored = super.set(namespace, key, value);
+  transaction(mutation) {
+    if (typeof mutation !== "function") throw new TypeError("Privacy state transaction must be a function");
+    const previous = this.state;
+    const staged = stagedStoreFrom(this.state);
+    const result = rejectAsyncTransaction(mutation(staged));
+    this.state = staged.state;
     try {
       this.persist();
-      return stored;
+      return result;
     } catch (error) {
-      if (hadPrevious) this.state.set(storageKey, previous);
-      else this.state.delete(storageKey);
+      this.state = previous;
       throw error;
     }
+  }
+
+  set(namespace, key, value) {
+    return this.transaction(store => store.set(namespace, key, value));
   }
 
   delete(namespace, key) {
     const storageKey = `${namespace}:${key}`;
     if (!this.state.has(storageKey)) return false;
-    const previous = clone(this.state.get(storageKey));
-    super.delete(namespace, key);
-    try {
-      this.persist();
-      return true;
-    } catch (error) {
-      this.state.set(storageKey, previous);
-      throw error;
-    }
+    return this.transaction(store => store.delete(namespace, key));
   }
 }
