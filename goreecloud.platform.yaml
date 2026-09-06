@@ -110,10 +110,34 @@ compatibility:
   - privacy-shield-platform-registry-delivery
 evidence:
   acceptance_tests:
-  - tests/durable-state.test.mjs
-  - tests/privacy-runtime.test.mjs
-  - tests/mesh-credential-boundary.test.mjs
-  - tests/platform-registry-delivery.test.mjs
+  - id: privacy-durable-state-20260906
+    category: privacy
+    path: tests/durable-state.test.mjs
+    revision: 717b9fdbd08cbc6b3b680c96e4ba10ea17b28f4a
+    result: passed
+    observed_at: '2026-09-06T12:50:44Z'
+    notes: Included in successful Privacy Shield Validation run 34034300554 on the exact reconciliation head.
+  - id: privacy-runtime-state-20260906
+    category: privacy
+    path: tests/privacy-runtime.test.mjs
+    revision: 717b9fdbd08cbc6b3b680c96e4ba10ea17b28f4a
+    result: passed
+    observed_at: '2026-09-06T12:50:44Z'
+    notes: Included in successful Privacy Shield Validation run 34034300554 on the exact reconciliation head.
+  - id: privacy-mesh-credential-boundary-20260906
+    category: integration
+    path: tests/mesh-credential-boundary.test.mjs
+    revision: 717b9fdbd08cbc6b3b680c96e4ba10ea17b28f4a
+    result: passed
+    observed_at: '2026-09-06T12:50:44Z'
+    notes: Included in successful Privacy Shield Validation run 34034300554 on the exact reconciliation head.
+  - id: privacy-platform-registry-delivery-20260906
+    category: integration
+    path: tests/platform-registry-delivery.test.mjs
+    revision: 717b9fdbd08cbc6b3b680c96e4ba10ea17b28f4a
+    result: passed
+    observed_at: '2026-09-06T12:50:44Z'
+    notes: Included in successful Privacy Shield Validation run 34034300554 on the exact reconciliation head.
   release: []
 conformance:
   status: nonconformant
