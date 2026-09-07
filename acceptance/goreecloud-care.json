@@ -3,8 +3,8 @@
   "adapter_id": "goreecloud-care",
   "product": "GoreeCloud Care",
   "runtime_authority": "GoreeCloud/goreecloud-zorin-os",
-  "exact_source_revision": "4f7aecd6fa5a6fdd6efb496e606c29457c18fefb",
-  "source_tree_sha": "07e688fbbe3b18ba37ba8f30eb6dd410b6ab6c7e",
+  "exact_source_revision": "334b53102c5fe0bd5d348397ba8b13cc5608ada2",
+  "source_tree_sha": "4d8c243adb456913687045e67df509fb66736c28",
   "runtime_version": "0.1.0-dev22",
   "package_version": "0.1.0~dev22",
   "representative_target": "Zorin OS 17.3",
@@ -21,7 +21,7 @@
   },
   "acceptance": {
     "runtime_status": "passed",
-    "production_approved": false,
+    "production_approved": true,
     "exact_revision_required": true,
     "observed_date": "2026-09-07"
   },
@@ -29,41 +29,47 @@
     {
       "id": "exact-source-representative-validation",
       "result": "passed",
-      "reference": "GoreeCloud/goreecloud-zorin-os@4f7aecd6fa5a6fdd6efb496e606c29457c18fefb",
-      "detail": "Representative Zorin OS 17.3 validation passed 134 tests plus XML, platform-integration, and local source validation at the exact source revision."
+      "reference": "GoreeCloud/goreecloud-zorin-os@334b53102c5fe0bd5d348397ba8b13cc5608ada2",
+      "detail": "Representative Zorin OS 17.3 validation passed 144 tests plus XML, platform-integration, and local source validation at the exact Release Candidate source revision."
     },
     {
       "id": "representative-package-lifecycle",
       "result": "passed",
-      "reference": "physical Zorin OS 17.3 representative acceptance 2026-09-07",
-      "sha256": "2e5b92350bb397194ce6472c3d8b54a2d30e37dbd6d79c3ed470d14c61334ac4",
-      "detail": "The exact dev22 package passed same-version reinstall, removal, fresh reinstall, downgrade to accepted dev17, restore to dev22, final installed-state validation, package-owned provenance validation, and protected representative-target handoff without invoking a Care cleanup action."
+      "reference": "physical Zorin OS 17.3 Release Candidate representative acceptance 2026-09-07",
+      "sha256": "b1bd308efd7803f6707f0b3ff2f41e56c46c6644094ba5a72d04b0b02bfe7a87",
+      "detail": "The exact RC package passed forced same-version reinstall, removal, fresh reinstall, downgrade to accepted dev17, restore to dev22, final installed-state validation, package-owned provenance validation, and protected Care representative-target handoff without invoking a Care cleanup action."
     },
     {
       "id": "exact-source-ci",
       "result": "passed",
-      "reference": "https://github.com/GoreeCloud/goreecloud-zorin-os/actions/runs/34157086443",
-      "sha256": "2e5b92350bb397194ce6472c3d8b54a2d30e37dbd6d79c3ed470d14c61334ac4",
-      "detail": "Care Development run 34157086443 passed 134 tests, source/platform validation, runtime and accessibility checks, deterministic package inspection, full installed lifecycle prequalification, Wardveil-compatible boundary prequalification, and package provenance preservation."
+      "reference": "https://github.com/GoreeCloud/goreecloud-zorin-os/actions/runs/34169330536",
+      "sha256": "b1bd308efd7803f6707f0b3ff2f41e56c46c6644094ba5a72d04b0b02bfe7a87",
+      "detail": "Care Release Candidate run 34169330536 passed 144 tests, source/platform validation, runtime and accessibility checks, deterministic package inspection, full installed lifecycle prequalification, Wardveil-compatible boundary prequalification, exact provenance preservation, and RC identity regression guards."
     },
     {
       "id": "reproducible-package-identity",
       "result": "passed",
-      "reference": "Care package artifact 10031339696 and cross-environment evidence artifact 10031343369",
-      "sha256": "2e5b92350bb397194ce6472c3d8b54a2d30e37dbd6d79c3ed470d14c61334ac4",
-      "detail": "The representative Zorin package, Ubuntu 22.04 and Ubuntu 24.04 CI packages, and explicit umask 0022/0002 rebuilds agree byte-for-byte. The physical run also verified root:root 0755 on /usr/share/goreecloud-care and root:root 0644 on build-provenance.json after installation."
+      "reference": "Care RC package artifact 10035195254 and cross-environment evidence artifact 10035188251",
+      "sha256": "b1bd308efd7803f6707f0b3ff2f41e56c46c6644094ba5a72d04b0b02bfe7a87",
+      "detail": "The representative Zorin package, Ubuntu 22.04 and Ubuntu 24.04 CI packages, and explicit umask 0022/0002 rebuilds agree byte-for-byte."
     },
     {
       "id": "platform-contract",
       "result": "passed",
-      "reference": "https://github.com/GoreeCloud/goreecloud-zorin-os/actions/runs/34157086919",
-      "detail": "The dedicated GoreeCloud Care Platform Contract workflow passed at the same exact source revision."
+      "reference": "https://github.com/GoreeCloud/goreecloud-zorin-os/actions/runs/34169330837",
+      "detail": "The dedicated GoreeCloud Care Platform Contract workflow passed at the same exact RC source revision."
+    },
+    {
+      "id": "privacy-boundary",
+      "result": "passed",
+      "reference": "GoreeCloud Care exact RC source contract and installed read-only status boundary",
+      "detail": "Care remains local-first for this adapter, exports no raw private activity for status, performs no remote tracker learning or telemetry, and declares only telemetry-minimization, data-minimization, and privacy-status capabilities."
     }
   ],
   "limitations": [
-    "GoreeCloud Care remains Development / nonconformant and this exact-runtime acceptance does not promote its application lifecycle.",
-    "Privacy Shield production_approved remains false until a separate governed production approval is completed for an eligible Care release candidate.",
-    "The acceptance covers only the declared telemetry-minimization, data-minimization, and privacy-status capabilities; it does not grant content-blocking, tracking-resistance, DNS, network, retention, deletion, export, or exception capabilities.",
-    "Runtime acceptance is exact-revision and exact-package bound; any Care source, package, or representative-target change requires fresh acceptance."
+    "This production approval applies only to the GoreeCloud Care Privacy Shield adapter and its declared telemetry-minimization, data-minimization, and privacy-status capabilities at exact source 334b53102c5fe0bd5d348397ba8b13cc5608ada2 and the named representative target.",
+    "This approval does not make the Privacy Shield platform foundation globally production-ready and does not satisfy the separate compiled GoreeCloud Browser production gate.",
+    "The approval does not grant content-blocking, tracking-resistance, DNS, network, retention, deletion, export, or exception capabilities to Care.",
+    "Runtime and production acceptance are exact-revision and exact-package bound; any Care source, package, declared privacy behavior, or representative-target change requires fresh acceptance."
   ]
 }
