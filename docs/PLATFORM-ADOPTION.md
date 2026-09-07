@@ -8,6 +8,8 @@ Each integration must identify the runtime authority, supported capabilities, pr
 
 The canonical capability vocabulary is machine-readable in `contracts/privacy-shield.capabilities.json`. The adapter declaration schema in `contracts/privacy-shield.adapter.schema.json` must expose exactly the same capability identifiers.
 
+Exact-runtime acceptance records are stored separately under `acceptance/` and validated against `contracts/privacy-shield.adapter-runtime-acceptance.schema.json`. A passed runtime record proves only the declared adapter capabilities at the exact source revision and representative target it names. It does not silently set `production_approved=true`, grant undeclared capabilities, or promote the consuming application's lifecycle.
+
 ## Current adoption state
 
 ### GoreeCloud Browser
@@ -21,6 +23,14 @@ Browser remains the authoritative Firefox/Gecko runtime for its implemented Priv
 Role: read-only status consumer.
 
 Manager's privacy-safe status consumer has been merged into `GoreeCloud/goreecloud-manager`. It accepts only minimized Privacy Shield status that explicitly excludes raw private activity, credentials, and identifying content. Manager does not enforce Privacy Shield controls, infer undeclared capabilities, or promote production approval. No accepted runtime status producer is currently activated for the Manager path.
+
+### GoreeCloud Care
+
+Role: local-first application privacy/status adapter.
+
+The canonical `goreecloud-care` adapter declares only `telemetry-minimization`, `data-minimization`, and `privacy-status`, with `GoreeCloud/goreecloud-zorin-os` remaining the runtime authority. Its exact dev22 source `a0eeac5fc3081225dbaeec6e0a5e5578cfe26569` passed representative Zorin OS 17.3 runtime/package acceptance for those declared capabilities and the associated minimized local status boundary. The machine-readable record is `acceptance/goreecloud-care.json`.
+
+This runtime acceptance is revision-scoped and does not expand Care into content blocking, tracking resistance, DNS privacy, network privacy, retention/deletion authority, export authority, or exception management. Care remains Development / nonconformant and the central adapter deliberately retains `production_approved=false`; production approval is a separate governed release decision.
 
 ### Wardveil Security
 
@@ -103,6 +113,8 @@ Privacy Shield does not replace:
 ## Acceptance
 
 No adapter may report Stable, `production_ready`, or `production_approved=true` solely because the shared Privacy Shield repository passes validation. Each runtime must demonstrate its own implementation and acceptance evidence.
+
+A machine-readable runtime acceptance record under `acceptance/` must bind a passed result to the canonical adapter declaration, exact immutable source revision, representative target, declared capability set, matching privacy assertions, and evidence references. The platform validator rejects capability/privacy drift and rejects production approval that disagrees with the canonical adapter declaration. Runtime acceptance and production approval are deliberately separate states.
 
 A consumer that adds a compact or wearable Privacy Shield surface must additionally validate minimized payload use, capability truthfulness, exception/non-passing presentation, accessible state communication, and the absence of raw private activity at the exact intended source revision.
 

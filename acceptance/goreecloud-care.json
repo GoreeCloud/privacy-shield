@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "adapter_id": "goreecloud-care",
+  "product": "GoreeCloud Care",
+  "runtime_authority": "GoreeCloud/goreecloud-zorin-os",
+  "exact_source_revision": "a0eeac5fc3081225dbaeec6e0a5e5578cfe26569",
+  "source_tree_sha": "67a1cd9a85dc215dd08013d87604555d2efb7e7e",
+  "runtime_version": "0.1.0-dev22",
+  "package_version": "0.1.0~dev22",
+  "representative_target": "Zorin OS 17.3",
+  "capabilities": [
+    "telemetry-minimization",
+    "data-minimization",
+    "privacy-status"
+  ],
+  "privacy": {
+    "local_first": true,
+    "raw_private_activity_exported_for_status": false,
+    "remote_tracker_learning": false,
+    "remote_tracker_telemetry": false
+  },
+  "acceptance": {
+    "runtime_status": "passed",
+    "production_approved": false,
+    "exact_revision_required": true,
+    "observed_date": "2026-09-07"
+  },
+  "evidence": [
+    {
+      "id": "exact-source-local-validation",
+      "result": "passed",
+      "reference": "GoreeCloud/goreecloud-zorin-os@a0eeac5fc3081225dbaeec6e0a5e5578cfe26569",
+      "detail": "Representative Zorin OS 17.3 validation passed 106 tests plus XML, platform-integration, and local source validation at the exact source revision."
+    },
+    {
+      "id": "representative-package-lifecycle",
+      "result": "passed",
+      "reference": "https://github.com/GoreeCloud/goreecloud-zorin-os/pull/2#issuecomment-5573508317",
+      "sha256": "ea5ce146a26179decd1a2003b5aada19248f22c57c4d8f88986a800cdd812aeb",
+      "detail": "The final lifecycle-tested local dev22 package passed install/validation, removal, fresh reinstall/validation, downgrade to accepted dev17, restore to dev22/validation, and final dev22 state without invoking a Care cleanup action."
+    },
+    {
+      "id": "exact-source-ci",
+      "result": "passed",
+      "reference": "https://github.com/GoreeCloud/goreecloud-zorin-os/actions/runs/34142134837",
+      "sha256": "42371ece4190781e8d65b3de916d26a5c8a2e9eeb8dd39795895fbb12b4be51e",
+      "detail": "Exact-source Care CI passed 106 tests, minimized privacy-status contracts, safe runtime flows, accessibility events, package inspection, and CI package lifecycle prequalification."
+    },
+    {
+      "id": "local-rebuild-byte-identity",
+      "result": "informational",
+      "reference": "https://github.com/GoreeCloud/goreecloud-zorin-os/pull/2#issuecomment-5573508317",
+      "sha256": "c417a44eddfa66e974a47e0f1181854defb80bfe3ffbc6f3a830bb2a57d6eb50",
+      "detail": "An earlier same-source local preparation build had a different SHA-256 from the final lifecycle-tested package, so reproducible-build byte identity is not established by this acceptance."
+    }
+  ],
+  "limitations": [
+    "GoreeCloud Care remains Development / nonconformant and this runtime acceptance does not promote its application lifecycle.",
+    "Privacy Shield production_approved remains false until a separate governed production approval is completed for an eligible Care release candidate.",
+    "The acceptance covers only the declared telemetry-minimization, data-minimization, and privacy-status capabilities; it does not grant content-blocking, tracking-resistance, DNS, network, retention, deletion, export, or exception capabilities.",
+    "Byte-for-byte reproducible local package output is not established because two same-source dev22 local builds produced different SHA-256 values."
+  ]
+}
