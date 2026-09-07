@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "adapter": {
+    "id": "goreecloud-care",
+    "product": "GoreeCloud Care",
+    "runtime_authority": "GoreeCloud/goreecloud-zorin-os",
+    "contract_version": 1
+  },
+  "capabilities": [
+    "telemetry-minimization",
+    "data-minimization",
+    "privacy-status"
+  ],
+  "privacy": {
+    "local_first": true,
+    "raw_private_activity_exported_for_status": false,
+    "remote_tracker_learning": false,
+    "remote_tracker_telemetry": false
+  },
+  "acceptance": {
+    "runtime_acceptance_required": true,
+    "production_approved": false
+  }
+}
