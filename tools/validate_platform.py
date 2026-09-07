@@ -4,14 +4,17 @@
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 PLATFORM = ROOT / "contracts" / "privacy-shield.platform.json"
 SCHEMA = ROOT / "contracts" / "privacy-shield.adapter.schema.json"
+ACCEPTANCE_SCHEMA = ROOT / "contracts" / "privacy-shield.adapter-runtime-acceptance.schema.json"
 CAPABILITY_REGISTRY = ROOT / "contracts" / "privacy-shield.capabilities.json"
 ADOPTION_DOC = ROOT / "docs" / "PLATFORM-ADOPTION.md"
 ADAPTERS = ROOT / "adapters"
+ACCEPTANCE = ROOT / "acceptance"
 
 
 def fail(message: str) -> None:
@@ -23,6 +26,14 @@ def load(path: Path) -> dict:
         return json.loads(path.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as exc:
         fail(f"{path.relative_to(ROOT)} is unreadable or invalid JSON: {exc}")
+
+
+def immutable_sha(value: object) -> bool:
+    return isinstance(value, str) and re.fullmatch(r"[0-9a-f]{40}", value) is not None
+
+
+def sha256(value: object) -> bool:
+    return isinstance(value, str) and re.fullmatch(r"[0-9a-f]{64}", value) is not None
 
 
 def capability_registry() -> set[str]:
@@ -100,6 +111,132 @@ def validate_adoption_doc(capabilities: set[str]) -> None:
             fail(f"adoption documentation contains retired capability identifier {identifier}")
 
 
+def validate_acceptance_schema() -> None:
+    schema = load(ACCEPTANCE_SCHEMA)
+    if schema.get("type") != "object" or schema.get("additionalProperties") is not False:
+        fail("adapter runtime acceptance schema must remain a closed object")
+    required = set(schema.get("required") or [])
+    expected = {
+        "schema_version",
+        "adapter_id",
+        "product",
+        "runtime_authority",
+        "exact_source_revision",
+        "source_tree_sha",
+        "runtime_version",
+        "package_version",
+        "representative_target",
+        "capabilities",
+        "privacy",
+        "acceptance",
+        "evidence",
+        "limitations",
+    }
+    if required != expected:
+        fail("adapter runtime acceptance schema required fields drifted")
+
+
+def validate_runtime_acceptance_records(adapters: dict[str, dict], allowed_capabilities: set[str]) -> int:
+    if not ACCEPTANCE.is_dir():
+        return 0
+
+    seen: set[str] = set()
+    count = 0
+    for path in sorted(ACCEPTANCE.glob("*.json")):
+        record = load(path)
+        if record.get("schema_version") != 1:
+            fail(f"{path.name}: unsupported runtime acceptance schema version")
+        adapter_id = record.get("adapter_id")
+        if not isinstance(adapter_id, str) or not adapter_id:
+            fail(f"{path.name}: missing adapter_id")
+        if adapter_id in seen:
+            fail(f"{path.name}: duplicate runtime acceptance record for {adapter_id}")
+        seen.add(adapter_id)
+
+        adapter = adapters.get(adapter_id)
+        if adapter is None:
+            fail(f"{path.name}: no canonical adapter declaration exists for {adapter_id}")
+        metadata = adapter.get("adapter", {})
+        if record.get("product") != metadata.get("product"):
+            fail(f"{path.name}: product does not match canonical adapter")
+        if record.get("runtime_authority") != metadata.get("runtime_authority"):
+            fail(f"{path.name}: runtime authority does not match canonical adapter")
+        if not immutable_sha(record.get("exact_source_revision")):
+            fail(f"{path.name}: exact_source_revision must be an immutable SHA")
+        if not immutable_sha(record.get("source_tree_sha")):
+            fail(f"{path.name}: source_tree_sha must be an immutable SHA")
+        if not isinstance(record.get("runtime_version"), str) or not record["runtime_version"]:
+            fail(f"{path.name}: runtime_version is required")
+        if record.get("package_version") is not None and not isinstance(record.get("package_version"), str):
+            fail(f"{path.name}: package_version must be a string or null")
+        if not isinstance(record.get("representative_target"), str) or not record["representative_target"]:
+            fail(f"{path.name}: representative_target is required")
+
+        capabilities = record.get("capabilities")
+        if not isinstance(capabilities, list) or not capabilities:
+            fail(f"{path.name}: capabilities must be non-empty")
+        if len(capabilities) != len(set(capabilities)):
+            fail(f"{path.name}: capabilities contain duplicates")
+        unknown = set(capabilities) - allowed_capabilities
+        if unknown:
+            fail(f"{path.name}: unknown capabilities: {sorted(unknown)}")
+        if set(capabilities) != set(adapter.get("capabilities") or []):
+            fail(f"{path.name}: accepted capabilities must exactly match the canonical adapter declaration")
+
+        privacy = record.get("privacy") or {}
+        if privacy != (adapter.get("privacy") or {}):
+            fail(f"{path.name}: privacy assertions must exactly match the canonical adapter declaration")
+
+        acceptance = record.get("acceptance") or {}
+        status = acceptance.get("runtime_status")
+        if status not in {"pending", "passed", "failed"}:
+            fail(f"{path.name}: invalid runtime_status")
+        if acceptance.get("exact_revision_required") is not True:
+            fail(f"{path.name}: exact_revision_required must remain true")
+        if not re.fullmatch(r"[0-9]{4}-[0-9]{2}-[0-9]{2}", str(acceptance.get("observed_date", ""))):
+            fail(f"{path.name}: observed_date must be YYYY-MM-DD")
+        production_approved = acceptance.get("production_approved")
+        if not isinstance(production_approved, bool):
+            fail(f"{path.name}: production_approved must be boolean")
+        declared_production = (adapter.get("acceptance") or {}).get("production_approved")
+        if production_approved != declared_production:
+            fail(f"{path.name}: production_approved must match the canonical adapter declaration")
+        if production_approved and status != "passed":
+            fail(f"{path.name}: production approval requires passed runtime acceptance")
+
+        evidence = record.get("evidence")
+        if not isinstance(evidence, list) or not evidence:
+            fail(f"{path.name}: evidence must be a non-empty list")
+        evidence_ids: set[str] = set()
+        passed = 0
+        for item in evidence:
+            if not isinstance(item, dict):
+                fail(f"{path.name}: evidence entries must be objects")
+            evidence_id = item.get("id")
+            if not isinstance(evidence_id, str) or not evidence_id or evidence_id in evidence_ids:
+                fail(f"{path.name}: evidence ids must be unique non-empty strings")
+            evidence_ids.add(evidence_id)
+            result = item.get("result")
+            if result not in {"passed", "failed", "informational"}:
+                fail(f"{path.name}: evidence {evidence_id} has invalid result")
+            if result == "passed":
+                passed += 1
+            reference = item.get("reference")
+            if not isinstance(reference, str) or not reference:
+                fail(f"{path.name}: evidence {evidence_id} is missing a reference")
+            if "sha256" in item and not sha256(item.get("sha256")):
+                fail(f"{path.name}: evidence {evidence_id} has invalid SHA-256")
+        if status == "passed" and passed == 0:
+            fail(f"{path.name}: passed runtime acceptance requires at least one passed evidence item")
+
+        limitations = record.get("limitations")
+        if not isinstance(limitations, list) or not all(isinstance(item, str) and item for item in limitations):
+            fail(f"{path.name}: limitations must be a string list")
+        count += 1
+
+    return count
+
+
 def main() -> None:
     platform = load(PLATFORM)
     schema = load(SCHEMA)
@@ -112,6 +249,7 @@ def main() -> None:
             f"registry_only={sorted(allowed_capabilities - schema_values)}"
         )
     validate_adoption_doc(allowed_capabilities)
+    validate_acceptance_schema()
 
     if platform.get("schema_version") != 1:
         fail("unsupported platform schema version")
@@ -148,6 +286,7 @@ def main() -> None:
         fail("at least one adapter declaration is required")
 
     ids: set[str] = set()
+    adapters: dict[str, dict] = {}
     for path in files:
         adapter = load(path)
         if adapter.get("schema_version") != 1:
@@ -157,6 +296,7 @@ def main() -> None:
         if not adapter_id or adapter_id in ids:
             fail(f"{path.name}: missing or duplicate adapter id")
         ids.add(adapter_id)
+        adapters[adapter_id] = adapter
         authority = metadata.get("runtime_authority", "")
         if not authority.startswith("GoreeCloud/"):
             fail(f"{path.name}: invalid runtime authority")
@@ -181,9 +321,12 @@ def main() -> None:
         if not isinstance(acceptance.get("production_approved"), bool):
             fail(f"{path.name}: production_approved must be boolean")
 
+    acceptance_count = validate_runtime_acceptance_records(adapters, allowed_capabilities)
+
     print(
         "Privacy Shield platform contract is consistent; "
-        f"validated {len(files)} adapter declaration(s) and {len(allowed_capabilities)} canonical capabilities."
+        f"validated {len(files)} adapter declaration(s), {acceptance_count} runtime acceptance record(s), "
+        f"and {len(allowed_capabilities)} canonical capabilities."
     )
 
 
