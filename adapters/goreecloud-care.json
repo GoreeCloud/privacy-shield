@@ -19,6 +19,6 @@
   },
   "acceptance": {
     "runtime_acceptance_required": true,
-    "production_approved": false
+    "production_approved": true
   }
 }
