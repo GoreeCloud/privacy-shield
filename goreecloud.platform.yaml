@@ -47,7 +47,7 @@ platform_systems:
     evidence:
     - website/GLAZE-UI-2.1-ADOPTION.md
     - website/glaze-ui-2.1.0.css
-    notes: The accepted Privacy Center source still declares the pre-reset Glaze UI 2.1.0 baseline. The current Platform Contract baseline is GLAZE UI V1.1 / 1.1.0; the upstream 1.1.1 corrective Release Candidate has repaired import closure but is not yet an immutable Stable release, so repository-specific re-pin, rendered acceptance, and production acceptance remain required.
+    notes: The accepted Privacy Center source still declares the historical pre-reset Glaze UI 2.1.0 baseline. The current mandatory Platform Contract consumer target is GLAZE UI V1.3 / 1.3.0, so repository-specific migration, exact-revision rendered/accessibility/resilience acceptance, and production acceptance remain required.
   mesh:
     result: applicable-migration-required
     version: null
@@ -100,10 +100,10 @@ continuity:
 external_dependencies: []
 compatibility:
   platform_contract: '0.2'
-  glaze_ui_required: 1.1.0
+  glaze_ui_required: 1.3.0
   requires:
   - goreecloud-platform-contract==0.2
-  - glaze-ui==1.1.0
+  - glaze-ui==1.3.0
   provides:
   - privacy-shield-durable-runtime-single-host
   - privacy-shield-mesh-evidence-delivery
@@ -160,7 +160,7 @@ conformance:
   - website/GLAZE-UI-2.1-ADOPTION.md
   blockers:
   - GoreeCloud Privacy Shield remains in Development and its platform authorization core is not production accepted.
-  - Privacy Center requires reconciliation and exact-revision acceptance against the current Platform Contract Glaze UI baseline; the corrected GLAZE UI V1.1.1 release is not yet immutable Stable authority.
+  - Privacy Center is still on historical Glaze UI 2.1.0 and requires explicit migration plus exact-revision acceptance against the current mandatory GLAZE UI V1.3 / 1.3.0 Stable baseline.
   - Single-host durable consent, policy, capability replay or revocation, and privacy evidence state are implemented and source-tested, but production/distributed durability and accepted Everkeep-backed recovery remain open.
   - Production signing-key custody and rotation operations remain pending.
   - Scoped Identity credential boundaries and Mesh/Platform Registry clients are source-validated, but live GoreeCloud Identity issuance, deployed JWKS trust, credential rotation/revocation, live Mesh publication, and end-to-end acceptance remain pending.
