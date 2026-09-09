@@ -42,7 +42,9 @@ jobs:
           python3 -m json.tool config/privacy-shield.v2.json >/dev/null
           for contract in contracts/*.json; do python3 -m json.tool "$contract" >/dev/null; done
           for adapter in adapters/*.json; do python3 -m json.tool "$adapter" >/dev/null; done
-          for record in acceptance/*.json; do python3 -m json.tool "$record" >/dev/null; done
+          find acceptance -type f -name '*.json' -print0 | while IFS= read -r -d '' record; do
+            python3 -m json.tool "$record" >/dev/null
+          done
       - name: Compile Python validation tools
         run: >-
           python3 -m py_compile
