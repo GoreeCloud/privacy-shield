@@ -1,0 +1,155 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://goreecloud.com/schemas/privacy-shield.state-provider-acceptance.schema.json",
+  "title": "GoreeCloud Privacy Shield State Provider Production Acceptance Record",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "contract_id",
+    "provider_id",
+    "provider_implementation",
+    "provider_authority",
+    "exact_source_revision",
+    "source_tree_sha",
+    "provider_version",
+    "deployment",
+    "capabilities",
+    "qualification",
+    "privacy",
+    "acceptance",
+    "evidence",
+    "limitations"
+  ],
+  "properties": {
+    "schema_version": {"type": "integer", "const": 1},
+    "contract_id": {"type": "string", "const": "goreecloud.privacy-shield.state-provider-acceptance.v1"},
+    "provider_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$"},
+    "provider_implementation": {"type": "string", "minLength": 1, "maxLength": 200},
+    "provider_authority": {"type": "string", "pattern": "^GoreeCloud/[A-Za-z0-9._-]+$"},
+    "exact_source_revision": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "source_tree_sha": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "provider_version": {"type": "string", "minLength": 1, "maxLength": 120},
+    "deployment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["environment", "topology_id", "distributed", "multi_writer", "replica_count"],
+      "properties": {
+        "environment": {"type": "string", "minLength": 1, "maxLength": 160},
+        "topology_id": {"type": "string", "minLength": 1, "maxLength": 160},
+        "distributed": {"const": true},
+        "multi_writer": {"const": true},
+        "replica_count": {"type": "integer", "minimum": 2}
+      }
+    },
+    "capabilities": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "durable",
+        "restart_recovery",
+        "atomic_transactions",
+        "multi_writer_serializable",
+        "distributed",
+        "fail_closed_on_conflict"
+      ],
+      "properties": {
+        "durable": {"const": true},
+        "restart_recovery": {"const": true},
+        "atomic_transactions": {"const": true},
+        "multi_writer_serializable": {"const": true},
+        "distributed": {"const": true},
+        "fail_closed_on_conflict": {"const": true}
+      }
+    },
+    "qualification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "concurrent_writer_serialization",
+        "atomic_commit_and_rollback",
+        "partition_and_conflict_behavior",
+        "restart_recovery",
+        "corrupt_state_recovery",
+        "backup_and_restore",
+        "migration_and_rollback",
+        "access_control_isolation",
+        "operational_observability"
+      ],
+      "properties": {
+        "concurrent_writer_serialization": {"type": "string", "enum": ["pending", "passed", "failed"]},
+        "atomic_commit_and_rollback": {"type": "string", "enum": ["pending", "passed", "failed"]},
+        "partition_and_conflict_behavior": {"type": "string", "enum": ["pending", "passed", "failed"]},
+        "restart_recovery": {"type": "string", "enum": ["pending", "passed", "failed"]},
+        "corrupt_state_recovery": {"type": "string", "enum": ["pending", "passed", "failed"]},
+        "backup_and_restore": {"type": "string", "enum": ["pending", "passed", "failed"]},
+        "migration_and_rollback": {"type": "string", "enum": ["pending", "passed", "failed"]},
+        "access_control_isolation": {"type": "string", "enum": ["pending", "passed", "failed"]},
+        "operational_observability": {"type": "string", "enum": ["pending", "passed", "failed"]}
+      }
+    },
+    "privacy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "raw_private_payloads_in_acceptance_evidence",
+        "secret_material_in_acceptance_evidence"
+      ],
+      "properties": {
+        "raw_private_payloads_in_acceptance_evidence": {"const": false},
+        "secret_material_in_acceptance_evidence": {"const": false}
+      }
+    },
+    "acceptance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "production_approved", "exact_revision_required", "observed_date", "valid_until"],
+      "properties": {
+        "status": {"type": "string", "enum": ["pending", "passed", "failed", "revoked"]},
+        "production_approved": {"type": "boolean"},
+        "exact_revision_required": {"const": true},
+        "observed_date": {"type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"},
+        "valid_until": {"type": "string", "format": "date-time"}
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 50,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "category", "result", "reference"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$"},
+          "category": {
+            "type": "string",
+            "enum": [
+              "concurrency",
+              "atomicity",
+              "partition-conflict",
+              "restart-recovery",
+              "corrupt-state-recovery",
+              "backup-restore",
+              "migration-rollback",
+              "access-control",
+              "observability",
+              "performance",
+              "other"
+            ]
+          },
+          "result": {"type": "string", "enum": ["passed", "failed", "informational"]},
+          "reference": {"type": "string", "minLength": 1, "maxLength": 1000},
+          "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+          "detail": {"type": "string", "minLength": 1, "maxLength": 1000}
+        }
+      }
+    },
+    "limitations": {
+      "type": "array",
+      "maxItems": 30,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1, "maxLength": 500}
+    }
+  }
+}
