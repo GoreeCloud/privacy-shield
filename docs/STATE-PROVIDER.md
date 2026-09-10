@@ -37,6 +37,20 @@ Approved selections are freshness-bounded by `review_by`. Stale selections fail 
 
 There are currently **zero approved state-provider selections** in the repository.
 
+## Provider-neutral operational qualification
+
+Privacy Shield includes `goreecloud.privacy-shield.state-provider-qualification.v1` and `runStateProviderOperationalQualification()` for controlled, provider-neutral operational exercises against a production-shaped distributed provider candidate.
+
+A qualification controller must explicitly prove that the environment is controlled, disruptive operations are authorized, evidence is minimized, and the controller has no production-acceptance authority. The harness binds the exercise to the exact provider ID and version, provider implementation and authority, environment, deployment ID, topology ID, source revision, source tree, distributed/multi-writer shape, and replica count before operational evidence is produced.
+
+The harness uses a synthetic qualification namespace and records only minimized observations and references. It directly exercises atomic transaction commit/rollback and delegates controlled topology/disruption probes for concurrent-writer serialization, partition/conflict behavior, restart recovery, corrupt-state recovery, backup/restore, and migration/rollback. Operational observability is checked against a minimized audit summary that rejects fields suggestive of private payloads, secrets, credentials, tokens, claims, user content, request bodies, or state values.
+
+`access_control_isolation` is deliberately marked `requires_external_evidence`; source code and a provider-neutral controller cannot prove the deployed access-control policy or organizational isolation review. Operational ownership, supported-load performance, topology/replication/failover review, and production procedures also remain separately governed evidence obligations.
+
+Every qualification result is hard-coded `authorizing: false`. A qualification run is not a candidate evaluation, provider selection, or production acceptance. It can support a later evidence-backed candidate evaluation and exact-provider acceptance record, but it cannot create either one. A complete current candidate evaluation remains required before provider selection, governed selection remains required before provider-specific production integration, and a fresh exact-provider/exact-deployment acceptance record remains required before production use.
+
+The source test provider used by the regression suite is synthetic and is not production evidence. The repository still contains zero real state-provider candidate evaluation records, zero approved distributed state-provider selections, and zero production-approved state-provider acceptance records.
+
 ## Production acceptance boundary
 
 A provider capability declaration is not production evidence. A provider-selection decision is also not production evidence. Source validation proves only that a provider presents the required contract shape, that Privacy Shield routes authority mutations through the transaction abstraction, and that governance boundaries remain structurally intact.
@@ -54,11 +68,11 @@ Production acceptance still requires exact-provider and exact-deployment evidenc
 - monitoring and auditability without leaking private payloads;
 - declared topology, replication, and failover behavior.
 
-Until such evidence exists, the repository must not describe a source provider, capability declaration, or selection record as accepted production Privacy Shield state infrastructure.
+Until such evidence exists, the repository must not describe a source provider, capability declaration, qualification run, or selection record as accepted production Privacy Shield state infrastructure.
 
 ## Machine-readable provider acceptance
 
-The independent production acceptance schema is `contracts/privacy-shield.state-provider-acceptance.schema.json`. Governed provider/deployment records belong under `acceptance/state-providers/*.json` and are validated separately from the provider capability and provider-selection contracts.
+The independent production acceptance schema is `contracts/privacy-shield.state-provider-acceptance.schema.json`. Governed provider/deployment records belong under `acceptance/state-providers/*.json` and are validated separately from the provider capability, operational qualification, candidate-evaluation, and provider-selection contracts.
 
 A production-approved record is exact-revision and exact-topology bound. It must identify the provider implementation and authority, exact source revision and tree, provider version, deployment environment and topology, distributed/multi-writer replica shape, and all required production capabilities. It must also carry passing evidence for concurrent-writer serialization, atomic commit/rollback, partition/conflict behavior, restart recovery, corrupt-state recovery, backup/restore, migration/rollback, access-control isolation, and privacy-safe operational observability.
 
@@ -66,10 +80,10 @@ Acceptance evidence must exclude raw private payloads and secret material. Favor
 
 `tools/validate_state_provider_selection.py` additionally rejects any acceptance record that lacks a matching active approved provider selection for provider ID, provider implementation, integration authority, and environment. This prevents a structurally valid acceptance artifact from silently introducing an ungoverned provider.
 
-The existence of either schema does not create an accepted provider. Until a separately governed selection exists and a matching record under `acceptance/state-providers/` passes the complete acceptance gate, Privacy Shield has zero source-recorded production state providers.
+The existence of any source contract or qualification harness does not create an accepted provider. Until a separately governed complete/current candidate evaluation exists, an approved selection exists, and a matching record under `acceptance/state-providers/` passes the complete acceptance gate, Privacy Shield has zero source-recorded production state providers.
 
 ## Current evidence
 
 The single-host file provider has source-level and CI-tested evidence for consent/evidence/replay state surviving authority restart, capability revocation and single-use consumption surviving restart, private file modes, stale-writer refusal, atomic backup recovery, corrupt primary/backup fail-closed behavior, and transaction commit/rollback behavior.
 
-That evidence is useful for development and bounded same-host acceptance. It does not establish distributed production durability, provider selection, adapter production acceptance, compiled Browser acceptance, or overall platform production readiness.
+That evidence is useful for development and bounded same-host acceptance. The provider-neutral operational qualification harness can now gather minimized controlled evidence from a future real distributed candidate, but no such candidate has been evaluated by this repository. Neither source-level evidence nor a qualification run establishes distributed production durability, candidate evaluation, provider selection, adapter production acceptance, compiled Browser acceptance, or overall platform production readiness.
