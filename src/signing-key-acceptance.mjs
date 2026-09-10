@@ -106,12 +106,17 @@ export function requireSigningKeyProviderAcceptance(provider, {
   }
   const key = requireObject(provider.activeKey(), "INVALID_PRODUCTION_SIGNING_KEY_METADATA");
   for (const field of [
+    "key_id",
     "provider_id",
     "provider_version",
     "producer_identity",
     "algorithm",
+    "status",
   ]) {
     requireString(key[field], "INVALID_PRODUCTION_SIGNING_KEY_METADATA");
+  }
+  if (key.status !== "active") {
+    throw new Error(`SIGNING_KEY_ACCEPTANCE_ACTIVE_KEY_TRUST_STATE:${key.status.toUpperCase()}`);
   }
 
   if (acceptanceRecord.provider_id !== key.provider_id) {
