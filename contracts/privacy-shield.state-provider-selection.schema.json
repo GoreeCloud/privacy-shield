@@ -12,6 +12,7 @@
     "provider_name",
     "provider_implementation",
     "integration_authority",
+    "evaluation_record_id",
     "scope",
     "evaluation",
     "governance",
@@ -26,6 +27,7 @@
     "provider_name": {"type": "string", "minLength": 1, "maxLength": 200},
     "provider_implementation": {"type": "string", "minLength": 1, "maxLength": 200},
     "integration_authority": {"type": "string", "pattern": "^GoreeCloud/[A-Za-z0-9._-]+$"},
+    "evaluation_record_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$"},
     "scope": {
       "type": "object",
       "additionalProperties": false,
@@ -91,14 +93,7 @@
     "governance": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "status",
-        "implementation_authorized",
-        "production_acceptance_authorized",
-        "decision_reference",
-        "decided_at",
-        "review_by"
-      ],
+      "required": ["status", "implementation_authorized", "production_acceptance_authorized", "decision_reference", "decided_at", "review_by"],
       "properties": {
         "status": {"type": "string", "enum": ["proposed", "approved", "rejected", "superseded", "revoked"]},
         "implementation_authorized": {"type": "boolean"},
@@ -111,11 +106,7 @@
     "privacy": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "credentials_in_decision_record",
-        "raw_private_payloads_in_decision_record",
-        "secret_material_in_decision_record"
-      ],
+      "required": ["credentials_in_decision_record", "raw_private_payloads_in_decision_record", "secret_material_in_decision_record"],
       "properties": {
         "credentials_in_decision_record": {"const": false},
         "raw_private_payloads_in_decision_record": {"const": false},
