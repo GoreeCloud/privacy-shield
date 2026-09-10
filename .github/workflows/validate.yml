@@ -31,6 +31,8 @@ jobs:
         run: python3 tools/validate_platform.py
       - name: Validate production state-provider boundary
         run: python3 tools/validate_state_provider.py
+      - name: Validate production signing-key custody boundary
+        run: python3 tools/validate_signing_key_provider.py
       - name: Validate evidence validity contract
         run: python3 tools/validate_evidence_validity.py
       - name: Run configuration and lifecycle tests
@@ -52,6 +54,7 @@ jobs:
           tools/validate_ruleset_lifecycle.py
           tools/validate_platform.py
           tools/validate_state_provider.py
+          tools/validate_signing_key_provider.py
           tools/validate_evidence_validity.py
           tests/test_config.py
           tests/test_ruleset_lifecycle.py
