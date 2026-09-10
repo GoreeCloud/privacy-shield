@@ -57,27 +57,45 @@ function requireStateStore(store, { production = false } = {}) {
   return store;
 }
 
+function signingConfiguration({ capability_keys, capability_key_provider, production }) {
+  if (capability_keys !== undefined && capability_key_provider !== undefined) {
+    throw new TypeError("Configure capability_keys or capability_key_provider, not both");
+  }
+  if (production && capability_keys !== undefined) {
+    throw new Error("PRODUCTION_CAPABILITY_KEY_PROVIDER_REQUIRED");
+  }
+  return capability_key_provider ?? capability_keys;
+}
+
 /**
- * Build one Privacy Shield authority set over an explicitly injected state store.
+ * Build one Privacy Shield authority set over explicitly injected authority
+ * dependencies.
  *
- * Sharing one store instance is mandatory so consent, policy, capability
+ * Sharing one state store instance is mandatory so consent, policy, capability
  * replay/revocation, and evidence state cannot drift across independently cached
- * namespace snapshots. `production: true` is a fail-closed structural gate: it
- * requires the provider to expose the V1 production state capability profile and
- * a synchronous transaction boundary. That declaration is necessary but not
- * sufficient evidence of production acceptance; the exact provider/deployment
- * still requires independent runtime, failure/recovery, and operational evidence.
+ * namespace snapshots. `production: true` is fail closed for both durable state
+ * and capability-signing custody: the state provider must expose the V1 production
+ * state profile and capability signing must use an independently production-
+ * eligible opaque key provider. Structural declarations are necessary but do not
+ * establish exact provider/deployment production acceptance by themselves.
  */
 export function createPrivacyRuntime({
   store,
   capability_keys,
+  capability_key_provider,
   initial_consents = [],
   production = false,
 } = {}) {
   const stateStore = requireStateStore(store, { production });
+  const signing = signingConfiguration({
+    capability_keys,
+    capability_key_provider,
+    production,
+  });
   const consent = new ConsentAuthority(initial_consents, { store: stateStore });
-  const capabilities = new PrivacyCapabilityAuthority(capability_keys, {
+  const capabilities = new PrivacyCapabilityAuthority(signing, {
     store: stateStore,
+    production,
   });
   const evidence = new PrivacyEvidenceLedger({ store: stateStore });
   const policies = new PrivacyPolicyStore({ store: stateStore });
@@ -98,12 +116,13 @@ export function createPrivacyRuntime({
  * Reusing one FilePrivacyStateStore is intentional: separate file-store
  * instances backed by the same path fail closed on stale writes rather than
  * overwriting namespaces. This helper is deliberately not a production
- * distributed-state provider. A production deployment must inject a separately
- * accepted provider through createPrivacyRuntime({ production: true, ... }).
+ * distributed-state provider. A production deployment must inject separately
+ * accepted state and signing providers through createPrivacyRuntime().
  */
 export function createDurablePrivacyRuntime({
   state_file,
   capability_keys,
+  capability_key_provider,
   initial_consents = [],
   production = false,
 } = {}) {
@@ -116,6 +135,7 @@ export function createDurablePrivacyRuntime({
   return createPrivacyRuntime({
     store,
     capability_keys,
+    capability_key_provider,
     initial_consents,
     production: false,
   });
