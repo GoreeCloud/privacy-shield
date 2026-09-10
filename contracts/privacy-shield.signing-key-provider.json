@@ -1,0 +1,64 @@
+{
+  "schema_version": 1,
+  "contract_id": "goreecloud.privacy-shield.signing-key-provider.v1",
+  "purpose": "Fail-closed production signing-key custody requirements for Privacy Shield operation-bound capabilities.",
+  "signing_input": {
+    "type": "sha256-digest",
+    "encoding": "lowercase-hex",
+    "raw_capability_payload_visible_to_provider": false
+  },
+  "required_methods": [
+    "activeKey",
+    "describeKey",
+    "signDigest",
+    "verifyDigest",
+    "keyProviderCapabilities"
+  ],
+  "required_production_capabilities": {
+    "non_exportable_signing_material": true,
+    "opaque_key_references": true,
+    "digest_only_signing": true,
+    "key_identifiers": true,
+    "rotation": true,
+    "retirement": true,
+    "revocation": true,
+    "producer_identity_binding": true,
+    "auditable_signing": true,
+    "fail_closed_on_untrusted_state": true
+  },
+  "required_key_metadata": [
+    "key_id",
+    "provider_id",
+    "producer_identity",
+    "algorithm",
+    "status"
+  ],
+  "verification_trust_states": [
+    "active",
+    "verifying"
+  ],
+  "fail_closed_states": [
+    "retired",
+    "revoked",
+    "stale",
+    "untrusted",
+    "unknown"
+  ],
+  "source_providers": {
+    "InMemoryPrivacySigningKeyProvider": {
+      "production_eligible": false,
+      "scope": "development-and-tests-only",
+      "private_material_residency": "process-memory"
+    }
+  },
+  "release_boundary": {
+    "provider_capability_declaration_is_production_acceptance": false,
+    "source_validation_is_key_custody_acceptance": false,
+    "exact_provider_runtime_acceptance_required": true,
+    "key_generation_and_custody_evidence_required": true,
+    "rotation_retirement_revocation_exercises_required": true,
+    "producer_identity_binding_evidence_required": true,
+    "signing_audit_evidence_required": true,
+    "private_material_export_forbidden": true
+  }
+}
