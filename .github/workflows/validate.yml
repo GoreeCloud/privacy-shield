@@ -31,6 +31,8 @@ jobs:
         run: python3 tools/validate_platform.py
       - name: Validate production state-provider boundary
         run: python3 tools/validate_state_provider.py
+      - name: Validate state-provider selection governance
+        run: python3 tools/validate_state_provider_selection.py
       - name: Validate evidence validity contract
         run: python3 tools/validate_evidence_validity.py
       - name: Run configuration and lifecycle tests
@@ -45,6 +47,9 @@ jobs:
           find acceptance -type f -name '*.json' -print0 | while IFS= read -r -d '' record; do
             python3 -m json.tool "$record" >/dev/null
           done
+          find decisions -type f -name '*.json' -print0 | while IFS= read -r -d '' record; do
+            python3 -m json.tool "$record" >/dev/null
+          done
       - name: Compile Python validation tools
         run: >-
           python3 -m py_compile
@@ -52,9 +57,12 @@ jobs:
           tools/validate_ruleset_lifecycle.py
           tools/validate_platform.py
           tools/validate_state_provider.py
+          tools/validate_state_provider_selection.py
           tools/validate_evidence_validity.py
           tests/test_config.py
           tests/test_ruleset_lifecycle.py
+          tests/test_state_provider_acceptance.py
+          tests/test_state_provider_selection.py
           website/build.py
           website/validate.py
       - name: Build and validate public Privacy Shield website

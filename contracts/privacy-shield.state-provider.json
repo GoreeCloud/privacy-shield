@@ -40,6 +40,10 @@
   "release_boundary": {
     "capability_declaration_is_production_acceptance": false,
     "source_validation_is_provider_acceptance": false,
+    "provider_selection_required": true,
+    "provider_selection_schema": "contracts/privacy-shield.state-provider-selection.schema.json",
+    "provider_selection_records": "decisions/state-providers/*.json",
+    "provider_selection_is_production_acceptance": false,
     "production_acceptance_record_required": true,
     "production_acceptance_schema": "contracts/privacy-shield.state-provider-acceptance.schema.json",
     "production_acceptance_records": "acceptance/state-providers/*.json",
