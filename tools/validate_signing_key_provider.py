@@ -119,6 +119,8 @@ def main() -> None:
         "this.keyProvider.verifyDigest",
         "CAPABILITY_PRODUCER_IDENTITY_MISMATCH",
         "CAPABILITY_KEY_PROVIDER_MISMATCH",
+        "CAPABILITY_SIGNING_KEY_TRUST_STATE",
+        "VERIFYING_KEY_STATES",
     ):
         if marker not in authority_source:
             fail(f"capability authority is missing custody marker {marker!r}")
@@ -133,8 +135,9 @@ def main() -> None:
 
     print(
         "Privacy Shield signing-key custody contract is consistent; production "
-        "requires an opaque production-eligible provider and raw signing material "
-        "remains outside the capability authority."
+        "requires an opaque production-eligible provider, raw signing material "
+        "remains outside the capability authority, and declared untrusted key "
+        "metadata is rejected before provider signature verification."
     )
 
 
