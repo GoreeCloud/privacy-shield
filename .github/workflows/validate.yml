@@ -31,11 +31,11 @@ jobs:
         run: python3 tools/validate_platform.py
       - name: Validate production state-provider boundary
         run: python3 tools/validate_state_provider.py
-      - name: Validate state-provider selection governance
+      - name: Validate state-provider evaluation and selection governance
         run: python3 tools/validate_state_provider_selection.py
       - name: Validate production signing-key custody boundary
         run: python3 tools/validate_signing_key_provider.py
-      - name: Validate signing-key provider selection governance
+      - name: Validate signing-key provider evaluation and selection governance
         run: python3 tools/validate_signing_key_provider_selection.py
       - name: Validate signing-key operational qualification boundary
         run: python3 tools/validate_signing_key_qualification.py
@@ -50,6 +50,9 @@ jobs:
           python3 -m json.tool config/privacy-shield.v2.json >/dev/null
           for contract in contracts/*.json; do python3 -m json.tool "$contract" >/dev/null; done
           for adapter in adapters/*.json; do python3 -m json.tool "$adapter" >/dev/null; done
+          find evaluations -type f -name '*.json' -print0 | while IFS= read -r -d '' record; do
+            python3 -m json.tool "$record" >/dev/null
+          done
           find acceptance -type f -name '*.json' -print0 | while IFS= read -r -d '' record; do
             python3 -m json.tool "$record" >/dev/null
           done

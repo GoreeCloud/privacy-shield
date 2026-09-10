@@ -11,6 +11,7 @@
     "provider_id",
     "provider_name",
     "integration_authority",
+    "evaluation_record_id",
     "scope",
     "evaluation",
     "governance",
@@ -18,25 +19,27 @@
     "limitations"
   ],
   "properties": {
-    "schema_version": { "const": 1 },
-    "contract_id": { "const": "goreecloud.privacy-shield.signing-key-provider-selection.v1" },
-    "decision_id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
-    "provider_id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
-    "provider_name": { "type": "string", "minLength": 1 },
-    "integration_authority": { "type": "string", "pattern": "^GoreeCloud/[A-Za-z0-9._-]+$" },
+    "schema_version": {"type": "integer", "const": 1},
+    "contract_id": {"type": "string", "const": "goreecloud.privacy-shield.signing-key-provider-selection.v1"},
+    "decision_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$"},
+    "provider_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$"},
+    "provider_name": {"type": "string", "minLength": 1, "maxLength": 200},
+    "integration_authority": {"type": "string", "pattern": "^GoreeCloud/[A-Za-z0-9._-]+$"},
+    "evaluation_record_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$"},
     "scope": {
       "type": "object",
       "additionalProperties": false,
       "required": ["service", "capability", "producer_identity", "environments"],
       "properties": {
-        "service": { "const": "privacy-shield" },
-        "capability": { "const": "operation-bound-capability-signing" },
-        "producer_identity": { "const": "goreecloud-privacy-shield" },
+        "service": {"type": "string", "const": "privacy-shield"},
+        "capability": {"type": "string", "const": "operation-bound-capability-signing"},
+        "producer_identity": {"type": "string", "const": "goreecloud-privacy-shield"},
         "environments": {
           "type": "array",
           "minItems": 1,
+          "maxItems": 20,
           "uniqueItems": true,
-          "items": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" }
+          "items": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$"}
         }
       }
     },
@@ -58,59 +61,49 @@
         "operational_ownership"
       ],
       "properties": {
-        "digest_only_signing": { "enum": ["pending", "passed", "failed"] },
-        "non_exportable_signing_material": { "enum": ["pending", "passed", "failed"] },
-        "opaque_key_references": { "enum": ["pending", "passed", "failed"] },
-        "stable_key_identifiers": { "enum": ["pending", "passed", "failed"] },
-        "rotation_retirement_revocation": { "enum": ["pending", "passed", "failed"] },
-        "producer_identity_binding": { "enum": ["pending", "passed", "failed"] },
-        "privacy_safe_audit": { "enum": ["pending", "passed", "failed"] },
-        "fail_closed_untrusted_state": { "enum": ["pending", "passed", "failed"] },
-        "outage_degraded_behavior": { "enum": ["pending", "passed", "failed"] },
-        "recovery_continuity": { "enum": ["pending", "passed", "failed"] },
-        "access_control_isolation": { "enum": ["pending", "passed", "failed"] },
-        "operational_ownership": { "enum": ["pending", "passed", "failed"] }
+        "digest_only_signing": {"type": "string", "enum": ["pending", "passed", "failed"]},
+        "non_exportable_signing_material": {"type": "string", "enum": ["pending", "passed", "failed"]},
+        "opaque_key_references": {"type": "string", "enum": ["pending", "passed", "failed"]},
+        "stable_key_identifiers": {"type": "string", "enum": ["pending", "passed", "failed"]},
+        "rotation_retirement_revocation": {"type": "string", "enum": ["pending", "passed", "failed"]},
+        "producer_identity_binding": {"type": "string", "enum": ["pending", "passed", "failed"]},
+        "privacy_safe_audit": {"type": "string", "enum": ["pending", "passed", "failed"]},
+        "fail_closed_untrusted_state": {"type": "string", "enum": ["pending", "passed", "failed"]},
+        "outage_degraded_behavior": {"type": "string", "enum": ["pending", "passed", "failed"]},
+        "recovery_continuity": {"type": "string", "enum": ["pending", "passed", "failed"]},
+        "access_control_isolation": {"type": "string", "enum": ["pending", "passed", "failed"]},
+        "operational_ownership": {"type": "string", "enum": ["pending", "passed", "failed"]}
       }
     },
     "governance": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "status",
-        "implementation_authorized",
-        "production_acceptance_authorized",
-        "decision_reference",
-        "decided_at",
-        "review_by"
-      ],
+      "required": ["status", "implementation_authorized", "production_acceptance_authorized", "decision_reference", "decided_at", "review_by"],
       "properties": {
-        "status": { "enum": ["proposed", "approved", "rejected", "superseded", "revoked"] },
-        "implementation_authorized": { "type": "boolean" },
-        "production_acceptance_authorized": { "const": false },
-        "decision_reference": { "type": "string", "minLength": 1 },
-        "decided_at": { "type": "string", "format": "date-time" },
-        "review_by": { "type": "string", "format": "date-time" }
+        "status": {"type": "string", "enum": ["proposed", "approved", "rejected", "superseded", "revoked"]},
+        "implementation_authorized": {"type": "boolean"},
+        "production_acceptance_authorized": {"const": false},
+        "decision_reference": {"type": "string", "minLength": 1, "maxLength": 1000},
+        "decided_at": {"type": "string", "format": "date-time"},
+        "review_by": {"type": "string", "format": "date-time"}
       }
     },
     "privacy": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "secret_material_in_decision_record",
-        "credentials_in_decision_record",
-        "raw_private_payloads_in_decision_record",
-        "full_capability_tokens_in_decision_record"
-      ],
+      "required": ["secret_material_in_decision_record", "credentials_in_decision_record", "raw_private_payloads_in_decision_record", "full_capability_tokens_in_decision_record"],
       "properties": {
-        "secret_material_in_decision_record": { "const": false },
-        "credentials_in_decision_record": { "const": false },
-        "raw_private_payloads_in_decision_record": { "const": false },
-        "full_capability_tokens_in_decision_record": { "const": false }
+        "secret_material_in_decision_record": {"const": false},
+        "credentials_in_decision_record": {"const": false},
+        "raw_private_payloads_in_decision_record": {"const": false},
+        "full_capability_tokens_in_decision_record": {"const": false}
       }
     },
     "limitations": {
       "type": "array",
-      "items": { "type": "string", "minLength": 1 }
+      "maxItems": 30,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1, "maxLength": 500}
     }
   }
 }
