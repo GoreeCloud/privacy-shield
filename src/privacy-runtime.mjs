@@ -4,6 +4,7 @@ import { PrivacyCapabilityAuthority } from "./capability-token.mjs";
 import { ConsentAuthority } from "./consent-authority.mjs";
 import { PrivacyEvidenceLedger } from "./privacy-evidence.mjs";
 import { PrivacyPolicyStore } from "./privacy-policy-store.mjs";
+import { requireSigningKeyProviderAcceptance } from "./signing-key-acceptance.mjs";
 import {
   FilePrivacyStateStore,
   PRIVACY_STATE_PROVIDER_CONTRACT,
@@ -75,14 +76,18 @@ function signingConfiguration({ capability_keys, capability_key_provider, produc
  * replay/revocation, and evidence state cannot drift across independently cached
  * namespace snapshots. `production: true` is fail closed for both durable state
  * and capability-signing custody: the state provider must expose the V1 production
- * state profile and capability signing must use an independently production-
- * eligible opaque key provider. Structural declarations are necessary but do not
- * establish exact provider/deployment production acceptance by themselves.
+ * state profile, capability signing must use an independently production-eligible
+ * opaque key provider, and that exact provider version/deployment must have a
+ * fresh passing acceptance record bound to the exact Privacy Shield runtime
+ * revision. Structural declarations alone are insufficient.
  */
 export function createPrivacyRuntime({
   store,
   capability_keys,
   capability_key_provider,
+  capability_key_acceptance,
+  capability_key_deployment_id,
+  runtime_revision,
   initial_consents = [],
   production = false,
 } = {}) {
@@ -92,11 +97,21 @@ export function createPrivacyRuntime({
     capability_key_provider,
     production,
   });
+
   const consent = new ConsentAuthority(initial_consents, { store: stateStore });
   const capabilities = new PrivacyCapabilityAuthority(signing, {
     store: stateStore,
     production,
   });
+
+  const signingAcceptance = production
+    ? requireSigningKeyProviderAcceptance(capability_key_provider, {
+        record: capability_key_acceptance,
+        runtime_revision,
+        deployment_id: capability_key_deployment_id,
+      })
+    : null;
+
   const evidence = new PrivacyEvidenceLedger({ store: stateStore });
   const policies = new PrivacyPolicyStore({ store: stateStore });
 
@@ -106,6 +121,7 @@ export function createPrivacyRuntime({
     capabilities,
     evidence,
     policies,
+    signing_acceptance: signingAcceptance,
     production,
   });
 }
