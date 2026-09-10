@@ -51,23 +51,24 @@ function safeSignatureBuffer(signature) {
  * Development/test provider for the signing-provider interface.
  *
  * This provider deliberately keeps raw secret material in process memory and is
- * therefore never production eligible. Its public methods expose only opaque key
- * metadata and digest-signing operations so consumers can exercise the same
- * interface expected from a production KMS/HSM-backed provider without receiving
- * private signing material through the authority API.
+ * therefore never production eligible. Secret values and the key map are private
+ * class state; public methods expose only opaque key metadata and digest-signing
+ * operations so ordinary runtime consumers never receive private material.
  */
 export class InMemoryPrivacySigningKeyProvider {
+  #keys = new Map();
+  #activeKeyId;
+
   constructor(configuration, {
     provider_id = "in-memory-development",
     producer_identity = "goreecloud-privacy-shield-development",
   } = {}) {
     this.providerId = String(provider_id);
     this.producerIdentity = String(producer_identity);
-    this.keys = new Map();
 
     if (typeof configuration === "string") {
-      this.activeKeyIdValue = "development-v1";
-      this.keys.set(this.activeKeyIdValue, {
+      this.#activeKeyId = "development-v1";
+      this.#keys.set(this.#activeKeyId, {
         secret: requireSecret(configuration, "Capability authority"),
         status: "active",
         algorithm: "HS256",
@@ -85,16 +86,16 @@ export class InMemoryPrivacySigningKeyProvider {
     }
 
     for (const [keyId, secret] of Object.entries(keys)) {
-      this.keys.set(keyId, {
+      this.#keys.set(keyId, {
         secret: requireSecret(secret, `Capability key ${keyId}`),
         status: keyId === activeKeyId ? "active" : "verifying",
         algorithm: "HS256",
       });
     }
-    if (!this.keys.has(activeKeyId)) {
+    if (!this.#keys.has(activeKeyId)) {
       throw new TypeError("Capability active_key_id must reference a configured key");
     }
-    this.activeKeyIdValue = activeKeyId;
+    this.#activeKeyId = activeKeyId;
   }
 
   keyProviderCapabilities() {
@@ -111,17 +112,18 @@ export class InMemoryPrivacySigningKeyProvider {
       producer_identity_binding: true,
       auditable_signing: false,
       fail_closed_on_untrusted_state: true,
+      private_material_export: false,
       scope: "development-and-tests-only",
     });
   }
 
   activeKey() {
-    return this.describeKey(this.activeKeyIdValue);
+    return this.describeKey(this.#activeKeyId);
   }
 
   describeKey(keyId) {
     const id = String(keyId ?? "");
-    const record = this.keys.get(id);
+    const record = this.#keys.get(id);
     if (!record) return null;
     return Object.freeze({
       key_id: id,
@@ -134,9 +136,9 @@ export class InMemoryPrivacySigningKeyProvider {
 
   signDigest({ key_id, digest }) {
     const keyId = requireKeyId(key_id);
-    const record = this.keys.get(keyId);
+    const record = this.#keys.get(keyId);
     if (!record) throw new Error("UNKNOWN_CAPABILITY_KEY");
-    if (keyId !== this.activeKeyIdValue || record.status !== "active") {
+    if (keyId !== this.#activeKeyId || record.status !== "active") {
       throw new Error("CAPABILITY_SIGNING_KEY_NOT_ACTIVE");
     }
     const bytes = Buffer.from(requireDigest(digest), "hex");
@@ -145,7 +147,7 @@ export class InMemoryPrivacySigningKeyProvider {
 
   verifyDigest({ key_id, digest, signature }) {
     const keyId = requireKeyId(key_id);
-    const record = this.keys.get(keyId);
+    const record = this.#keys.get(keyId);
     if (!record) throw new Error("UNKNOWN_CAPABILITY_KEY");
     if (!VERIFYING_KEY_STATES.has(record.status)) {
       throw new Error(`CAPABILITY_SIGNING_KEY_${record.status.toUpperCase()}`);
@@ -161,28 +163,28 @@ export class InMemoryPrivacySigningKeyProvider {
 
   rotate(keyId, secret) {
     const id = requireKeyId(keyId);
-    const previous = this.keys.get(this.activeKeyIdValue);
+    const previous = this.#keys.get(this.#activeKeyId);
     if (previous) previous.status = "verifying";
-    this.keys.set(id, {
+    this.#keys.set(id, {
       secret: requireSecret(secret, `Capability key ${id}`),
       status: "active",
       algorithm: "HS256",
     });
-    this.activeKeyIdValue = id;
+    this.#activeKeyId = id;
     return this.describeKey(id);
   }
 
   retire(keyId) {
     const id = requireKeyId(keyId);
-    if (id === this.activeKeyIdValue) {
+    if (id === this.#activeKeyId) {
       throw new Error("CANNOT_RETIRE_ACTIVE_CAPABILITY_KEY");
     }
-    return this.keys.delete(id);
+    return this.#keys.delete(id);
   }
 
   revoke(keyId) {
     const id = requireKeyId(keyId);
-    const record = this.keys.get(id);
+    const record = this.#keys.get(id);
     if (!record) return false;
     record.status = "revoked";
     return true;
