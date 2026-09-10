@@ -80,6 +80,39 @@ The capability authority serializes the operation-bound token body locally, hash
 
 Signing and acceptance audit evidence must likewise avoid raw private payloads, credentials, tokens, secret material, or user content. Full capability tokens are explicitly excluded from acceptance evidence.
 
+## Operational qualification harness
+
+Privacy Shield now includes the provider-neutral `goreecloud.privacy-shield.signing-key-qualification.v1` operational exercise contract and `runSigningKeyOperationalQualification()` harness.
+
+The harness requires an explicit qualification controller that proves all of the following structural preconditions before any disruptive lifecycle exercise can run:
+
+- the environment is controlled;
+- disruptive operations are explicitly authorized;
+- evidence is minimized;
+- the controller has no production-acceptance authority.
+
+The harness uses synthetic SHA-256 exercise digests only. It does not submit raw capability bodies, user content, capability claims, full capability tokens, or signing secrets to qualification evidence.
+
+Within a controlled provider/deployment, the harness can exercise and emit minimized, non-authorizing evidence for:
+
+- unauthorized caller rejection;
+- producer-identity binding;
+- rotation to a distinct active key;
+- verification-only overlap for the previous key;
+- retirement followed by fail-closed verification;
+- emergency revocation;
+- stale/revoked key rejection;
+- provider outage/degraded signing failure;
+- recovery and continuity after disruption;
+- privacy-safe signing audit coverage;
+- exact source/provider-version/deployment runtime-integration probes.
+
+Three acceptance dimensions intentionally cannot be auto-passed by this harness: `secure_key_generation`, `non_exportability`, and `access_control_review`. They are always emitted as `requires_external_evidence` because source code cannot prove how a real custody service generated a key, whether production key material is physically/provider-enforced non-exportable, or whether the deployed access-control policy passed its required review.
+
+Every qualification run is hard-coded `authorizing: false`. Passing operational exercises can support a later acceptance record, but a run cannot itself approve a provider, deployment, runtime, or production release. A fresh exact-provider acceptance record remains mandatory.
+
+`tools/validate_signing_key_qualification.py` keeps the operational/external qualification partition, privacy boundary, controller authorization requirements, and non-authorizing release boundary fail-closed in CI.
+
 ## Repository acceptance validation
 
 `tools/validate_signing_key_provider.py` validates both the structural provider contract and any checked-in acceptance records. A production-approved record is rejected unless it is fresh, exact-revision bound, complete, privacy-safe, and backed by passing evidence for every qualification category.
@@ -102,10 +135,10 @@ This source slice does **not** establish production key custody. Production acce
 - key-policy and access-control review;
 - exact runtime acceptance against the intended Privacy Shield revision.
 
-No KMS, HSM, cloud key service, or other production custody implementation is accepted merely because it can implement the provider interface or satisfy source tests.
+No KMS, HSM, cloud key service, or other production custody implementation is accepted merely because it can implement the provider interface, pass source tests, or pass the provider-neutral qualification harness.
 
 ## Current status
 
-**Development / source custody boundary and exact acceptance gate implemented / production provider and operational acceptance pending.**
+**Development / source custody boundary, exact acceptance gate, and provider-neutral operational qualification harness implemented / production provider and production acceptance pending.**
 
-The repository now has a production-shaped opaque signing-provider contract, provider-version-bound capability metadata, a bounded in-memory development provider, fail-closed production gating, digest-only signing handoff, producer/provider identity binding, independent authority-side trust-state rejection, a freshness-bounded exact-provider acceptance contract, runtime acceptance enforcement, tests, and CI validation. A real production provider, operational key lifecycle, external custody evidence, and production-approved exact-provider acceptance record remain required before production claims are permitted.
+The repository now has a production-shaped opaque signing-provider contract, provider-version-bound capability metadata, a bounded in-memory development provider, fail-closed production gating, digest-only signing handoff, producer/provider identity binding, independent authority-side trust-state rejection, a freshness-bounded exact-provider acceptance contract, runtime acceptance enforcement, a controlled non-authorizing operational qualification harness, tests, and CI validation. A real production provider, exact deployment exercises, external key-generation/non-exportability/access-control evidence, and production-approved exact-provider acceptance record remain required before production claims are permitted.
