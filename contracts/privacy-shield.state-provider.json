@@ -47,6 +47,8 @@
     "provider_evaluation_required_before_selection": true,
     "provider_evaluation_schema": "contracts/privacy-shield.state-provider-evaluation.schema.json",
     "provider_evaluation_records": "evaluations/state-providers/*.json",
+    "provider_evaluation_evidence_content_addressed": true,
+    "provider_evaluation_evidence_reference_format": "evidence+sha256:<64-lowercase-hex>:<locator>",
     "provider_evaluation_is_selection": false,
     "provider_evaluation_is_production_acceptance": false,
     "provider_selection_required": true,
