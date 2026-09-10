@@ -29,6 +29,7 @@
   "required_key_metadata": [
     "key_id",
     "provider_id",
+    "provider_version",
     "producer_identity",
     "algorithm",
     "status"
@@ -54,7 +55,14 @@
   "release_boundary": {
     "provider_capability_declaration_is_production_acceptance": false,
     "source_validation_is_key_custody_acceptance": false,
+    "production_acceptance_record_required": true,
+    "production_acceptance_schema": "contracts/privacy-shield.signing-key-provider-acceptance.schema.json",
+    "production_acceptance_records": "acceptance/signing-key-providers/*.json",
     "exact_provider_runtime_acceptance_required": true,
+    "exact_provider_version_binding_required": true,
+    "exact_source_revision_binding_required": true,
+    "exact_deployment_binding_required": true,
+    "acceptance_freshness_required": true,
     "key_generation_and_custody_evidence_required": true,
     "rotation_retirement_revocation_exercises_required": true,
     "producer_identity_binding_evidence_required": true,
