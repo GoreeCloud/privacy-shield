@@ -15,9 +15,9 @@ The provider-evidence package contract can identify exact evidence bytes, provid
 - GoreeCloud integration authority;
 - exact provider-class-specific Privacy Shield scope;
 - the exact `supports` criterion set declared by the package;
-- the declared review authority;
-- a content-addressed reference to the governing review-authority record or other authority evidence;
-- a distinct content-addressed reference to the actual review evidence;
+- the declared `review_authority`;
+- `review_authority_reference`, a content-addressed reference to the governing review-authority record or other authority evidence;
+- `review_evidence_reference`, a distinct content-addressed reference to the actual review evidence;
 - the review timestamp and freshness boundary; and
 - explicit privacy and non-authorizing governance constraints.
 
@@ -37,7 +37,7 @@ An `active` review must remain within its own `valid_until` window and may not o
 
 The review timestamp must not predate the evidence artifact collection time and must exactly match the package `governance.reviewed_at` timestamp. The review `supports` set must exactly match the package `supports` set so a review cannot be silently stretched to additional evaluation criteria.
 
-The authority-reference and review-evidence references must be distinct from the evidence artifact reference and from each other. All three use `evidence+sha256:<64-lowercase-hex>:<locator>` so mutable pointers cannot silently substitute different bytes.
+The `review_authority_reference` and `review_evidence_reference` values must be distinct from the provider evidence artifact reference and from each other. All three use `evidence+sha256:<64-lowercase-hex>:<locator>` so mutable pointers cannot silently substitute different bytes.
 
 ## Privacy
 
