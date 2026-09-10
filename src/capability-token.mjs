@@ -9,6 +9,8 @@ import {
   requireProductionSigningKeyProvider,
 } from "./privacy-signing-key-provider.mjs";
 
+const VERIFYING_KEY_STATES = new Set(["active", "verifying"]);
+
 function encode(value) {
   return Buffer.from(JSON.stringify(value)).toString("base64url");
 }
@@ -32,11 +34,20 @@ function requireExpectedClaims(claims, expected = {}) {
 
 function requireKeyMetadata(metadata, { production = false } = {}) {
   if (!metadata || typeof metadata !== "object") throw new Error("UNKNOWN_CAPABILITY_KEY");
-  if (!metadata.key_id || !metadata.algorithm) throw new Error("INVALID_CAPABILITY_KEY_METADATA");
+  if (!metadata.key_id || !metadata.algorithm || !metadata.status) {
+    throw new Error("INVALID_CAPABILITY_KEY_METADATA");
+  }
   if (production && (!metadata.provider_id || !metadata.producer_identity)) {
     throw new Error("INCOMPLETE_PRODUCTION_CAPABILITY_KEY_METADATA");
   }
   return metadata;
+}
+
+function requireVerifyingTrustState(key) {
+  if (!VERIFYING_KEY_STATES.has(key.status)) {
+    throw new Error(`CAPABILITY_SIGNING_KEY_TRUST_STATE:${String(key.status).toUpperCase()}`);
+  }
+  return key;
 }
 
 /**
@@ -149,9 +160,11 @@ export class PrivacyCapabilityAuthority {
       throw new Error("INVALID_CAPABILITY_CLAIMS");
     }
 
-    const key = requireKeyMetadata(this.keyProvider.describeKey(claims.kid), {
-      production: this.production,
-    });
+    const key = requireVerifyingTrustState(
+      requireKeyMetadata(this.keyProvider.describeKey(claims.kid), {
+        production: this.production,
+      }),
+    );
     if (claims.sig_alg !== key.algorithm) throw new Error("CAPABILITY_SIGNING_ALGORITHM_MISMATCH");
     if (claims.producer_identity !== key.producer_identity) {
       throw new Error("CAPABILITY_PRODUCER_IDENTITY_MISMATCH");
