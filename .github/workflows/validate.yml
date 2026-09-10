@@ -23,6 +23,8 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - name: Validate repository documentation baseline
+        run: python3 tools/validate_repository_baseline.py
       - name: Validate configuration contract
         run: python3 tools/validate_config.py
       - name: Validate ruleset lifecycle contract
@@ -76,6 +78,7 @@ jobs:
       - name: Compile Python validation tools
         run: >-
           python3 -m py_compile
+          tools/validate_repository_baseline.py
           tools/validate_config.py
           tools/validate_ruleset_lifecycle.py
           tools/validate_platform.py
@@ -89,6 +92,7 @@ jobs:
           tools/validate_signing_key_provider_selection.py
           tools/validate_signing_key_qualification.py
           tools/validate_evidence_validity.py
+          tests/test_repository_baseline.py
           tests/test_config.py
           tests/test_ruleset_lifecycle.py
           tests/test_state_provider_acceptance.py
