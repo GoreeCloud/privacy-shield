@@ -4,8 +4,10 @@ This directory contains governed machine-readable decisions selecting a real dis
 
 Selection records conform to `contracts/privacy-shield.state-provider-selection.schema.json` and are validated by `tools/validate_state_provider_selection.py`.
 
-A provider selection is **not** production acceptance. Every selection record must keep `production_acceptance_authorized: false`. A separately governed, fresh exact-provider/exact-deployment record under `acceptance/state-providers/` remains mandatory before production use can be claimed.
+Before a selection record can exist, it must reference an evidence-backed candidate evaluation under `evaluations/state-providers/` conforming to `contracts/privacy-shield.state-provider-evaluation.schema.json`. The selection summary must exactly match that dossier's provider identity, implementation, integration authority, authority-state scope, environment scope, and criterion results. An approved selection requires the referenced evaluation to be complete and current, cannot predate the evaluation, and cannot have a review deadline later than the evaluation's `valid_until` boundary.
 
-There are currently **zero approved state-provider selections** in this repository.
+A candidate evaluation is non-authorizing. A provider selection is also **not** production acceptance. Every evaluation record must keep `authorizing: false` and `production_acceptance_authorized: false`; every selection record must keep `production_acceptance_authorized: false`. A separately governed, fresh exact-provider/exact-deployment record under `acceptance/state-providers/` remains mandatory before production use can be claimed.
 
-Do not add credentials, secret material, or raw private payloads to provider-selection records.
+There are currently **zero state-provider candidate evaluation records**, **zero approved state-provider selections**, and **zero production-approved state-provider acceptance records** in this repository.
+
+Do not add credentials, secret material, or raw private payloads to candidate-evaluation or provider-selection records.
