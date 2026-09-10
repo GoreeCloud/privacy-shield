@@ -8,6 +8,8 @@ import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+STATE_CONTRACT = ROOT / "contracts" / "privacy-shield.state-provider.json"
+SIGNING_CONTRACT = ROOT / "contracts" / "privacy-shield.signing-key-provider.json"
 STATE_SCHEMA = ROOT / "contracts" / "privacy-shield.state-provider-evaluation.schema.json"
 SIGNING_SCHEMA = ROOT / "contracts" / "privacy-shield.signing-key-provider-evaluation.schema.json"
 STATE_DIR = ROOT / "evaluations" / "state-providers"
@@ -15,6 +17,7 @@ SIGNING_DIR = ROOT / "evaluations" / "signing-key-providers"
 STATE_README = STATE_DIR / "README.md"
 SIGNING_README = SIGNING_DIR / "README.md"
 
+EVIDENCE_FORMAT = "evidence+sha256:<64-lowercase-hex>:<locator>"
 EVIDENCE_PATTERN = (
     r"^evidence\+sha256:[0-9a-f]{64}:"
     r"(?:https://|github://|gdrive://|qualification-run:|artifact:)[^\s]+$"
@@ -54,6 +57,19 @@ def validate_reference(value: object, label: str) -> str:
     return value
 
 
+def validate_release_contract(path: Path) -> None:
+    contract = load_json(path)
+    boundary = contract.get("release_boundary")
+    if not isinstance(boundary, dict):
+        fail(f"{path.name}: release_boundary is missing")
+    if boundary.get("provider_evaluation_evidence_content_addressed") is not True:
+        fail(f"{path.name}: provider evaluation evidence must remain content-addressed")
+    if boundary.get("provider_evaluation_evidence_reference_format") != EVIDENCE_FORMAT:
+        fail(f"{path.name}: provider evaluation evidence reference format drifted")
+    if boundary.get("provider_evaluation_is_production_acceptance") is not False:
+        fail(f"{path.name}: provider evaluation must not authorize production acceptance")
+
+
 def validate_schema(path: Path) -> None:
     schema = load_json(path)
     definitions = schema.get("$defs")
@@ -91,8 +107,10 @@ def validate_evaluation_record(path: Path, record: dict) -> None:
         refs = criterion.get("evidence_refs")
         if result not in {"pending", "passed", "failed"}:
             fail(f"{path}: criterion {name} has an invalid result")
-        if not isinstance(refs, list) or len(set(refs)) != len(refs):
-            fail(f"{path}: criterion {name} evidence_refs must be a unique string list")
+        if not isinstance(refs, list) or any(not isinstance(ref, str) for ref in refs):
+            fail(f"{path}: criterion {name} evidence_refs must be a string list")
+        if len(set(refs)) != len(refs):
+            fail(f"{path}: criterion {name} evidence_refs must be unique")
         if result in {"passed", "failed"} and not refs:
             fail(f"{path}: resolved criterion {name} requires content-addressed evidence")
         for index, ref in enumerate(refs):
@@ -115,6 +133,8 @@ def validate_documentation(path: Path) -> None:
 
 
 def main() -> None:
+    for contract in (STATE_CONTRACT, SIGNING_CONTRACT):
+        validate_release_contract(contract)
     for schema in (STATE_SCHEMA, SIGNING_SCHEMA):
         validate_schema(schema)
     for directory in (STATE_DIR, SIGNING_DIR):
