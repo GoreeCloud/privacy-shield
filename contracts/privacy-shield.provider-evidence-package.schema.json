@@ -1,0 +1,165 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://goreecloud.com/schemas/privacy-shield.provider-evidence-package.schema.json",
+  "title": "GoreeCloud Privacy Shield Provider Evaluation Evidence Package",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "contract_id",
+    "evidence_id",
+    "provider_class",
+    "provider_id",
+    "provider_name",
+    "integration_authority",
+    "scope",
+    "evidence_ref",
+    "artifact",
+    "supports",
+    "governance",
+    "privacy",
+    "limitations"
+  ],
+  "properties": {
+    "schema_version": {"type": "integer", "const": 1},
+    "contract_id": {"type": "string", "const": "goreecloud.privacy-shield.provider-evidence-package.v1"},
+    "evidence_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$"},
+    "provider_class": {"type": "string", "enum": ["state-provider", "signing-key-provider"]},
+    "provider_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$"},
+    "provider_name": {"type": "string", "minLength": 1, "maxLength": 200},
+    "provider_implementation": {"type": "string", "minLength": 1, "maxLength": 200},
+    "integration_authority": {"type": "string", "pattern": "^GoreeCloud/[A-Za-z0-9._-]+$"},
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["service", "capability", "environments"],
+      "properties": {
+        "service": {"type": "string", "const": "privacy-shield"},
+        "capability": {
+          "type": "string",
+          "enum": ["durable-authorization-state", "operation-bound-capability-signing"]
+        },
+        "authority_state": {
+          "type": "array",
+          "uniqueItems": true,
+          "minItems": 5,
+          "maxItems": 5,
+          "items": {
+            "type": "string",
+            "enum": [
+              "consent",
+              "policy_versions_and_active_pointer",
+              "capability_revocation",
+              "single_use_capability_consumption",
+              "privacy_evidence_and_chain_head"
+            ]
+          }
+        },
+        "producer_identity": {"type": "string", "const": "goreecloud-privacy-shield"},
+        "environments": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 20,
+          "uniqueItems": true,
+          "items": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$"}
+        }
+      }
+    },
+    "evidence_ref": {"$ref": "#/$defs/evidence_ref"},
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["digest_algorithm", "digest", "locator", "media_type", "source_authority", "collected_at", "valid_until"],
+      "properties": {
+        "digest_algorithm": {"type": "string", "const": "sha256"},
+        "digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "locator": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1100,
+          "pattern": "^(?:https://|github://|gdrive://|qualification-run:|artifact:)[^\\s]+$"
+        },
+        "media_type": {"type": "string", "minLength": 1, "maxLength": 200},
+        "source_authority": {"type": "string", "minLength": 1, "maxLength": 500},
+        "collected_at": {"type": "string", "format": "date-time"},
+        "valid_until": {"type": "string", "format": "date-time"}
+      }
+    },
+    "supports": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 30,
+      "uniqueItems": true,
+      "items": {"type": "string", "pattern": "^[a-z0-9][a-z0-9_-]*$"}
+    },
+    "governance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "authorizing", "production_acceptance_authorized", "reviewed_at"],
+      "properties": {
+        "status": {"type": "string", "enum": ["captured", "reviewed", "rejected", "superseded"]},
+        "authorizing": {"const": false},
+        "production_acceptance_authorized": {"const": false},
+        "reviewed_at": {"type": ["string", "null"], "format": "date-time"}
+      }
+    },
+    "privacy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "credentials_in_package",
+        "secret_material_in_package",
+        "raw_private_payloads_in_package",
+        "full_capability_tokens_in_package"
+      ],
+      "properties": {
+        "credentials_in_package": {"const": false},
+        "secret_material_in_package": {"const": false},
+        "raw_private_payloads_in_package": {"const": false},
+        "full_capability_tokens_in_package": {"const": false}
+      }
+    },
+    "limitations": {
+      "type": "array",
+      "maxItems": 30,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1, "maxLength": 500}
+    }
+  },
+  "$defs": {
+    "evidence_ref": {
+      "type": "string",
+      "minLength": 85,
+      "maxLength": 1200,
+      "pattern": "^evidence\\+sha256:[0-9a-f]{64}:(?:https://|github://|gdrive://|qualification-run:|artifact:)[^\\s]+$"
+    }
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"provider_class": {"const": "state-provider"}}},
+      "then": {
+        "required": ["provider_implementation"],
+        "properties": {
+          "scope": {
+            "required": ["authority_state"],
+            "properties": {"capability": {"const": "durable-authorization-state"}},
+            "not": {"required": ["producer_identity"]}
+          }
+        }
+      }
+    },
+    {
+      "if": {"properties": {"provider_class": {"const": "signing-key-provider"}}},
+      "then": {
+        "not": {"required": ["provider_implementation"]},
+        "properties": {
+          "scope": {
+            "required": ["producer_identity"],
+            "properties": {"capability": {"const": "operation-bound-capability-signing"}},
+            "not": {"required": ["authority_state"]}
+          }
+        }
+      }
+    }
+  ]
+}
