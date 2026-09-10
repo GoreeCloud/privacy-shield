@@ -13,6 +13,10 @@ import {
   MemoryPrivacyStateStore,
   PRIVACY_STATE_PROVIDER_CONTRACT,
 } from "../src/privacy-state-store.mjs";
+import {
+  InMemoryPrivacySigningKeyProvider,
+  PRIVACY_SIGNING_KEY_PROVIDER_CONTRACT,
+} from "../src/privacy-signing-key-provider.mjs";
 
 function stateFile() {
   const directory = fs.mkdtempSync(path.join(os.tmpdir(), "privacy-runtime-"));
@@ -38,6 +42,39 @@ class ContractTestProductionStore extends MemoryPrivacyStateStore {
       fail_closed_on_conflict: true,
     };
   }
+}
+
+class ContractTestProductionKeyProvider {
+  #inner = new InMemoryPrivacySigningKeyProvider(
+    capabilityKeys,
+    {
+      provider_id: "test-kms",
+      producer_identity: "goreecloud-privacy-shield:test-runtime",
+    },
+  );
+
+  keyProviderCapabilities() {
+    return {
+      contract: PRIVACY_SIGNING_KEY_PROVIDER_CONTRACT,
+      production_eligible: true,
+      non_exportable_signing_material: true,
+      opaque_key_references: true,
+      digest_only_signing: true,
+      key_identifiers: true,
+      rotation: true,
+      retirement: true,
+      revocation: true,
+      producer_identity_binding: true,
+      auditable_signing: true,
+      fail_closed_on_untrusted_state: true,
+      private_material_export: false,
+    };
+  }
+
+  activeKey() { return this.#inner.activeKey(); }
+  describeKey(keyId) { return this.#inner.describeKey(keyId); }
+  signDigest(input) { return this.#inner.signDigest(input); }
+  verifyDigest(input) { return this.#inner.verifyDigest(input); }
 }
 
 test("durable runtime shares consent, capability, evidence, and policy state across restart", () => {
@@ -124,7 +161,7 @@ test("generic runtime uses exactly the injected state provider", () => {
   assert.equal(store.list("consent").length, 1);
 });
 
-test("production runtime requires the complete V1 state-provider capability contract", () => {
+test("production runtime requires state and signing provider contracts", () => {
   assert.throws(
     () => createPrivacyRuntime({
       store: new MemoryPrivacyStateStore(),
@@ -144,16 +181,27 @@ test("production runtime requires the complete V1 state-provider capability cont
   );
 
   const store = new ContractTestProductionStore();
+  assert.throws(
+    () => createPrivacyRuntime({
+      store,
+      capability_keys: capabilityKeys,
+      production: true,
+    }),
+    /PRODUCTION_CAPABILITY_KEY_PROVIDER_REQUIRED/,
+  );
+
   const runtime = createPrivacyRuntime({
     store,
-    capability_keys: capabilityKeys,
+    capability_key_provider: new ContractTestProductionKeyProvider(),
     production: true,
   });
   assert.equal(runtime.production, true);
   assert.equal(runtime.store, store);
+  const token = runtime.capabilities.issue({ requester_id: "app.notes" });
+  assert.equal(runtime.capabilities.verify(token).key_provider_id, "test-kms");
 });
 
-test("runtime factories fail closed on missing or unsafe state providers", () => {
+test("runtime factories fail closed on missing or unsafe providers", () => {
   assert.throws(
     () => createDurablePrivacyRuntime({ capability_keys: capabilityKeys }),
     /requires state_file/,
@@ -173,6 +221,15 @@ test("runtime factories fail closed on missing or unsafe state providers", () =>
         capability_keys: capabilityKeys,
       }),
     /must implement delete\(\)/,
+  );
+  assert.throws(
+    () =>
+      createPrivacyRuntime({
+        store: new MemoryPrivacyStateStore(),
+        capability_keys: capabilityKeys,
+        capability_key_provider: new InMemoryPrivacySigningKeyProvider(capabilityKeys),
+      }),
+    /Configure capability_keys or capability_key_provider, not both/,
   );
   assert.throws(
     () =>
