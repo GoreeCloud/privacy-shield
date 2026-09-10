@@ -10,7 +10,7 @@ Current `main` HEAD is `a779655dc5ee545857b5cdb767abdf89ade7949d`, a documentati
 
 Draft PR #73 extends that merged baseline with the transactional production state-provider boundary and independent provider-acceptance gate. Its reconciled exact head `204605975032252118aa22cc6584c4e75c6e160d` is source-validation green but remains Development/Draft/non-production.
 
-The Privacy Shield 2.0 signing-key-custody branch is stacked on that exact PR #73 head. It introduces a production-shaped opaque signing-provider boundary, but its exact branch revision must pass its own checks and review before source acceptance can be claimed. It does not inherit production acceptance from PR #73.
+Draft PR #80 is stacked on PR #73 and advances Privacy Shield 2.0 signing-key custody. It now contains both the opaque provider boundary and a fail-closed exact-provider acceptance layer. It remains Development/Draft/non-production and does not inherit production acceptance from PR #73 or from source validation.
 
 ## Acceptance gates
 
@@ -40,13 +40,19 @@ Production acceptance requires exact-provider and exact-deployment concurrency, 
 
 ### 4. Production signing-key custody
 
-**State: Source boundary under active Privacy Shield 2.0 development; production provider and runtime acceptance pending.**
+**State: Source custody boundary and exact acceptance gate implemented in Draft development; real production provider and operational acceptance pending.**
 
-The active Privacy Shield 2.0 development slice moves capability signing behind `goreecloud.privacy-shield.signing-key-provider.v1`. `PrivacyCapabilityAuthority` computes a local SHA-256 digest and delegates only the digest plus an opaque key identifier to the provider. Tokens bind the key ID, provider ID, producer identity, and signing algorithm so verification can fail closed on trust drift.
+Draft PR #80 moves capability signing behind `goreecloud.privacy-shield.signing-key-provider.v1`. `PrivacyCapabilityAuthority` computes a local SHA-256 digest and delegates only the digest plus an opaque key identifier to the provider. Tokens bind the key ID, provider ID, provider version, producer identity, and signing algorithm. Privacy Shield independently rejects untrusted public key state before provider signature verification can run.
 
-Legacy raw `capability_keys` remain available only for non-production compatibility through `InMemoryPrivacySigningKeyProvider`. Production runtime construction rejects raw key configuration and requires an injected provider that structurally declares non-exportable signing material, opaque key references, digest-only signing, stable key identifiers, rotation, retirement, revocation, producer-identity binding, auditable signing, and fail-closed untrusted-state behavior.
+Production runtime construction now requires more than provider capability declarations. `createPrivacyRuntime({ production: true, ... })` requires a fresh passing `goreecloud.privacy-shield.signing-key-provider-acceptance.v1` record that matches the exact Privacy Shield source revision, exact provider ID and provider version, producer identity, accepted signing algorithm, and deployment ID. Every required custody qualification must be passed and backed by passing evidence.
 
-The in-memory provider remains explicitly non-production. No KMS, HSM, cloud key service, or other exact production signing provider has been implemented or accepted by this source slice. Exact-provider custody, key generation, rotation/retirement/revocation, caller authorization, audit, outage, recovery, and non-exportability evidence remain separate production gates. See `docs/SIGNING-KEY-CUSTODY.md`.
+The acceptance record is also privacy-bounded: raw private payloads, secret material, and full capability tokens are forbidden from acceptance evidence. The runtime exposes only minimized acceptance metadata rather than the full evidence record.
+
+Repository validation checks both the acceptance schema and any future records under `acceptance/signing-key-providers/`. There are currently **no production-approved signing-key provider records**, so no production signing-key custody claim is authorized.
+
+Legacy raw `capability_keys` remain available only for non-production compatibility through `InMemoryPrivacySigningKeyProvider`. The in-memory provider remains explicitly non-production and cannot receive production acceptance.
+
+No KMS, HSM, cloud key service, or other exact production signing provider has been implemented or accepted by this source slice. Secure key generation, non-exportability, caller authorization, producer binding, rotation/retirement/emergency revocation, stale-state rejection, privacy-safe signing audit, outage/degraded behavior, recovery/continuity, access-control review, and exact runtime integration evidence remain separate production gates. See `docs/SIGNING-KEY-CUSTODY.md`.
 
 ### 5. Browser source integration
 
