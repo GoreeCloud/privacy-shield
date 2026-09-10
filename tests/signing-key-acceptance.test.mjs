@@ -49,6 +49,24 @@ class AcceptedProvider {
   verifyDigest(input) { return this.#inner.verifyDigest(input); }
 }
 
+class NonActiveAcceptedProvider extends AcceptedProvider {
+  constructor(status) {
+    super();
+    this.status = status;
+  }
+
+  activeKey() {
+    return { ...super.activeKey(), status: this.status };
+  }
+}
+
+class MissingKeyIdentityAcceptedProvider extends AcceptedProvider {
+  activeKey() {
+    const { key_id: _keyId, ...metadata } = super.activeKey();
+    return metadata;
+  }
+}
+
 function record(overrides = {}) {
   const qualification = Object.fromEntries(
     REQUIRED_SIGNING_KEY_QUALIFICATIONS.map(name => [name, "passed"]),
@@ -156,6 +174,30 @@ test("production acceptance fails closed when expired", () => {
       now: Date.parse("2026-09-10T00:00:00Z"),
     }),
     /SIGNING_KEY_ACCEPTANCE_EXPIRED/,
+  );
+});
+
+test("production acceptance requires an explicitly active current signing key", () => {
+  for (const status of ["verifying", "revoked", "retired", "degraded"]) {
+    assert.throws(
+      () => requireSigningKeyProviderAcceptance(new NonActiveAcceptedProvider(status), {
+        record: record(),
+        runtime_revision: REVISION,
+        deployment_id: DEPLOYMENT,
+      }),
+      new RegExp(`SIGNING_KEY_ACCEPTANCE_ACTIVE_KEY_TRUST_STATE:${status.toUpperCase()}`),
+    );
+  }
+});
+
+test("production acceptance requires active-key identity metadata", () => {
+  assert.throws(
+    () => requireSigningKeyProviderAcceptance(new MissingKeyIdentityAcceptedProvider(), {
+      record: record(),
+      runtime_revision: REVISION,
+      deployment_id: DEPLOYMENT,
+    }),
+    /INVALID_PRODUCTION_SIGNING_KEY_METADATA/,
   );
 });
 
