@@ -31,6 +31,8 @@ jobs:
         run: python3 tools/validate_platform.py
       - name: Validate production state-provider boundary
         run: python3 tools/validate_state_provider.py
+      - name: Validate state-provider selection governance
+        run: python3 tools/validate_state_provider_selection.py
       - name: Validate production signing-key custody boundary
         run: python3 tools/validate_signing_key_provider.py
       - name: Validate signing-key provider selection governance
@@ -61,12 +63,15 @@ jobs:
           tools/validate_ruleset_lifecycle.py
           tools/validate_platform.py
           tools/validate_state_provider.py
+          tools/validate_state_provider_selection.py
           tools/validate_signing_key_provider.py
           tools/validate_signing_key_provider_selection.py
           tools/validate_signing_key_qualification.py
           tools/validate_evidence_validity.py
           tests/test_config.py
           tests/test_ruleset_lifecycle.py
+          tests/test_state_provider_acceptance.py
+          tests/test_state_provider_selection.py
           tests/test_signing_key_provider_selection.py
           website/build.py
           website/validate.py
