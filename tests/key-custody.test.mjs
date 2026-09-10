@@ -14,6 +14,7 @@ class StructuralProductionSigningProvider {
 
   constructor({ omit_capability = null } = {}) {
     this.status = "active";
+    this.providerVersion = "test-kms-v1";
     this.producerIdentity = "goreecloud-privacy-shield:test-issuer";
     this.omitCapability = omit_capability;
     this.lastSignInput = null;
@@ -25,6 +26,7 @@ class StructuralProductionSigningProvider {
       },
       {
         provider_id: "test-kms",
+        provider_version: this.providerVersion,
         producer_identity: this.producerIdentity,
       },
     );
@@ -59,6 +61,7 @@ class StructuralProductionSigningProvider {
     if (!metadata) return null;
     return Object.freeze({
       ...metadata,
+      provider_version: this.providerVersion,
       producer_identity: this.producerIdentity,
       status: this.status,
     });
@@ -89,6 +92,7 @@ test("development signing provider keeps raw secret material opaque", () => {
   assert.deepEqual(Object.keys(provider), []);
   assert.equal(JSON.stringify(provider).includes(SECRET), false);
   assert.equal(provider.describeKey("development-v1").secret, undefined);
+  assert.equal(provider.describeKey("development-v1").provider_version, "development-v1");
   assert.equal(provider.keyProviderCapabilities().production_eligible, false);
   assert.equal(provider.keyProviderCapabilities().private_material_export, false);
 });
@@ -110,7 +114,7 @@ test("production capability authority requires every custody capability", () => 
   );
 });
 
-test("production provider receives only a digest and binds issuer identity", () => {
+test("production provider receives only a digest and binds issuer identity and provider version", () => {
   const provider = new StructuralProductionSigningProvider();
   const authority = new PrivacyCapabilityAuthority(provider, { production: true });
   const token = authority.issue({
@@ -120,6 +124,7 @@ test("production provider receives only a digest and binds issuer identity", () 
     iss: "attacker",
     kid: "attacker-key",
     jti: "attacker-jti",
+    key_provider_version: "attacker-version",
   });
   const claims = authority.verify(token, {
     requester_id: "app.notes",
@@ -129,6 +134,7 @@ test("production provider receives only a digest and binds issuer identity", () 
   assert.equal(claims.iss, "goreecloud-privacy-shield");
   assert.equal(claims.kid, "kms-key-v1");
   assert.equal(claims.key_provider_id, "test-kms");
+  assert.equal(claims.key_provider_version, "test-kms-v1");
   assert.equal(claims.producer_identity, "goreecloud-privacy-shield:test-issuer");
   assert.equal(claims.sig_alg, "HS256");
   assert.match(claims.jti, /^psc_/);
@@ -139,15 +145,12 @@ test("production provider receives only a digest and binds issuer identity", () 
   assert.equal(provider.lastSignInput.key_id, "kms-key-v1");
 });
 
-test("authority fails closed on revoked key metadata before provider verification", () => {
+test("verification fails closed before provider verification when trust state becomes revoked", () => {
   const provider = new StructuralProductionSigningProvider();
   const authority = new PrivacyCapabilityAuthority(provider, { production: true });
   const token = authority.issue({ requester_id: "app.notes" });
   provider.status = "revoked";
-  assert.throws(
-    () => authority.verify(token),
-    /CAPABILITY_SIGNING_KEY_TRUST_STATE:REVOKED/,
-  );
+  assert.throws(() => authority.verify(token), /CAPABILITY_SIGNING_KEY_TRUST_STATE:REVOKED/);
   assert.equal(provider.verifyCalls, 0);
 });
 
@@ -163,5 +166,15 @@ test("verification rejects producer identity drift", () => {
     () => authority.verify(token),
     /CAPABILITY_PRODUCER_IDENTITY_MISMATCH/,
   );
-  assert.equal(provider.verifyCalls, 0);
+});
+
+test("verification rejects provider version drift", () => {
+  const provider = new StructuralProductionSigningProvider();
+  const authority = new PrivacyCapabilityAuthority(provider, { production: true });
+  const token = authority.issue({ requester_id: "app.notes" });
+  provider.providerVersion = "test-kms-v2";
+  assert.throws(
+    () => authority.verify(token),
+    /CAPABILITY_KEY_PROVIDER_VERSION_MISMATCH/,
+  );
 });
