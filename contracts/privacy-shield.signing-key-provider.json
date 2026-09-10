@@ -58,6 +58,8 @@
     "provider_evaluation_record_required_before_selection": true,
     "provider_evaluation_schema": "contracts/privacy-shield.signing-key-provider-evaluation.schema.json",
     "provider_evaluation_records": "evaluations/signing-key-providers/*.json",
+    "provider_evaluation_evidence_content_addressed": true,
+    "provider_evaluation_evidence_reference_format": "evidence+sha256:<64-lowercase-hex>:<locator>",
     "provider_evaluation_is_selection": false,
     "provider_evaluation_is_production_acceptance": false,
     "provider_selection_record_required": true,
