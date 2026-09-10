@@ -17,6 +17,7 @@ class StructuralProductionSigningProvider {
     this.producerIdentity = "goreecloud-privacy-shield:test-issuer";
     this.omitCapability = omit_capability;
     this.lastSignInput = null;
+    this.verifyCalls = 0;
     this.#inner = new InMemoryPrivacySigningKeyProvider(
       {
         active_key_id: "kms-key-v1",
@@ -70,6 +71,7 @@ class StructuralProductionSigningProvider {
   }
 
   verifyDigest(input) {
+    this.verifyCalls += 1;
     if (!new Set(["active", "verifying"]).has(this.status)) {
       throw new Error(`CAPABILITY_SIGNING_KEY_${this.status.toUpperCase()}`);
     }
@@ -137,12 +139,16 @@ test("production provider receives only a digest and binds issuer identity", () 
   assert.equal(provider.lastSignInput.key_id, "kms-key-v1");
 });
 
-test("verification fails closed when provider trust state becomes revoked", () => {
+test("authority fails closed on revoked key metadata before provider verification", () => {
   const provider = new StructuralProductionSigningProvider();
   const authority = new PrivacyCapabilityAuthority(provider, { production: true });
   const token = authority.issue({ requester_id: "app.notes" });
   provider.status = "revoked";
-  assert.throws(() => authority.verify(token), /CAPABILITY_SIGNING_KEY_REVOKED/);
+  assert.throws(
+    () => authority.verify(token),
+    /CAPABILITY_SIGNING_KEY_TRUST_STATE:REVOKED/,
+  );
+  assert.equal(provider.verifyCalls, 0);
 });
 
 test("verification rejects producer identity drift", () => {
@@ -157,4 +163,5 @@ test("verification rejects producer identity drift", () => {
     () => authority.verify(token),
     /CAPABILITY_PRODUCER_IDENTITY_MISMATCH/,
   );
+  assert.equal(provider.verifyCalls, 0);
 });
