@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "contract_id": "goreecloud.privacy-shield.state-provider-qualification.v1",
+  "controller_contract_id": "goreecloud.privacy-shield.state-provider-qualification-controller.v1",
+  "purpose": "Provider-neutral, non-authorizing operational exercise and minimized evidence contract for Privacy Shield distributed authority-state qualification.",
+  "authorizing": false,
+  "required_provider_methods": [
+    "get",
+    "set",
+    "delete",
+    "list",
+    "transaction",
+    "stateProviderCapabilities"
+  ],
+  "required_controller_methods": [
+    "qualificationCapabilities",
+    "concurrentWriterProbe",
+    "partitionConflictProbe",
+    "restartRecoveryProbe",
+    "corruptStateRecoveryProbe",
+    "backupRestoreProbe",
+    "migrationRollbackProbe",
+    "readAuditEvents",
+    "runtimeIntegrationProbe"
+  ],
+  "required_controller_capabilities": {
+    "controlled_environment": true,
+    "disruptive_operations_authorized": true,
+    "evidence_minimized": true,
+    "acceptance_authority": false
+  },
+  "automated_qualifications": [
+    "concurrent_writer_serialization",
+    "atomic_commit_and_rollback",
+    "partition_and_conflict_behavior",
+    "restart_recovery",
+    "corrupt_state_recovery",
+    "backup_and_restore",
+    "migration_and_rollback",
+    "operational_observability"
+  ],
+  "external_evidence_qualifications": [
+    "access_control_isolation"
+  ],
+  "result_states": [
+    "passed",
+    "failed",
+    "not_run",
+    "requires_external_evidence"
+  ],
+  "privacy": {
+    "raw_private_payloads_in_qualification_evidence": false,
+    "secret_material_in_qualification_evidence": false,
+    "credentials_in_qualification_evidence": false,
+    "user_content_in_qualification_evidence": false
+  },
+  "release_boundary": {
+    "qualification_run_is_candidate_evaluation": false,
+    "qualification_run_is_provider_selection": false,
+    "qualification_run_is_production_acceptance": false,
+    "source_test_provider_is_production_evidence": false,
+    "candidate_evaluation_still_required": true,
+    "governed_provider_selection_still_required": true,
+    "external_evidence_still_required": true,
+    "fresh_exact_provider_acceptance_record_still_required": true,
+    "exact_source_revision_binding_required": true,
+    "exact_provider_version_binding_required": true,
+    "exact_deployment_binding_required": true,
+    "exact_topology_binding_required": true
+  }
+}

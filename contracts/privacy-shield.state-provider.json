@@ -40,6 +40,10 @@
   "release_boundary": {
     "capability_declaration_is_production_acceptance": false,
     "source_validation_is_provider_acceptance": false,
+    "provider_operational_qualification_contract": "contracts/privacy-shield.state-provider-qualification.json",
+    "provider_operational_qualification_is_candidate_evaluation": false,
+    "provider_operational_qualification_is_provider_selection": false,
+    "provider_operational_qualification_is_production_acceptance": false,
     "provider_evaluation_required_before_selection": true,
     "provider_evaluation_schema": "contracts/privacy-shield.state-provider-evaluation.schema.json",
     "provider_evaluation_records": "evaluations/state-providers/*.json",
