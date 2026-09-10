@@ -17,6 +17,10 @@ import {
   InMemoryPrivacySigningKeyProvider,
   PRIVACY_SIGNING_KEY_PROVIDER_CONTRACT,
 } from "../src/privacy-signing-key-provider.mjs";
+import {
+  PRIVACY_SIGNING_KEY_ACCEPTANCE_CONTRACT,
+  REQUIRED_SIGNING_KEY_QUALIFICATIONS,
+} from "../src/signing-key-acceptance.mjs";
 
 function stateFile() {
   const directory = fs.mkdtempSync(path.join(os.tmpdir(), "privacy-runtime-"));
@@ -29,6 +33,8 @@ const capabilityKeys = {
     "runtime-key-v1": "0123456789abcdef0123456789abcdef",
   },
 };
+const runtimeRevision = "a".repeat(40);
+const deploymentId = "privacy-signing-test-prod";
 
 class ContractTestProductionStore extends MemoryPrivacyStateStore {
   stateProviderCapabilities() {
@@ -49,6 +55,7 @@ class ContractTestProductionKeyProvider {
     capabilityKeys,
     {
       provider_id: "test-kms",
+      provider_version: "test-kms-v1",
       producer_identity: "goreecloud-privacy-shield:test-runtime",
     },
   );
@@ -75,6 +82,47 @@ class ContractTestProductionKeyProvider {
   describeKey(keyId) { return this.#inner.describeKey(keyId); }
   signDigest(input) { return this.#inner.signDigest(input); }
   verifyDigest(input) { return this.#inner.verifyDigest(input); }
+}
+
+function signingAcceptance() {
+  const qualification = Object.fromEntries(
+    REQUIRED_SIGNING_KEY_QUALIFICATIONS.map(name => [name, "passed"]),
+  );
+  const evidence = REQUIRED_SIGNING_KEY_QUALIFICATIONS.map(name => ({
+    id: `test-${name.replaceAll("_", "-")}`,
+    category: name,
+    result: "passed",
+    reference: `test://${name}`,
+  }));
+  return {
+    schema_version: 1,
+    contract_id: PRIVACY_SIGNING_KEY_ACCEPTANCE_CONTRACT,
+    provider_id: "test-kms",
+    provider_implementation: "ContractTestProductionKeyProvider",
+    provider_authority: "GoreeCloud/test",
+    provider_version: "test-kms-v1",
+    exact_source_revision: runtimeRevision,
+    deployment: {
+      environment: "test",
+      deployment_id: deploymentId,
+    },
+    producer_identity: "goreecloud-privacy-shield:test-runtime",
+    algorithms: ["HS256"],
+    qualification,
+    privacy: {
+      raw_private_payloads_in_acceptance_evidence: false,
+      secret_material_in_acceptance_evidence: false,
+      full_capability_tokens_in_acceptance_evidence: false,
+    },
+    acceptance: {
+      status: "passed",
+      production_approved: true,
+      exact_revision_required: true,
+      valid_until: "2099-01-01T00:00:00Z",
+    },
+    evidence,
+    limitations: ["Test-only structural provider."],
+  };
 }
 
 test("durable runtime shares consent, capability, evidence, and policy state across restart", () => {
@@ -153,6 +201,7 @@ test("generic runtime uses exactly the injected state provider", () => {
 
   assert.equal(runtime.store, store);
   assert.equal(runtime.production, false);
+  assert.equal(runtime.signing_acceptance, null);
   runtime.consent.put({
     requester_id: "app.notes",
     resource_id: "note:2",
@@ -161,7 +210,7 @@ test("generic runtime uses exactly the injected state provider", () => {
   assert.equal(store.list("consent").length, 1);
 });
 
-test("production runtime requires state and signing provider contracts", () => {
+test("production runtime requires state, signing provider, and fresh acceptance contracts", () => {
   assert.throws(
     () => createPrivacyRuntime({
       store: new MemoryPrivacyStateStore(),
@@ -190,15 +239,35 @@ test("production runtime requires state and signing provider contracts", () => {
     /PRODUCTION_CAPABILITY_KEY_PROVIDER_REQUIRED/,
   );
 
+  const provider = new ContractTestProductionKeyProvider();
+  assert.throws(
+    () => createPrivacyRuntime({
+      store,
+      capability_key_provider: provider,
+      runtime_revision: runtimeRevision,
+      capability_key_deployment_id: deploymentId,
+      production: true,
+    }),
+    /PRODUCTION_SIGNING_KEY_ACCEPTANCE_REQUIRED/,
+  );
+
   const runtime = createPrivacyRuntime({
     store,
-    capability_key_provider: new ContractTestProductionKeyProvider(),
+    capability_key_provider: provider,
+    capability_key_acceptance: signingAcceptance(),
+    capability_key_deployment_id: deploymentId,
+    runtime_revision: runtimeRevision,
     production: true,
   });
   assert.equal(runtime.production, true);
   assert.equal(runtime.store, store);
+  assert.equal(runtime.signing_acceptance.provider_id, "test-kms");
+  assert.equal(runtime.signing_acceptance.provider_version, "test-kms-v1");
+  assert.equal(runtime.signing_acceptance.deployment_id, deploymentId);
   const token = runtime.capabilities.issue({ requester_id: "app.notes" });
-  assert.equal(runtime.capabilities.verify(token).key_provider_id, "test-kms");
+  const claims = runtime.capabilities.verify(token);
+  assert.equal(claims.key_provider_id, "test-kms");
+  assert.equal(claims.key_provider_version, "test-kms-v1");
 });
 
 test("runtime factories fail closed on missing or unsafe providers", () => {
