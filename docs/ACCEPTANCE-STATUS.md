@@ -2,15 +2,15 @@
 
 ## Purpose
 
-This document records the current acceptance state of GoreeCloud Privacy Shield and keeps source validation, state-provider qualification, Browser integration, visual-identity approval, adapter runtime acceptance, and production approval as separate gates.
+This document records the current acceptance state of GoreeCloud Privacy Shield and keeps source validation, state-provider qualification, signing-key custody, Browser integration, visual-identity approval, adapter runtime acceptance, and production approval as separate gates.
 
 ## Current source baseline
 
-The current `main` line includes the portable Browser core, the platform-wide Privacy Shield authorization foundation, policy/consent/capability/evidence authorities, the shared runtime composition layer, and a bounded single-host durable state provider. Exact merged revision `f10d90c0c53c0b876d6ff5cdb6926d6b87205438` passed both repository validation jobs and its Cloudflare Pages deployment check on September 6, 2026.
+Current `main` HEAD is `a779655dc5ee545857b5cdb767abdf89ade7949d`, a documentation-only commit that added the repository feature-roadmap control. The previously recorded merged implementation baseline `f10d90c0c53c0b876d6ff5cdb6926d6b87205438` passed both repository validation jobs and its Cloudflare Pages deployment check on September 6, 2026.
 
-The single-host durable source now includes private `0600` primary/backup state files, file and directory `fsync`, atomic rename, validated backup recovery, stale-writer refusal, fail-closed invalid-state handling, and restart tests for consent, evidence, capability revocation, and single-use replay consumption.
+Draft PR #73 extends that merged baseline with the transactional production state-provider boundary and independent provider-acceptance gate. Its reconciled exact head `204605975032252118aa22cc6584c4e75c6e160d` is source-validation green but remains Development/Draft/non-production.
 
-The production state-provider contract is separately defined by `contracts/privacy-shield.state-provider.json` and documented in `docs/STATE-PROVIDER.md`. A production provider must additionally supply durable distributed multi-writer-serializable transactions and must pass exact-provider deployment acceptance; the built-in memory and file providers remain non-production.
+The Privacy Shield 2.0 signing-key-custody branch is stacked on that exact PR #73 head. It introduces a production-shaped opaque signing-provider boundary, but its exact branch revision must pass its own checks and review before source acceptance can be claimed. It does not inherit production acceptance from PR #73.
 
 ## Acceptance gates
 
@@ -18,9 +18,9 @@ The production state-provider contract is separately defined by `contracts/priva
 
 **State: Passed for the current merged source scope.**
 
-Repository validation demonstrates that the portable core, reviewed configuration, lifecycle contract, platform/adapter contracts, authorization source, durable single-host state source, and related tests are internally consistent for the exact validated revision.
+Repository validation demonstrates that the portable core, reviewed configuration, lifecycle contract, platform/adapter contracts, authorization source, durable single-host state source, and related tests are internally consistent for the exact validated merged revisions where recorded.
 
-This is source acceptance only. It does not establish runtime acceptance for a downstream adapter or production state provider.
+This is source acceptance only. It does not establish runtime acceptance for a downstream adapter, production state provider, production signing-key provider, or overall platform production use.
 
 ### 2. Single-host durable state source
 
@@ -32,19 +32,29 @@ The built-in file provider is explicitly not distributed or multi-writer seriali
 
 ### 3. Production state provider
 
-**State: Contract defined; provider implementation and runtime acceptance pending.**
+**State: Contract and acceptance gate implemented in Draft development; provider implementation and runtime acceptance pending.**
 
-`createPrivacyRuntime({ production: true, ... })` requires the V1 state-provider capability profile: durability, restart recovery, atomic transactions, multi-writer serializability, distributed operation, and fail-closed conflict handling. A capability declaration is necessary source metadata, not proof that a provider actually satisfies those properties.
+Draft PR #73 requires the V1 state-provider capability profile: durability, restart recovery, atomic transactions, multi-writer serializability, distributed operation, and fail-closed conflict handling. It also requires independently governed exact-provider/exact-deployment acceptance evidence. A capability declaration or schema-valid record is necessary source metadata, not proof that a provider actually satisfies those properties.
 
-Production acceptance requires exact-provider and exact-deployment concurrency, failure/recovery, backup/restore, topology, access-control, and operational evidence. No source-controlled provider currently carries production acceptance.
+Production acceptance requires exact-provider and exact-deployment concurrency, failure/recovery, backup/restore, topology, access-control, operational evidence, and a fresh production-approved acceptance record. No source-controlled provider currently carries production acceptance.
 
-### 4. Browser source integration
+### 4. Production signing-key custody
+
+**State: Source boundary under active Privacy Shield 2.0 development; production provider and runtime acceptance pending.**
+
+The active Privacy Shield 2.0 development slice moves capability signing behind `goreecloud.privacy-shield.signing-key-provider.v1`. `PrivacyCapabilityAuthority` computes a local SHA-256 digest and delegates only the digest plus an opaque key identifier to the provider. Tokens bind the key ID, provider ID, producer identity, and signing algorithm so verification can fail closed on trust drift.
+
+Legacy raw `capability_keys` remain available only for non-production compatibility through `InMemoryPrivacySigningKeyProvider`. Production runtime construction rejects raw key configuration and requires an injected provider that structurally declares non-exportable signing material, opaque key references, digest-only signing, stable key identifiers, rotation, retirement, revocation, producer-identity binding, auditable signing, and fail-closed untrusted-state behavior.
+
+The in-memory provider remains explicitly non-production. No KMS, HSM, cloud key service, or other exact production signing provider has been implemented or accepted by this source slice. Exact-provider custody, key generation, rotation/retirement/revocation, caller authorization, audit, outage, recovery, and non-exportability evidence remain separate production gates. See `docs/SIGNING-KEY-CUSTODY.md`.
+
+### 5. Browser source integration
 
 **State: Integrated at the source-contract level, but not sufficient for production approval.**
 
 GoreeCloud Browser is the privileged Firefox/Gecko runtime authority. The Browser owns preference persistence, HTTP-channel integration, lifecycle hooks, private-browsing behavior, persistent site exceptions, navigation/copy/share integration, packaged UI behavior, and inherited Firefox security boundaries.
 
-### 5. Exact compiled Browser acceptance
+### 6. Exact compiled Browser acceptance
 
 **State: Pending.**
 
@@ -66,15 +76,15 @@ The exact compiled GoreeCloud Browser must demonstrate, against the intended Pri
 
 Passing portable-source validation must never be substituted for this gate.
 
-### 6. Canonical visual identity
+### 7. Canonical visual identity
 
-**State: Passed.**
+**State: Existing identity passed; Privacy Shield 2.0 identity refresh remains separate planned work.**
 
 Candidate 01 was explicitly approved by the user on August 19, 2026 after direct review of a 1024×1024 PNG rendered from the exact authored SVG. PR #20 merged the authored design as `44d47982d154e0a0a9a913d232a2eae835c6905f`. PR #22 promoted the approved geometry to `branding/privacy-shield/privacy-shield-icon.svg` and merged as `164310648a140a97df006146949fc0c59272eda8`.
 
-Compact 16 px, 20 px, and 24 px checks preserve the shield silhouette and layered structure. The monochrome derivative supports controlled Glaze UI presentation. The approval evidence is recorded in `docs/APPROVED-ICON.md`.
+That historical/current identity acceptance does not pre-approve the proposed Privacy Shield 2.0 icon/logo/artwork refresh. Any replacement identity requires its own design, accessibility, compact-size, Glaze UI V1.3 conformance, human review, and explicit promotion evidence.
 
-### 7. Adapter-specific runtime acceptance
+### 8. Adapter-specific runtime acceptance
 
 **State: Incremental; no single platform-wide production gate is satisfied by source validation alone.**
 
@@ -82,12 +92,12 @@ Privacy Shield is a platform-wide authority implemented through runtime adapters
 
 A successful adapter does not automatically promote unrelated adapters.
 
-### 8. Overall platform production posture
+### 9. Overall platform production posture
 
 **State: Active development with independently gated runtime integrations.**
 
-The platform foundation, canonical identity, and substantial source mechanisms are implemented. Production use remains bounded by the exact state provider and runtime adapters involved in a given operation. The project must not use a global “production approved” or equivalent claim to imply that every Privacy Shield capability is accepted across every GoreeCloud runtime.
+The platform foundation, canonical identity, and substantial source mechanisms are implemented. Production use remains bounded by the exact state provider, signing-key provider, and runtime adapters involved in a given operation. The project must not use a global “production approved” or equivalent claim to imply that every Privacy Shield capability is accepted across every GoreeCloud runtime.
 
 ## Production-boundary rule
 
-A successful GitHub workflow, portable-core test suite, source-contract synchronization, state-provider capability declaration, documentation update, or icon approval proves only the scope it directly validates. None of those artifacts independently proves production Browser behavior, distributed state correctness, adapter enforcement, or overall platform-wide runtime acceptance.
+A successful GitHub workflow, portable-core test suite, source-contract synchronization, state-provider capability declaration, signing-provider capability declaration, schema-valid acceptance record, documentation update, or icon approval proves only the scope it directly validates. None of those artifacts independently proves production Browser behavior, distributed state correctness, signing-key custody, adapter enforcement, or overall platform-wide runtime acceptance.
