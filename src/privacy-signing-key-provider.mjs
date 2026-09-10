@@ -52,23 +52,27 @@ function safeSignatureBuffer(signature) {
  *
  * This provider deliberately keeps raw secret material in process memory and is
  * therefore never production eligible. Secret values, key state, provider
- * identity, and producer identity are private class state; public methods expose
- * only immutable opaque key metadata and digest-signing operations.
+ * identity, provider version, and producer identity are private class state;
+ * public methods expose only immutable opaque key metadata and digest-signing
+ * operations.
  */
 export class InMemoryPrivacySigningKeyProvider {
   #keys = new Map();
   #activeKeyId;
   #providerId;
+  #providerVersion;
   #producerIdentity;
 
   constructor(configuration, {
     provider_id = "in-memory-development",
+    provider_version = "development-v1",
     producer_identity = "goreecloud-privacy-shield-development",
   } = {}) {
     this.#providerId = String(provider_id);
+    this.#providerVersion = String(provider_version);
     this.#producerIdentity = String(producer_identity);
 
-    if (!this.#providerId || !this.#producerIdentity) {
+    if (!this.#providerId || !this.#providerVersion || !this.#producerIdentity) {
       throw new TypeError("Signing provider identity metadata is required");
     }
 
@@ -134,6 +138,7 @@ export class InMemoryPrivacySigningKeyProvider {
     return Object.freeze({
       key_id: id,
       provider_id: this.#providerId,
+      provider_version: this.#providerVersion,
       producer_identity: this.#producerIdentity,
       algorithm: record.algorithm,
       status: record.status,
