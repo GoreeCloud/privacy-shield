@@ -10,7 +10,7 @@ Current `main` HEAD is `a779655dc5ee545857b5cdb767abdf89ade7949d`, a documentati
 
 Draft PR #73 extends that merged baseline with the transactional production state-provider boundary and independent provider-acceptance gate. Its reconciled exact head `204605975032252118aa22cc6584c4e75c6e160d` is source-validation green but remains Development/Draft/non-production.
 
-Draft PR #80 is stacked on PR #73 and advances Privacy Shield 2.0 signing-key custody. It now contains both the opaque provider boundary and a fail-closed exact-provider acceptance layer. It remains Development/Draft/non-production and does not inherit production acceptance from PR #73 or from source validation.
+Draft PR #80 is stacked on PR #73 and advances Privacy Shield 2.0 signing-key custody. It now contains the opaque provider boundary, fail-closed exact-provider acceptance layer, and provider-neutral operational qualification harness. It remains Development/Draft/non-production and does not inherit production acceptance from PR #73, source validation, or qualification-harness results.
 
 ## Acceptance gates
 
@@ -40,19 +40,23 @@ Production acceptance requires exact-provider and exact-deployment concurrency, 
 
 ### 4. Production signing-key custody
 
-**State: Source custody boundary and exact acceptance gate implemented in Draft development; real production provider and operational acceptance pending.**
+**State: Source custody boundary, exact acceptance gate, and provider-neutral operational qualification harness implemented in Draft development; real production provider and production acceptance pending.**
 
 Draft PR #80 moves capability signing behind `goreecloud.privacy-shield.signing-key-provider.v1`. `PrivacyCapabilityAuthority` computes a local SHA-256 digest and delegates only the digest plus an opaque key identifier to the provider. Tokens bind the key ID, provider ID, provider version, producer identity, and signing algorithm. Privacy Shield independently rejects untrusted public key state before provider signature verification can run.
 
-Production runtime construction now requires more than provider capability declarations. `createPrivacyRuntime({ production: true, ... })` requires a fresh passing `goreecloud.privacy-shield.signing-key-provider-acceptance.v1` record that matches the exact Privacy Shield source revision, exact provider ID and provider version, producer identity, accepted signing algorithm, and deployment ID. Every required custody qualification must be passed and backed by passing evidence.
+Production runtime construction requires more than provider capability declarations. `createPrivacyRuntime({ production: true, ... })` requires a fresh passing `goreecloud.privacy-shield.signing-key-provider-acceptance.v1` record that matches the exact Privacy Shield source revision, exact provider ID and provider version, producer identity, accepted signing algorithm, and deployment ID. Every required custody qualification must be passed and backed by passing evidence.
 
 The acceptance record is also privacy-bounded: raw private payloads, secret material, and full capability tokens are forbidden from acceptance evidence. The runtime exposes only minimized acceptance metadata rather than the full evidence record.
 
-Repository validation checks both the acceptance schema and any future records under `acceptance/signing-key-providers/`. There are currently **no production-approved signing-key provider records**, so no production signing-key custody claim is authorized.
+The `goreecloud.privacy-shield.signing-key-qualification.v1` harness can now exercise operational behavior through a controlled provider-specific controller. It covers unauthorized caller rejection, producer binding, rotation and overlap, retirement, emergency revocation, stale/untrusted rejection, provider outage/degraded behavior, recovery/continuity, privacy-safe audit coverage, and exact runtime-integration probes. The controller must declare a controlled environment, explicit disruptive-operation authorization, minimized evidence, and `acceptance_authority: false` before those exercises can run.
+
+Qualification runs use synthetic SHA-256 exercise digests and are hard-coded `authorizing: false`. They cannot approve a provider or deployment. `secure_key_generation`, `non_exportability`, and `access_control_review` are deliberately never auto-passed and always require external evidence from the real custody environment.
+
+Repository validation checks the provider contract, the operational qualification contract, the acceptance schema, and any future records under `acceptance/signing-key-providers/`. There are currently **no production-approved signing-key provider records**, so no production signing-key custody claim is authorized.
 
 Legacy raw `capability_keys` remain available only for non-production compatibility through `InMemoryPrivacySigningKeyProvider`. The in-memory provider remains explicitly non-production and cannot receive production acceptance.
 
-No KMS, HSM, cloud key service, or other exact production signing provider has been implemented or accepted by this source slice. Secure key generation, non-exportability, caller authorization, producer binding, rotation/retirement/emergency revocation, stale-state rejection, privacy-safe signing audit, outage/degraded behavior, recovery/continuity, access-control review, and exact runtime integration evidence remain separate production gates. See `docs/SIGNING-KEY-CUSTODY.md`.
+No KMS, HSM, cloud key service, or other exact production signing provider has been implemented or accepted by this source slice. Secure key generation, non-exportability, real caller authorization, real producer binding, provider/deployment lifecycle exercises, privacy-safe production signing audit, outage/recovery evidence, access-control review, and exact runtime acceptance against the real provider remain production gates. See `docs/SIGNING-KEY-CUSTODY.md`.
 
 ### 5. Browser source integration
 
@@ -106,4 +110,4 @@ The platform foundation, canonical identity, and substantial source mechanisms a
 
 ## Production-boundary rule
 
-A successful GitHub workflow, portable-core test suite, source-contract synchronization, state-provider capability declaration, signing-provider capability declaration, schema-valid acceptance record, documentation update, or icon approval proves only the scope it directly validates. None of those artifacts independently proves production Browser behavior, distributed state correctness, signing-key custody, adapter enforcement, or overall platform-wide runtime acceptance.
+A successful GitHub workflow, portable-core test suite, source-contract synchronization, state-provider capability declaration, signing-provider capability declaration, provider-neutral qualification run, schema-valid acceptance record, documentation update, or icon approval proves only the scope it directly validates. None of those artifacts independently proves production Browser behavior, distributed state correctness, production signing-key custody, adapter enforcement, or overall platform-wide runtime acceptance.
