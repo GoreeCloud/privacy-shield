@@ -96,7 +96,7 @@
         "status": {"type": "string", "enum": ["draft", "complete", "failed", "superseded"]},
         "authorizing": {"const": false},
         "production_acceptance_authorized": {"const": false},
-        "evidence_reference": {"type": "string", "minLength": 1, "maxLength": 1000},
+        "evidence_reference": {"$ref": "#/$defs/evidence_ref"},
         "evaluated_at": {"type": "string", "format": "date-time"},
         "valid_until": {"type": "string", "format": "date-time"}
       }
@@ -119,6 +119,12 @@
     }
   },
   "$defs": {
+    "evidence_ref": {
+      "type": "string",
+      "minLength": 85,
+      "maxLength": 1200,
+      "pattern": "^evidence\\+sha256:[0-9a-f]{64}:(?:https://|github://|gdrive://|qualification-run:|artifact:)[^\\s]+$"
+    },
     "criterion": {
       "type": "object",
       "additionalProperties": false,
@@ -129,7 +135,7 @@
           "type": "array",
           "uniqueItems": true,
           "maxItems": 20,
-          "items": {"type": "string", "minLength": 1, "maxLength": 1000}
+          "items": {"$ref": "#/$defs/evidence_ref"}
         }
       }
     }
