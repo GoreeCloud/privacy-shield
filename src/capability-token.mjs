@@ -37,7 +37,10 @@ function requireKeyMetadata(metadata, { production = false } = {}) {
   if (!metadata.key_id || !metadata.algorithm || !metadata.status) {
     throw new Error("INVALID_CAPABILITY_KEY_METADATA");
   }
-  if (production && (!metadata.provider_id || !metadata.producer_identity)) {
+  if (
+    production &&
+    (!metadata.provider_id || !metadata.provider_version || !metadata.producer_identity)
+  ) {
     throw new Error("INCOMPLETE_PRODUCTION_CAPABILITY_KEY_METADATA");
   }
   return metadata;
@@ -118,6 +121,7 @@ export class PrivacyCapabilityAuthority {
       iss: "goreecloud-privacy-shield",
       kid: key.key_id,
       key_provider_id: key.provider_id ?? "in-memory-development",
+      key_provider_version: key.provider_version ?? "development-v1",
       producer_identity: key.producer_identity ?? "goreecloud-privacy-shield-development",
       sig_alg: key.algorithm,
       iat: now,
@@ -154,6 +158,7 @@ export class PrivacyCapabilityAuthority {
       !claims.sig_alg ||
       !claims.producer_identity ||
       !claims.key_provider_id ||
+      !claims.key_provider_version ||
       !Number.isInteger(claims.iat) ||
       !Number.isInteger(claims.exp)
     ) {
@@ -171,6 +176,9 @@ export class PrivacyCapabilityAuthority {
     }
     if (claims.key_provider_id !== key.provider_id) {
       throw new Error("CAPABILITY_KEY_PROVIDER_MISMATCH");
+    }
+    if (claims.key_provider_version !== key.provider_version) {
+      throw new Error("CAPABILITY_KEY_PROVIDER_VERSION_MISMATCH");
     }
 
     const verified = this.keyProvider.verifyDigest({
