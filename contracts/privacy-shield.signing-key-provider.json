@@ -55,6 +55,11 @@
   "release_boundary": {
     "provider_capability_declaration_is_production_acceptance": false,
     "source_validation_is_key_custody_acceptance": false,
+    "provider_selection_record_required": true,
+    "provider_selection_is_production_acceptance": false,
+    "provider_selection_schema": "contracts/privacy-shield.signing-key-provider-selection.schema.json",
+    "provider_selection_records": "decisions/signing-key-providers/*.json",
+    "approved_selection_required_before_acceptance": true,
     "production_acceptance_record_required": true,
     "production_acceptance_schema": "contracts/privacy-shield.signing-key-provider-acceptance.schema.json",
     "production_acceptance_records": "acceptance/signing-key-providers/*.json",
