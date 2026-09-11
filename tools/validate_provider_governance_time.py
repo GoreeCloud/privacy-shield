@@ -1,0 +1,145 @@
+#!/usr/bin/env python3
+"""Fail-closed temporal-integrity validation for Privacy Shield 2.0 provider governance records.
+
+This gate is deliberately separate from provider qualification, evidence review,
+selection, and production acceptance. It only rejects repository governance
+records whose authoritative timestamps are internally inconsistent, stale where
+current authority is claimed, or dated in the future relative to validation.
+"""
+from __future__ import annotations
+
+import json
+from datetime import datetime, timezone
+from pathlib import Path
+from typing import Iterable
+
+ROOT = Path(__file__).resolve().parents[1]
+EVALUATION_DIRS = (
+    ROOT / "evaluations" / "state-providers",
+    ROOT / "evaluations" / "signing-key-providers",
+)
+SELECTION_DIRS = (
+    ROOT / "decisions" / "state-providers",
+    ROOT / "decisions" / "signing-key-providers",
+)
+REVIEW_DIR = ROOT / "reviews" / "provider-evidence"
+
+
+def fail(message: str) -> None:
+    raise SystemExit(f"Privacy Shield provider governance temporal validation failed: {message}")
+
+
+def parse_time(value: object, *, label: str) -> datetime:
+    if not isinstance(value, str) or not value.strip():
+        fail(f"{label} must be a non-empty offset-aware date-time")
+    try:
+        parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
+    except ValueError:
+        fail(f"{label} is not a valid date-time")
+    if parsed.tzinfo is None:
+        fail(f"{label} must include a timezone offset")
+    return parsed.astimezone(timezone.utc)
+
+
+def load_json(path: Path) -> dict:
+    try:
+        value = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        fail(f"{path.relative_to(ROOT)} is unreadable or invalid JSON: {exc}")
+    if not isinstance(value, dict):
+        fail(f"{path.relative_to(ROOT)} must contain a JSON object")
+    return value
+
+
+def _governance(record: dict, path: Path) -> dict:
+    value = record.get("governance")
+    if not isinstance(value, dict):
+        fail(f"{path.relative_to(ROOT)}: governance must be an object")
+    return value
+
+
+def validate_evaluation(path: Path, record: dict, *, now: datetime) -> None:
+    governance = _governance(record, path)
+    evaluated_at = parse_time(
+        governance.get("evaluated_at"),
+        label=f"{path.relative_to(ROOT)} governance.evaluated_at",
+    )
+    valid_until = parse_time(
+        governance.get("valid_until"),
+        label=f"{path.relative_to(ROOT)} governance.valid_until",
+    )
+    if evaluated_at > now:
+        fail(f"{path.relative_to(ROOT)}: evaluation timestamp is in the future")
+    if valid_until <= evaluated_at:
+        fail(f"{path.relative_to(ROOT)}: evaluation validity window is invalid")
+    if governance.get("status") == "complete" and valid_until <= now:
+        fail(f"{path.relative_to(ROOT)}: complete evaluation is stale")
+
+
+def validate_selection(path: Path, record: dict, *, now: datetime) -> None:
+    governance = _governance(record, path)
+    decided_at = parse_time(
+        governance.get("decided_at"),
+        label=f"{path.relative_to(ROOT)} governance.decided_at",
+    )
+    review_by = parse_time(
+        governance.get("review_by"),
+        label=f"{path.relative_to(ROOT)} governance.review_by",
+    )
+    if decided_at > now:
+        fail(f"{path.relative_to(ROOT)}: provider-selection decision timestamp is in the future")
+    if review_by <= decided_at:
+        fail(f"{path.relative_to(ROOT)}: selection review window is invalid")
+    if governance.get("status") == "approved" and review_by <= now:
+        fail(f"{path.relative_to(ROOT)}: approved provider selection is stale")
+
+
+def validate_review(path: Path, record: dict, *, now: datetime) -> None:
+    review = record.get("review")
+    if not isinstance(review, dict):
+        fail(f"{path.relative_to(ROOT)}: review must be an object")
+    reviewed_at = parse_time(
+        review.get("reviewed_at"),
+        label=f"{path.relative_to(ROOT)} review.reviewed_at",
+    )
+    valid_until = parse_time(
+        review.get("valid_until"),
+        label=f"{path.relative_to(ROOT)} review.valid_until",
+    )
+    if reviewed_at > now:
+        fail(f"{path.relative_to(ROOT)}: evidence-review timestamp is in the future")
+    if valid_until <= reviewed_at:
+        fail(f"{path.relative_to(ROOT)}: evidence-review validity window is invalid")
+    governance = record.get("governance")
+    if isinstance(governance, dict) and governance.get("status") == "active" and valid_until <= now:
+        fail(f"{path.relative_to(ROOT)}: active evidence review is stale")
+
+
+def json_records(directories: Iterable[Path]) -> Iterable[Path]:
+    for directory in directories:
+        if not directory.exists():
+            continue
+        yield from sorted(directory.glob("*.json"))
+
+
+def validate_repository(*, now: datetime | None = None) -> None:
+    now = now or datetime.now(timezone.utc)
+    if now.tzinfo is None:
+        fail("validation time must be timezone-aware")
+    now = now.astimezone(timezone.utc)
+
+    for path in json_records(EVALUATION_DIRS):
+        validate_evaluation(path, load_json(path), now=now)
+    for path in json_records(SELECTION_DIRS):
+        validate_selection(path, load_json(path), now=now)
+    for path in json_records((REVIEW_DIR,)):
+        validate_review(path, load_json(path), now=now)
+
+
+def main() -> None:
+    validate_repository()
+    print("Privacy Shield provider governance temporal-integrity validation passed")
+
+
+if __name__ == "__main__":
+    main()
