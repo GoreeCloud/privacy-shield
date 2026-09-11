@@ -29,6 +29,14 @@ def fail(message: str) -> None:
     raise SystemExit(f"Privacy Shield provider governance temporal validation failed: {message}")
 
 
+def display_path(path: Path) -> Path:
+    """Return a stable repository-relative label when possible, otherwise the input path."""
+    try:
+        return path.resolve().relative_to(ROOT)
+    except (OSError, ValueError):
+        return path
+
+
 def parse_time(value: object, *, label: str) -> datetime:
     if not isinstance(value, str) or not value.strip():
         fail(f"{label} must be a non-empty offset-aware date-time")
@@ -42,77 +50,81 @@ def parse_time(value: object, *, label: str) -> datetime:
 
 
 def load_json(path: Path) -> dict:
+    label = display_path(path)
     try:
         value = json.loads(path.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as exc:
-        fail(f"{path.relative_to(ROOT)} is unreadable or invalid JSON: {exc}")
+        fail(f"{label} is unreadable or invalid JSON: {exc}")
     if not isinstance(value, dict):
-        fail(f"{path.relative_to(ROOT)} must contain a JSON object")
+        fail(f"{label} must contain a JSON object")
     return value
 
 
 def _governance(record: dict, path: Path) -> dict:
     value = record.get("governance")
     if not isinstance(value, dict):
-        fail(f"{path.relative_to(ROOT)}: governance must be an object")
+        fail(f"{display_path(path)}: governance must be an object")
     return value
 
 
 def validate_evaluation(path: Path, record: dict, *, now: datetime) -> None:
+    label = display_path(path)
     governance = _governance(record, path)
     evaluated_at = parse_time(
         governance.get("evaluated_at"),
-        label=f"{path.relative_to(ROOT)} governance.evaluated_at",
+        label=f"{label} governance.evaluated_at",
     )
     valid_until = parse_time(
         governance.get("valid_until"),
-        label=f"{path.relative_to(ROOT)} governance.valid_until",
+        label=f"{label} governance.valid_until",
     )
     if evaluated_at > now:
-        fail(f"{path.relative_to(ROOT)}: evaluation timestamp is in the future")
+        fail(f"{label}: evaluation timestamp is in the future")
     if valid_until <= evaluated_at:
-        fail(f"{path.relative_to(ROOT)}: evaluation validity window is invalid")
+        fail(f"{label}: evaluation validity window is invalid")
     if governance.get("status") == "complete" and valid_until <= now:
-        fail(f"{path.relative_to(ROOT)}: complete evaluation is stale")
+        fail(f"{label}: complete evaluation is stale")
 
 
 def validate_selection(path: Path, record: dict, *, now: datetime) -> None:
+    label = display_path(path)
     governance = _governance(record, path)
     decided_at = parse_time(
         governance.get("decided_at"),
-        label=f"{path.relative_to(ROOT)} governance.decided_at",
+        label=f"{label} governance.decided_at",
     )
     review_by = parse_time(
         governance.get("review_by"),
-        label=f"{path.relative_to(ROOT)} governance.review_by",
+        label=f"{label} governance.review_by",
     )
     if decided_at > now:
-        fail(f"{path.relative_to(ROOT)}: provider-selection decision timestamp is in the future")
+        fail(f"{label}: provider-selection decision timestamp is in the future")
     if review_by <= decided_at:
-        fail(f"{path.relative_to(ROOT)}: selection review window is invalid")
+        fail(f"{label}: selection review window is invalid")
     if governance.get("status") == "approved" and review_by <= now:
-        fail(f"{path.relative_to(ROOT)}: approved provider selection is stale")
+        fail(f"{label}: approved provider selection is stale")
 
 
 def validate_review(path: Path, record: dict, *, now: datetime) -> None:
+    label = display_path(path)
     review = record.get("review")
     if not isinstance(review, dict):
-        fail(f"{path.relative_to(ROOT)}: review must be an object")
+        fail(f"{label}: review must be an object")
     reviewed_at = parse_time(
         review.get("reviewed_at"),
-        label=f"{path.relative_to(ROOT)} review.reviewed_at",
+        label=f"{label} review.reviewed_at",
     )
     valid_until = parse_time(
         review.get("valid_until"),
-        label=f"{path.relative_to(ROOT)} review.valid_until",
+        label=f"{label} review.valid_until",
     )
     if reviewed_at > now:
-        fail(f"{path.relative_to(ROOT)}: evidence-review timestamp is in the future")
+        fail(f"{label}: evidence-review timestamp is in the future")
     if valid_until <= reviewed_at:
-        fail(f"{path.relative_to(ROOT)}: evidence-review validity window is invalid")
+        fail(f"{label}: evidence-review validity window is invalid")
     governance = record.get("governance")
     if isinstance(governance, dict) and governance.get("status") == "active" and valid_until <= now:
-        fail(f"{path.relative_to(ROOT)}: active evidence review is stale")
+        fail(f"{label}: active evidence review is stale")
 
 
 def json_records(directories: Iterable[Path]) -> Iterable[Path]:
