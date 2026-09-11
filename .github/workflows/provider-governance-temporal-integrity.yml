@@ -1,0 +1,48 @@
+name: Provider Governance Temporal Integrity
+
+on:
+  pull_request:
+    paths:
+      - 'evaluations/state-providers/**'
+      - 'evaluations/signing-key-providers/**'
+      - 'decisions/state-providers/**'
+      - 'decisions/signing-key-providers/**'
+      - 'reviews/provider-evidence/**'
+      - 'tools/validate_provider_governance_time.py'
+      - 'tests/test_provider_governance_time.py'
+      - '.github/workflows/provider-governance-temporal-integrity.yml'
+  push:
+    branches:
+      - main
+      - 'upgrade/privacy-shield-2-*'
+    paths:
+      - 'evaluations/state-providers/**'
+      - 'evaluations/signing-key-providers/**'
+      - 'decisions/state-providers/**'
+      - 'decisions/signing-key-providers/**'
+      - 'reviews/provider-evidence/**'
+      - 'tools/validate_provider_governance_time.py'
+      - 'tests/test_provider_governance_time.py'
+      - '.github/workflows/provider-governance-temporal-integrity.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  temporal-integrity:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Validate repository provider-governance timestamps
+        run: python tools/validate_provider_governance_time.py
+
+      - name: Run temporal-integrity regression tests
+        run: python -m unittest tests.test_provider_governance_time
