@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://goreecloud.dev/schemas/privacy-shield/privacy-lock-assessment/v1",
+  "title": "Privacy Shield Privacy Lock Assessment v1",
+  "type": "object",
+  "required": [
+    "contract",
+    "authorization_effect",
+    "may_widen_authority",
+    "lock_id",
+    "lock_expires_at",
+    "application_id",
+    "category",
+    "effect",
+    "reason_code",
+    "constraints",
+    "independent_authority_required",
+    "independent_authority_reference"
+  ],
+  "properties": {
+    "contract": {
+      "const": "goreecloud.privacy-shield.privacy-lock-assessment.v1"
+    },
+    "authorization_effect": { "const": "restriction_only" },
+    "may_widen_authority": { "const": false },
+    "lock_id": { "type": ["string", "null"] },
+    "lock_expires_at": { "type": ["string", "null"], "format": "date-time" },
+    "application_id": { "type": "string", "minLength": 1 },
+    "category": { "type": ["string", "null"] },
+    "effect": { "enum": ["none", "deny", "constrain"] },
+    "reason_code": { "type": "string", "minLength": 1 },
+    "constraints": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "independent_authority_required": { "type": "boolean" },
+    "independent_authority_reference": {
+      "anyOf": [
+        { "type": "null" },
+        {
+          "type": "object",
+          "required": ["authority", "evidence_reference"],
+          "properties": {
+            "authority": { "type": "string", "minLength": 1 },
+            "evidence_reference": { "type": "string", "minLength": 1 }
+          },
+          "additionalProperties": false
+        }
+      ]
+    }
+  },
+  "additionalProperties": false
+}
