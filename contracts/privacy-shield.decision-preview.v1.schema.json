@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://goreecloud.dev/schemas/privacy-shield/decision-preview/v1",
+  "title": "Privacy Shield Non-Authorizing Decision Preview Contract",
+  "type": "object",
+  "required": [
+    "preview_id",
+    "contract",
+    "created_at",
+    "authorization_effect",
+    "records_evidence",
+    "creates_capability",
+    "consumes_consent",
+    "requires_runtime_re_evaluation",
+    "request",
+    "decision",
+    "explanation"
+  ],
+  "properties": {
+    "preview_id": { "type": "string", "pattern": "^pspv_" },
+    "contract": { "const": "goreecloud.privacy-shield.decision-preview.v1" },
+    "created_at": { "type": "string", "format": "date-time" },
+    "authorization_effect": { "const": false },
+    "records_evidence": { "const": false },
+    "creates_capability": { "const": false },
+    "consumes_consent": { "const": false },
+    "requires_runtime_re_evaluation": { "const": true },
+    "request": {
+      "type": "object",
+      "required": [
+        "request_id",
+        "requester_id",
+        "data_category",
+        "purpose",
+        "operation",
+        "processing_zone",
+        "destination_classification",
+        "retention"
+      ],
+      "properties": {
+        "request_id": { "type": ["string", "null"] },
+        "requester_id": { "type": ["string", "null"] },
+        "data_category": { "type": ["string", "null"] },
+        "purpose": { "type": ["string", "null"] },
+        "operation": { "type": ["string", "null"] },
+        "processing_zone": { "enum": ["local", "private_goreecloud", "trusted_service", "external"] },
+        "destination_classification": { "enum": ["local", "goreecloud_private", "trusted_service", "external"] },
+        "retention": { "$ref": "#/$defs/retention" }
+      },
+      "additionalProperties": false
+    },
+    "decision": {
+      "type": "object",
+      "required": ["outcome", "reason_code", "obligations", "policy_references", "expires_at"],
+      "properties": {
+        "outcome": { "enum": ["ALLOW", "DENY", "ALLOW_WITH_CONSTRAINTS", "REQUIRE_USER_DECISION"] },
+        "reason_code": { "type": "string", "minLength": 1 },
+        "obligations": { "$ref": "#/$defs/stringArray" },
+        "policy_references": { "$ref": "#/$defs/stringArray" },
+        "expires_at": { "type": ["string", "null"], "format": "date-time" }
+      },
+      "additionalProperties": false
+    },
+    "explanation": {
+      "type": "object",
+      "required": ["summary_code", "message", "outcome", "reason_codes", "purpose", "processing_zone", "destination_classification", "retention", "obligations", "policy_references", "evidence_reference", "preview_only"],
+      "properties": {
+        "summary_code": { "type": "string", "minLength": 1 },
+        "message": { "type": "string", "minLength": 1 },
+        "outcome": { "enum": ["ALLOW", "DENY", "ALLOW_WITH_CONSTRAINTS", "REQUIRE_USER_DECISION"] },
+        "reason_codes": { "$ref": "#/$defs/stringArray" },
+        "purpose": { "type": "string", "minLength": 1 },
+        "processing_zone": { "enum": ["local", "private_goreecloud", "trusted_service", "external"] },
+        "destination_classification": { "enum": ["local", "goreecloud_private", "trusted_service", "external"] },
+        "retention": { "$ref": "#/$defs/retention" },
+        "obligations": { "$ref": "#/$defs/stringArray" },
+        "policy_references": { "$ref": "#/$defs/stringArray" },
+        "evidence_reference": { "type": "null" },
+        "preview_only": { "const": true }
+      },
+      "additionalProperties": false
+    }
+  },
+  "$defs": {
+    "stringArray": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "uniqueItems": true
+    },
+    "retention": {
+      "type": "object",
+      "required": ["mode", "expires_at"],
+      "properties": {
+        "mode": { "type": "string", "minLength": 1 },
+        "expires_at": { "type": ["string", "null"], "format": "date-time" }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
