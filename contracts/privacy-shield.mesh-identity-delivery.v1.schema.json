@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:goreecloud:privacy-shield:mesh-identity-delivery:v1",
+  "title": "Privacy Shield 2.0 Identity-Authenticated Mesh Delivery Receipt",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "evidence_id",
+    "replayed",
+    "accepted_at",
+    "producer_service_id",
+    "identity",
+    "mesh_identity_verified",
+    "authorization_effect",
+    "authority_transfer"
+  ],
+  "properties": {
+    "schema_version": {"const": "goreecloud.privacy-shield.mesh-identity-delivery.v1"},
+    "evidence_id": {"type": "string", "minLength": 1, "maxLength": 128},
+    "replayed": {"type": "boolean"},
+    "accepted_at": {
+      "anyOf": [
+        {"type": "string", "format": "date-time", "maxLength": 40},
+        {"type": "null"}
+      ]
+    },
+    "producer_service_id": {"const": "privacy-shield"},
+    "identity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "authority",
+        "credential_id",
+        "service_id",
+        "audience",
+        "scopes",
+        "issued_at",
+        "expires_at",
+        "rotation_state",
+        "revocation_state",
+        "trust_status",
+        "trust_verified_at",
+        "trust_valid_until"
+      ],
+      "properties": {
+        "authority": {"const": "goreecloud-identity"},
+        "credential_id": {"type": "string", "minLength": 1, "maxLength": 240},
+        "service_id": {"const": "privacy-shield"},
+        "audience": {"const": "goreecloud-mesh"},
+        "scopes": {
+          "type": "array",
+          "prefixItems": [{"const": "mesh.evidence.write"}],
+          "items": false,
+          "minItems": 1,
+          "maxItems": 1
+        },
+        "issued_at": {"type": "string", "format": "date-time", "maxLength": 40},
+        "expires_at": {"type": "string", "format": "date-time", "maxLength": 40},
+        "rotation_state": {"const": "current"},
+        "revocation_state": {"const": "active"},
+        "trust_status": {"const": "verified"},
+        "trust_verified_at": {"type": "string", "format": "date-time", "maxLength": 40},
+        "trust_valid_until": {"type": "string", "format": "date-time", "maxLength": 40}
+      }
+    },
+    "mesh_identity_verified": {"const": true},
+    "authorization_effect": {"const": false},
+    "authority_transfer": {"const": false}
+  }
+}
