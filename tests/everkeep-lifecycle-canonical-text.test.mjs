@@ -93,3 +93,13 @@ test("explicit malformed evidence reason cannot be treated as absent", () => {
   const result = assessEverkeepLifecycleEvidence(record, withoutReason, {now});
   assert.equal(result.reason, "everkeep_satisfied");
 });
+
+test("explicit evidence reason follows the published 500-character assessment bound", () => {
+  const record = obligation();
+  const accepted = assessEverkeepLifecycleEvidence(record, evidence({reason: "r".repeat(500)}), {now});
+  assert.equal(accepted.reason.length, 500);
+  assert.throws(
+    () => assessEverkeepLifecycleEvidence(record, evidence({reason: "r".repeat(501)}), {now}),
+    /noncanonical/,
+  );
+});
