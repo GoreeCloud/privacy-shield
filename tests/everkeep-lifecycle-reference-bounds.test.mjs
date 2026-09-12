@@ -11,6 +11,8 @@ import {
 
 const issuedAt = "2026-09-12T06:00:00.000Z";
 const now = new Date("2026-09-12T07:00:00.000Z");
+const maxEvidenceAgeMs = 2 * 60 * 60 * 1000;
+const assessment = {now, maxEvidenceAgeMs};
 
 function baseObligation(evidenceReferences = []) {
   return createEverkeepLifecycleObligation({
@@ -60,14 +62,14 @@ test("lifecycle obligation rejects a manifest beyond the schema ceiling", () => 
 test("lifecycle evidence rejects a manifest beyond the assessment schema ceiling", () => {
   const obligation = baseObligation(["evidence+sha256:privacy-decision"]);
   assert.throws(
-    () => assessEverkeepLifecycleEvidence(obligation, baseEvidence(references(51)), {now}),
+    () => assessEverkeepLifecycleEvidence(obligation, baseEvidence(references(51)), assessment),
     /evidence\.evidence_references is invalid/,
   );
 });
 
 test("the published 50-reference schema ceiling remains accepted", () => {
   const obligation = baseObligation(references(50));
-  const result = assessEverkeepLifecycleEvidence(obligation, baseEvidence(references(50)), {now});
+  const result = assessEverkeepLifecycleEvidence(obligation, baseEvidence(references(50)), assessment);
   assert.equal(result.status, "satisfied");
   assert.equal(result.evidence_references.length, 50);
 });
