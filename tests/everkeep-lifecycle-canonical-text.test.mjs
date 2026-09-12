@@ -11,6 +11,8 @@ import {
 
 const issued = "2026-09-12T08:00:00.000Z";
 const now = new Date("2026-09-12T08:30:00.000Z");
+const maxEvidenceAgeMs = 2 * 60 * 60 * 1000;
+const assessment = {now, maxEvidenceAgeMs};
 
 function obligation(overrides = {}) {
   return createEverkeepLifecycleObligation({
@@ -66,15 +68,15 @@ test("obligation text is not silently whitespace-normalized", () => {
 test("Everkeep evidence rejects whitespace and control-bearing text", () => {
   const record = obligation();
   assert.throws(
-    () => assessEverkeepLifecycleEvidence(record, evidence({reason: "target-state-verified\n"}), {now}),
+    () => assessEverkeepLifecycleEvidence(record, evidence({reason: "target-state-verified\n"}), assessment),
     /noncanonical/,
   );
   assert.throws(
-    () => assessEverkeepLifecycleEvidence(record, evidence({evidence_references: [" evidence+sha256:target-readback"]}), {now}),
+    () => assessEverkeepLifecycleEvidence(record, evidence({evidence_references: [" evidence+sha256:target-readback"]}), assessment),
     /noncanonical/,
   );
   assert.throws(
-    () => assessEverkeepLifecycleEvidence(record, evidence({observed_at: " 2026-09-12T08:10:00.000Z"}), {now}),
+    () => assessEverkeepLifecycleEvidence(record, evidence({observed_at: " 2026-09-12T08:10:00.000Z"}), assessment),
     /noncanonical/,
   );
 });
@@ -83,23 +85,23 @@ test("explicit malformed evidence reason cannot be treated as absent", () => {
   const record = obligation();
   for (const reason of ["", null, false]) {
     assert.throws(
-      () => assessEverkeepLifecycleEvidence(record, evidence({reason}), {now}),
+      () => assessEverkeepLifecycleEvidence(record, evidence({reason}), assessment),
       /noncanonical/,
     );
   }
 
   const withoutReason = evidence();
   delete withoutReason.reason;
-  const result = assessEverkeepLifecycleEvidence(record, withoutReason, {now});
+  const result = assessEverkeepLifecycleEvidence(record, withoutReason, assessment);
   assert.equal(result.reason, "everkeep_satisfied");
 });
 
 test("explicit evidence reason follows the published 500-character assessment bound", () => {
   const record = obligation();
-  const accepted = assessEverkeepLifecycleEvidence(record, evidence({reason: "r".repeat(500)}), {now});
+  const accepted = assessEverkeepLifecycleEvidence(record, evidence({reason: "r".repeat(500)}), assessment);
   assert.equal(accepted.reason.length, 500);
   assert.throws(
-    () => assessEverkeepLifecycleEvidence(record, evidence({reason: "r".repeat(501)}), {now}),
+    () => assessEverkeepLifecycleEvidence(record, evidence({reason: "r".repeat(501)}), assessment),
     /noncanonical/,
   );
 });
