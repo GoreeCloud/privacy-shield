@@ -208,6 +208,9 @@ export function assessEverkeepLifecycleEvidence(obligation, evidence, { now = ne
   if (evidence.operation !== validatedObligation.operation) throw new TypeError("operation binding mismatch");
   if (!EVIDENCE_STATES.has(evidence.state)) throw new TypeError("evidence state is invalid");
   if (typeof evidence.execution_verified !== "boolean") throw new TypeError("evidence.execution_verified must be boolean");
+  if (evidence.execution_verified && evidence.state !== "satisfied") {
+    throw new TypeError("verified execution requires satisfied evidence state");
+  }
 
   const observed = time(evidence.observed_at, "evidence.observed_at");
   if (observed < validatedObligation.issuedAt) throw new TypeError("evidence cannot predate the lifecycle obligation");
