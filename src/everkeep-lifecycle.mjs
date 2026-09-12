@@ -31,6 +31,21 @@ const OBLIGATION_FIELDS = new Set([
   "execution_authorization",
   "authority_transfer",
 ]);
+const EVIDENCE_FIELDS = new Set([
+  "obligation_id",
+  "producer",
+  "producer_revision",
+  "status_schema",
+  "execution_authority",
+  "resource_scope",
+  "operation",
+  "state",
+  "observed_at",
+  "fresh_until",
+  "execution_verified",
+  "evidence_references",
+  "reason",
+]);
 
 function text(value, name, pattern = null) {
   if (
@@ -180,9 +195,11 @@ export function assessEverkeepLifecycleEvidence(obligation, evidence, { now = ne
   }
 
   object(evidence, "evidence");
-  closed(evidence, new Set(["obligation_id", "producer", "execution_authority", "resource_scope", "operation", "state", "observed_at", "fresh_until", "execution_verified", "evidence_references", "reason"]), "evidence");
+  closed(evidence, EVIDENCE_FIELDS, "evidence");
   if (evidence.obligation_id !== obligation.obligation_id) throw new TypeError("evidence obligation binding mismatch");
   if (evidence.producer !== EVERKEEP_AUTHORITY) throw new TypeError("evidence producer must be Everkeep");
+  if (evidence.producer_revision !== obligation.everkeep_source_revision) throw new TypeError("evidence Everkeep source revision binding mismatch");
+  if (evidence.status_schema !== obligation.everkeep_status_schema) throw new TypeError("evidence Everkeep status schema binding mismatch");
   if (evidence.execution_authority !== obligation.execution_authority) throw new TypeError("execution authority binding mismatch");
   if (evidence.resource_scope !== obligation.resource_scope) throw new TypeError("resource scope binding mismatch");
   if (evidence.operation !== validatedObligation.operation) throw new TypeError("operation binding mismatch");
