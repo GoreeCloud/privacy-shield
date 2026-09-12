@@ -152,7 +152,11 @@ async function acquireVerifiedMeshIdentityCredential(
   const verifiedAt = timestamp(trust.verified_at, "trust.verified_at");
   const trustValidUntil = timestamp(trust.valid_until, "trust.valid_until");
   if (verifiedAt > nowMs) throw new Error("Identity trust verification cannot be future-dated");
+  if (verifiedAt < issuedAt) throw new Error("Identity trust verification predates credential issuance");
   if (trustValidUntil <= nowMs) throw new Error("Identity trust verification is expired");
+  if (trustValidUntil - nowMs < minRemaining) {
+    throw new Error("Identity trust verification has insufficient remaining validity");
+  }
   if (trustValidUntil > expiresAt) {
     throw new Error("Identity trust validity cannot outlive the credential");
   }
@@ -211,11 +215,13 @@ export async function deliverIdentityAuthenticatedPrivacyMeshEvidence({
     },
   });
 
+  const acceptedAt = timestamp(receipt.accepted_at, "Mesh accepted_at");
+
   return {
     schema_version: RECEIPT_SCHEMA,
     evidence_id: receipt.evidence_id,
     replayed: receipt.replayed,
-    accepted_at: receipt.accepted_at,
+    accepted_at: new Date(acceptedAt).toISOString(),
     producer_service_id: receipt.producer_service_id,
     identity: acquired.identity,
     mesh_identity_verified: true,
