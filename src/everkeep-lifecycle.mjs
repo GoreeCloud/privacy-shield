@@ -7,6 +7,7 @@ const EVERKEEP_STATUS_SCHEMA = "contracts/continuity.status.schema.json";
 const OPERATIONS = new Set(["retain", "delete", "export", "recovery", "succession", "preservation"]);
 const EVIDENCE_STATES = new Set(["pending", "satisfied", "failed", "unknown"]);
 const ID = /^[A-Za-z0-9][A-Za-z0-9._:-]{0,239}$/;
+const TIMEZONE_SUFFIX = /(?:Z|[+-]\d{2}:\d{2})$/;
 
 function text(value, name, pattern = null) {
   if (typeof value !== "string" || value.length === 0 || value.length > 1000 || (pattern && !pattern.test(value))) {
@@ -25,8 +26,11 @@ function closed(value, allowed, name) {
 }
 
 function time(value, name) {
+  if (typeof value !== "string" || !TIMEZONE_SUFFIX.test(value)) {
+    throw new TypeError(`${name} must be an ISO date-time with explicit timezone`);
+  }
   const parsed = Date.parse(value);
-  if (typeof value !== "string" || !Number.isFinite(parsed)) throw new TypeError(`${name} must be an ISO date-time`);
+  if (!Number.isFinite(parsed)) throw new TypeError(`${name} must be an ISO date-time with explicit timezone`);
   return parsed;
 }
 
@@ -100,7 +104,7 @@ export function createEverkeepLifecycleObligation(input) {
 
 export function assessEverkeepLifecycleEvidence(obligation, evidence, { now = new Date() } = {}) {
   if (!obligation || obligation.schema_version !== OBLIGATION_SCHEMA) throw new TypeError("obligation schema is invalid");
-  const nowMs = now instanceof Date ? now.getTime() : Date.parse(now);
+  const nowMs = now instanceof Date ? now.getTime() : time(now, "now");
   if (!Number.isFinite(nowMs)) throw new TypeError("now must be a valid date-time");
   const due = deadline(obligation.operation, obligation.parameters);
   const base = {
