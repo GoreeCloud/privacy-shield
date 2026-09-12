@@ -11,6 +11,7 @@ const browserTreeSha = "2".repeat(40);
 const privacyShieldRevision = "3".repeat(40);
 const artifactSha256 = "4".repeat(64);
 const now = new Date("2026-09-12T23:45:00.000Z");
+const evidenceSeeds = ["a", "b", "c", "d", "e", "f", "0", "1", "2", "3"];
 
 function ref(seed, locator) {
   return `evidence+sha256:${seed.repeat(64)}:${locator}`;
@@ -46,7 +47,7 @@ function record(overrides = {}) {
     dimensions: BROWSER_RUNTIME_ACCEPTANCE_DIMENSIONS.map((id, index) => ({
       id,
       status: "passed",
-      evidence_references: [ref(String.fromCharCode(98 + index), `browser-${id}`)],
+      evidence_references: [ref(evidenceSeeds[index], `browser-${id}`)],
     })),
     review: {
       authority: "Privacy Shield Browser runtime qualification reviewer",
