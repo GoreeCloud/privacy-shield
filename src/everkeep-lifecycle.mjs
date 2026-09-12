@@ -4,7 +4,7 @@ const PRIVACY_AUTHORITY = "GoreeCloud/goreecloud-privacy-shield";
 const EVERKEEP_AUTHORITY = "GoreeCloud/goreecloud-everkeep";
 const EVERKEEP_SOURCE_REVISION = "37f77a2c330a60c116aca107661a852bb8b5f031";
 const EVERKEEP_STATUS_SCHEMA = "contracts/continuity.status.schema.json";
-const MAX_EVIDENCE_REFERENCES = 128;
+const MAX_EVIDENCE_REFERENCES = 50;
 const OPERATIONS = new Set(["retain", "delete", "export", "recovery", "succession", "preservation"]);
 const EVIDENCE_STATES = new Set(["pending", "satisfied", "failed", "unknown"]);
 const ID = /^[A-Za-z0-9][A-Za-z0-9._:-]{0,239}$/;
@@ -47,11 +47,11 @@ const EVIDENCE_FIELDS = new Set([
   "reason",
 ]);
 
-function text(value, name, pattern = null) {
+function text(value, name, pattern = null, maximum = 1000) {
   if (
     typeof value !== "string" ||
     value.length === 0 ||
-    value.length > 1000 ||
+    value.length > maximum ||
     value !== value.trim() ||
     CONTROL_CHARACTERS.test(value) ||
     (pattern && !pattern.test(value))
@@ -94,8 +94,11 @@ function parameters(operation, value) {
   for (const key of ["retention_until", "complete_by", "preservation_until"]) {
     if (value[key] !== undefined) result[key] = new Date(time(value[key], `parameters.${key}`)).toISOString();
   }
-  for (const key of ["export_format", "destination_class", "recovery_scope", "custodian_reference"]) {
-    if (value[key] !== undefined) result[key] = text(value[key], `parameters.${key}`, ID);
+  for (const key of ["export_format", "destination_class"]) {
+    if (value[key] !== undefined) result[key] = text(value[key], `parameters.${key}`, ID, 120);
+  }
+  for (const key of ["recovery_scope", "custodian_reference"]) {
+    if (value[key] !== undefined) result[key] = text(value[key], `parameters.${key}`, ID, 240);
   }
   if (operation === "retain" && !result.retention_until) throw new TypeError("retain requires retention_until");
   if (operation === "delete" && !result.complete_by) throw new TypeError("delete requires complete_by");
@@ -124,7 +127,7 @@ function validateObligationForAssessment(obligation) {
   const operation = text(obligation.operation, "obligation.operation", ID);
   if (!OPERATIONS.has(operation)) throw new TypeError("obligation operation is unsupported");
   if (obligation.privacy_authority !== PRIVACY_AUTHORITY) throw new TypeError("obligation privacy authority is invalid");
-  const executionAuthority = text(obligation.execution_authority, "obligation.execution_authority");
+  const executionAuthority = text(obligation.execution_authority, "obligation.execution_authority", null, 240);
   if (executionAuthority === PRIVACY_AUTHORITY) throw new TypeError("Privacy Shield cannot be lifecycle execution authority");
   if (obligation.everkeep_authority !== EVERKEEP_AUTHORITY) throw new TypeError("obligation Everkeep authority is invalid");
   if (obligation.everkeep_source_revision !== EVERKEEP_SOURCE_REVISION) throw new TypeError("obligation Everkeep source revision is invalid");
@@ -147,7 +150,7 @@ export function createEverkeepLifecycleObligation(input) {
   closed(input, new Set(["obligation_id", "subject_id", "application_id", "resource_scope", "operation", "purpose", "privacy_basis", "execution_authority", "issued_at", "parameters", "evidence_references"]), "obligation");
   const operation = text(input.operation, "operation", ID);
   if (!OPERATIONS.has(operation)) throw new TypeError("operation is unsupported");
-  const executionAuthority = text(input.execution_authority, "execution_authority");
+  const executionAuthority = text(input.execution_authority, "execution_authority", null, 240);
   if (executionAuthority === PRIVACY_AUTHORITY) throw new TypeError("Privacy Shield cannot be lifecycle execution authority");
   const issuedAt = time(input.issued_at, "issued_at");
   const normalizedParameters = parameters(operation, input.parameters);
@@ -222,7 +225,7 @@ export function assessEverkeepLifecycleEvidence(obligation, evidence, { now = ne
   let status = evidence.state;
   let reason = `everkeep_${evidence.state}`;
   if (Object.prototype.hasOwnProperty.call(evidence, "reason")) {
-    reason = text(evidence.reason, "evidence.reason");
+    reason = text(evidence.reason, "evidence.reason", null, 500);
   }
 
   if (evidence.state === "satisfied" && (!verified || evidenceReferences.length === 0 || !fresh)) {
