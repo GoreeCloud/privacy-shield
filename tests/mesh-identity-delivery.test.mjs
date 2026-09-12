@@ -103,6 +103,7 @@ test("FR-012 validates exact Identity metadata and Mesh acceptance without trans
   assert.equal(receipt.schema_version, "goreecloud.privacy-shield.mesh-identity-delivery.v1");
   assert.equal(receipt.identity.service_id, "privacy-shield");
   assert.equal(receipt.identity.trust_status, "verified");
+  assert.equal(receipt.accepted_at, "2026-09-12T23:00:00.000Z");
   assert.equal(receipt.mesh_identity_verified, true);
   assert.equal(receipt.authorization_effect, false);
   assert.equal(receipt.authority_transfer, false);
@@ -119,6 +120,8 @@ test("FR-012 fails closed on identity, audience, scope, rotation, revocation, fr
     [credential({ issued_at: "2026-09-12T22:40:00.000Z" }), /exceeds caller freshness policy/],
     [credential({ expires_at: "2026-09-12T23:01:00.000Z", trust: { ...credential().trust, valid_until: "2026-09-12T23:00:30.000Z" } }), /insufficient remaining validity/],
     [credential({ trust: { ...credential().trust, status: "unverified" } }), /trust is not verified/],
+    [credential({ trust: { ...credential().trust, verified_at: "2026-09-12T22:59:00.000Z" } }), /predates credential issuance/],
+    [credential({ trust: { ...credential().trust, valid_until: "2026-09-12T23:01:00.000Z" } }), /trust verification has insufficient remaining validity/],
     [credential({ trust: { ...credential().trust, valid_until: "2026-09-12T22:59:59.000Z" } }), /trust verification is expired/],
   ];
 
@@ -184,6 +187,32 @@ test("FR-012 requires Mesh to echo the exact authenticated identity and preserve
       expected,
     );
   }
+});
+
+test("FR-012 requires a valid Mesh acceptance timestamp and canonicalizes it", async () => {
+  for (const invalid of [null, "", "not-a-time", "2026-09-12T23:00:00"] ) {
+    await assert.rejects(
+      deliverIdentityAuthenticatedPrivacyMeshEvidence({
+        envelope,
+        meshBaseUrl: "https://mesh.goreecloud.test",
+        credentialProvider: async () => credential(),
+        ...policy,
+        now,
+        fetchImpl: async () => acceptedResponse("identity-credential-42", { accepted_at: invalid }),
+      }),
+      /Mesh accepted_at/,
+    );
+  }
+
+  const receipt = await deliverIdentityAuthenticatedPrivacyMeshEvidence({
+    envelope,
+    meshBaseUrl: "https://mesh.goreecloud.test",
+    credentialProvider: async () => credential(),
+    ...policy,
+    now,
+    fetchImpl: async () => acceptedResponse("identity-credential-42", { accepted_at: "2026-09-12T18:00:00-05:00" }),
+  });
+  assert.equal(receipt.accepted_at, "2026-09-12T23:00:00.000Z");
 });
 
 test("FR-012 sanitizes credential provider failures and never leaks token material", async () => {
