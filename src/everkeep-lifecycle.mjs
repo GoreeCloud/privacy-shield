@@ -180,10 +180,17 @@ export function createEverkeepLifecycleObligation(input) {
   };
 }
 
-export function assessEverkeepLifecycleEvidence(obligation, evidence, { now = new Date() } = {}) {
+export function assessEverkeepLifecycleEvidence(
+  obligation,
+  evidence,
+  {now = new Date(), maxEvidenceAgeMs = null} = {},
+) {
   const validatedObligation = validateObligationForAssessment(obligation);
   const nowMs = now instanceof Date ? now.getTime() : time(now, "now");
   if (!Number.isFinite(nowMs)) throw new TypeError("now must be a valid date-time");
+  if (maxEvidenceAgeMs !== null && (!Number.isSafeInteger(maxEvidenceAgeMs) || maxEvidenceAgeMs <= 0)) {
+    throw new TypeError("maxEvidenceAgeMs must be a positive safe integer duration in milliseconds");
+  }
   const due = validatedObligation.due;
   const base = {
     schema_version: ASSESSMENT_SCHEMA,
@@ -216,13 +223,15 @@ export function assessEverkeepLifecycleEvidence(obligation, evidence, { now = ne
   if (observed < validatedObligation.issuedAt) throw new TypeError("evidence cannot predate the lifecycle obligation");
   if (observed > nowMs) throw new TypeError("evidence cannot be future-dated");
   let freshUntil = null;
-  let fresh = false;
+  let producerFresh = false;
   if (evidence.fresh_until !== null && evidence.fresh_until !== undefined) {
     const parsed = time(evidence.fresh_until, "evidence.fresh_until");
     if (parsed <= observed) throw new TypeError("fresh_until must follow observed_at");
     freshUntil = new Date(parsed).toISOString();
-    fresh = parsed > nowMs;
+    producerFresh = parsed > nowMs;
   }
+  const consumerFresh = maxEvidenceAgeMs !== null && nowMs - observed <= maxEvidenceAgeMs;
+  const fresh = producerFresh && consumerFresh;
   const evidenceReferences = refs(evidence.evidence_references ?? [], "evidence.evidence_references");
   const verified = evidence.execution_verified;
   let status = evidence.state;
@@ -231,7 +240,10 @@ export function assessEverkeepLifecycleEvidence(obligation, evidence, { now = ne
     reason = text(evidence.reason, "evidence.reason", null, 500);
   }
 
-  if (evidence.state === "satisfied" && (!verified || evidenceReferences.length === 0 || !fresh)) {
+  if (evidence.state === "satisfied" && verified && evidenceReferences.length > 0 && producerFresh && maxEvidenceAgeMs === null) {
+    status = due !== null && nowMs > due ? "overdue" : "unknown";
+    reason = "consumer_freshness_policy_missing";
+  } else if (evidence.state === "satisfied" && (!verified || evidenceReferences.length === 0 || !fresh)) {
     status = due !== null && nowMs > due ? "overdue" : "unknown";
     reason = "satisfaction_not_currently_verified";
   } else if (evidence.state === "pending" && due !== null && nowMs > due) {
