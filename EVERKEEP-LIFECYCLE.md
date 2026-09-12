@@ -55,13 +55,20 @@ A `satisfied` assessment requires all of the following:
 2. execution is explicitly verified;
 3. at least one evidence reference is present;
 4. evidence has a valid observation time at or after the obligation issue time;
-5. evidence has a bounded `fresh_until` time that is still current;
-6. the producer revision and status schema exactly match the obligation's Everkeep pins; and
-7. all other exact obligation bindings match.
+5. Everkeep provides a bounded `fresh_until` time that is still current;
+6. the assessment caller supplies a positive `maxEvidenceAgeMs` consumer freshness policy and the evidence age does not exceed it;
+7. the producer revision and status schema exactly match the obligation's Everkeep pins; and
+8. all other exact obligation bindings match.
+
+Everkeep's `fresh_until` is producer validity, not permission to keep evidence acceptable indefinitely. The consuming Privacy Shield runtime or operation retains independent authority to require more recent evidence. Effective freshness therefore ends at the earlier of the producer's `fresh_until` boundary and the caller-selected maximum evidence age measured from `observed_at`.
+
+There is deliberately no global default maximum age in this source contract. A missing consumer freshness policy cannot yield `satisfied`; the result fails closed to `unknown` with `consumer_freshness_policy_missing`. A present policy that is zero, negative, fractional, or outside JavaScript's safe-integer duration range is rejected. The owning operation or runtime must choose and justify a positive bounded duration appropriate to its privacy and lifecycle risk.
 
 `execution_verified: true` is valid only with `state: satisfied`. A record that claims verified execution while reporting `pending`, `failed`, or `unknown` is internally contradictory and is rejected instead of being normalized into a weaker state. The published assessment schema mirrors this invariant in both directions: `satisfied` requires verified execution, and verified execution requires `satisfied`.
 
-Missing, stale, future-dated, pre-obligation, unverified, contradictory, source/schema-mismatched, or otherwise mismatched evidence fails closed. A pending obligation becomes `overdue` when its defined lifecycle deadline has passed. Stale or unbounded evidence cannot be reused as current proof of lifecycle completion.
+Missing, stale, future-dated, pre-obligation, unverified, contradictory, source/schema-mismatched, consumer-age-expired, or otherwise mismatched evidence fails closed. A pending obligation becomes `overdue` when its defined lifecycle deadline has passed. Stale or unbounded evidence cannot be reused as current proof of lifecycle completion.
+
+The consumer freshness ceiling narrows evidence acceptance only. It does not change Everkeep retention, evidence production, lifecycle execution authority, or the underlying target operation.
 
 ## Everkeep relationship
 
@@ -76,6 +83,7 @@ This FR-011 candidate establishes a source-level contract and reference implemen
 - deployed Everkeep lifecycle ingestion;
 - a production application executor;
 - runtime retain/delete/export/recovery/succession/preservation execution;
+- a universal or production-approved consumer freshness duration;
 - production Everkeep status or recovery acceptance;
 - Privacy Shield production state-provider acceptance;
 - production GoreeCloud Identity/key acceptance;
