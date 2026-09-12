@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://goreecloud.com/schemas/privacy-shield.everkeep-lifecycle-obligation.v1.schema.json",
+  "title": "Privacy Shield Everkeep Lifecycle Obligation v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "obligation_id", "subject_id", "application_id", "resource_scope",
+    "operation", "purpose", "privacy_basis", "privacy_authority", "execution_authority",
+    "everkeep_authority", "everkeep_source_revision", "everkeep_status_schema", "issued_at",
+    "parameters", "evidence_references", "authorization_effect", "execution_authorization",
+    "authority_transfer"
+  ],
+  "properties": {
+    "schema_version": {"const": "goreecloud.privacy-shield.everkeep-lifecycle-obligation.v1"},
+    "obligation_id": {"type": "string", "minLength": 1, "maxLength": 240},
+    "subject_id": {"type": "string", "minLength": 1, "maxLength": 240},
+    "application_id": {"type": "string", "minLength": 1, "maxLength": 240},
+    "resource_scope": {"type": "string", "minLength": 1, "maxLength": 240},
+    "operation": {"enum": ["retain", "delete", "export", "recovery", "succession", "preservation"]},
+    "purpose": {"type": "string", "minLength": 1, "maxLength": 240},
+    "privacy_basis": {"type": "string", "minLength": 1, "maxLength": 240},
+    "privacy_authority": {"const": "GoreeCloud/goreecloud-privacy-shield"},
+    "execution_authority": {"type": "string", "minLength": 1, "maxLength": 240, "not": {"const": "GoreeCloud/goreecloud-privacy-shield"}},
+    "everkeep_authority": {"const": "GoreeCloud/goreecloud-everkeep"},
+    "everkeep_source_revision": {"const": "37f77a2c330a60c116aca107661a852bb8b5f031"},
+    "everkeep_status_schema": {"const": "contracts/continuity.status.schema.json"},
+    "issued_at": {"type": "string", "format": "date-time"},
+    "parameters": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "retention_until": {"type": "string", "format": "date-time"},
+        "complete_by": {"type": "string", "format": "date-time"},
+        "preservation_until": {"type": "string", "format": "date-time"},
+        "export_format": {"type": "string", "minLength": 1, "maxLength": 120},
+        "destination_class": {"type": "string", "minLength": 1, "maxLength": 120},
+        "recovery_scope": {"type": "string", "minLength": 1, "maxLength": 240},
+        "custodian_reference": {"type": "string", "minLength": 1, "maxLength": 240}
+      }
+    },
+    "evidence_references": {"type": "array", "uniqueItems": true, "maxItems": 50, "items": {"type": "string", "minLength": 1, "maxLength": 1000}},
+    "authorization_effect": {"const": false},
+    "execution_authorization": {"const": false},
+    "authority_transfer": {"const": false}
+  },
+  "allOf": [
+    {"if": {"properties": {"operation": {"const": "retain"}}}, "then": {"properties": {"parameters": {"required": ["retention_until"]}}}},
+    {"if": {"properties": {"operation": {"const": "delete"}}}, "then": {"properties": {"parameters": {"required": ["complete_by"]}}}},
+    {"if": {"properties": {"operation": {"const": "export"}}}, "then": {"properties": {"parameters": {"required": ["complete_by", "export_format"]}}}},
+    {"if": {"properties": {"operation": {"const": "recovery"}}}, "then": {"properties": {"parameters": {"required": ["recovery_scope"]}}}},
+    {"if": {"properties": {"operation": {"const": "succession"}}}, "then": {"properties": {"parameters": {"required": ["custodian_reference"]}}}},
+    {"if": {"properties": {"operation": {"const": "preservation"}}}, "then": {"properties": {"parameters": {"required": ["preservation_until"]}}}}
+  ]
+}
