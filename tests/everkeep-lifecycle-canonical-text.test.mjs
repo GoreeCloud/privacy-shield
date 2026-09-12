@@ -78,3 +78,18 @@ test("Everkeep evidence rejects whitespace and control-bearing text", () => {
     /noncanonical/,
   );
 });
+
+test("explicit malformed evidence reason cannot be treated as absent", () => {
+  const record = obligation();
+  for (const reason of ["", null, false]) {
+    assert.throws(
+      () => assessEverkeepLifecycleEvidence(record, evidence({reason}), {now}),
+      /noncanonical/,
+    );
+  }
+
+  const withoutReason = evidence();
+  delete withoutReason.reason;
+  const result = assessEverkeepLifecycleEvidence(record, withoutReason, {now});
+  assert.equal(result.reason, "everkeep_satisfied");
+});
