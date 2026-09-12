@@ -3,14 +3,16 @@ import {
   MemoryPrivacyStateStore,
   mutatePrivacyState,
 } from "./privacy-state-store.mjs";
+import {
+  createPrivacyReceipt as createPrivacyReceiptV2,
+  verifyPrivacyReceipt as verifyPrivacyReceiptV2,
+} from "./privacy-receipts.mjs";
 export {
   PRIVACY_PREVIEW_CONTRACT,
   PRIVACY_RECEIPT_CONTRACT,
   PrivacyReceiptLedger,
   buildPrivacyExplanation,
-  createPrivacyReceipt,
   previewPrivacyDecision,
-  verifyPrivacyReceipt,
 } from "./privacy-receipts.mjs";
 
 function id(prefix) { return `${prefix}_${crypto.randomUUID()}`; }
@@ -20,6 +22,25 @@ function canonical(value) {
   return JSON.stringify(value);
 }
 function digest(value) { return crypto.createHash("sha256").update(canonical(value)).digest("hex"); }
+
+/**
+ * Compatibility export for the historical privacy-evidence import path.
+ * Older source callers did not always copy request_id into the decision even
+ * though the recorded evidence still binds the request and decision IDs. The
+ * v2 receipt module remains strict; this adapter supplies only that already
+ * established request binding and does not widen any other receipt field.
+ */
+export function createPrivacyReceipt(input) {
+  if (!input?.request || !input?.decision) return createPrivacyReceiptV2(input);
+  const decision = input.decision.request_id === undefined
+    ? { ...input.decision, request_id: input.request.request_id }
+    : input.decision;
+  return createPrivacyReceiptV2({ ...input, decision });
+}
+
+export function verifyPrivacyReceipt(receipt, signing_secret) {
+  return verifyPrivacyReceiptV2(receipt, signing_secret);
+}
 
 export class PrivacyEvidenceLedger {
   constructor({ store = new MemoryPrivacyStateStore() } = {}) { this.store = store; }
