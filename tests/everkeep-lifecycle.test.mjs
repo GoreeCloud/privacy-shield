@@ -78,6 +78,39 @@ test("verified current Everkeep handoff evidence can satisfy the obligation", ()
   assert.equal(result.authority_transfer, false);
 });
 
+test("assessment revalidates the complete obligation instead of trusting schema label alone", () => {
+  const mutations = [
+    (record) => { record.execution_authorization = true; },
+    (record) => { record.authority_transfer = true; },
+    (record) => { record.privacy_authority = "GoreeCloud/other"; },
+    (record) => { record.everkeep_source_revision = "0".repeat(40); },
+    (record) => { record.parameters.complete_by = "2026-09-12T05:59:00.000Z"; },
+    (record) => { record.hidden_execution_override = true; },
+  ];
+
+  for (const mutate of mutations) {
+    const record = structuredClone(obligation());
+    mutate(record);
+    assert.throws(() => assessEverkeepLifecycleEvidence(record, evidence(), {now}));
+  }
+});
+
+test("assessment rejects noncanonical obligation issue timestamps", () => {
+  const record = obligation();
+  record.issued_at = "2026-09-12T01:00:00-05:00";
+  assert.throws(
+    () => assessEverkeepLifecycleEvidence(record, evidence(), {now}),
+    /canonical UTC/,
+  );
+});
+
+test("execution verification must be an explicit boolean", () => {
+  assert.throws(
+    () => assessEverkeepLifecycleEvidence(obligation(), evidence({execution_verified: "true"}), {now}),
+    /must be boolean/,
+  );
+});
+
 test("Everkeep acknowledgement alone cannot become execution success", () => {
   const result = assessEverkeepLifecycleEvidence(
     obligation(),
