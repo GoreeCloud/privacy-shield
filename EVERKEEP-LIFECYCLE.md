@@ -10,6 +10,8 @@ Privacy Shield remains authoritative for the privacy/lifecycle obligation. Everk
 
 This source candidate is reviewed against `GoreeCloud/goreecloud-everkeep` revision `37f77a2c330a60c116aca107661a852bb8b5f031` and its `contracts/continuity.status.schema.json` contract.
 
+Each issued lifecycle obligation records both that exact Everkeep source revision and status schema. Evidence presented for assessment must carry the same exact producer revision and status schema in addition to naming the Everkeep repository; a repository name alone is not enough to establish source compatibility. Evidence from another valid Everkeep revision or another schema fails closed until the obligation/consumer relationship is explicitly migrated.
+
 That Everkeep source defines conservative continuity states, requires current verified evidence before `ready`, and explicitly states that Everkeep does not own the underlying technical operation merely because it presents continuity state.
 
 The source revision pin is a compatibility reference only. It is not Everkeep runtime acceptance or production approval.
@@ -45,18 +47,19 @@ Issuing an obligation does not prove that retention, deletion, export, recovery,
 
 ## Evidence assessment
 
-`assessEverkeepLifecycleEvidence()` accepts only evidence produced through the Everkeep authority boundary and requires exact binding to the obligation ID, operation, resource scope, and execution authority.
+`assessEverkeepLifecycleEvidence()` accepts only evidence produced through the pinned Everkeep authority boundary and requires exact binding to the obligation ID, Everkeep source revision, Everkeep status schema, operation, resource scope, and execution authority.
 
 A `satisfied` assessment requires all of the following:
 
 1. the evidence state is `satisfied`;
 2. execution is explicitly verified;
 3. at least one evidence reference is present;
-4. evidence has a valid observation time;
+4. evidence has a valid observation time at or after the obligation issue time;
 5. evidence has a bounded `fresh_until` time that is still current;
-6. all exact obligation bindings match.
+6. the producer revision and status schema exactly match the obligation's Everkeep pins; and
+7. all other exact obligation bindings match.
 
-Missing, stale, future-dated, unverified, or mismatched evidence fails closed. A pending obligation becomes `overdue` when its defined lifecycle deadline has passed. Stale or unbounded evidence cannot be reused as current proof of lifecycle completion.
+Missing, stale, future-dated, pre-obligation, unverified, source/schema-mismatched, or otherwise mismatched evidence fails closed. A pending obligation becomes `overdue` when its defined lifecycle deadline has passed. Stale or unbounded evidence cannot be reused as current proof of lifecycle completion.
 
 ## Everkeep relationship
 
