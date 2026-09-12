@@ -19,12 +19,7 @@
     "schema_version": {"const": "goreecloud.privacy-shield.mesh-identity-delivery.v1"},
     "evidence_id": {"type": "string", "minLength": 1, "maxLength": 128},
     "replayed": {"type": "boolean"},
-    "accepted_at": {
-      "anyOf": [
-        {"type": "string", "format": "date-time", "maxLength": 40},
-        {"type": "null"}
-      ]
-    },
+    "accepted_at": {"type": "string", "format": "date-time", "maxLength": 40},
     "producer_service_id": {"const": "privacy-shield"},
     "identity": {
       "type": "object",
