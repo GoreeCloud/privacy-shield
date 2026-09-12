@@ -116,6 +116,10 @@ function deadline(operation, value) {
   return null;
 }
 
+function requiresCompletedHorizon(operation) {
+  return operation === "retain" || operation === "preservation";
+}
+
 function validateObligationForAssessment(obligation) {
   object(obligation, "obligation");
   closed(obligation, OBLIGATION_FIELDS, "obligation");
@@ -234,13 +238,28 @@ export function assessEverkeepLifecycleEvidence(
   const fresh = producerFresh && consumerFresh;
   const evidenceReferences = refs(evidence.evidence_references ?? [], "evidence.evidence_references");
   const verified = evidence.execution_verified;
+  const completionHorizonIncomplete =
+    requiresCompletedHorizon(validatedObligation.operation) &&
+    due !== null &&
+    observed < due;
   let status = evidence.state;
   let reason = `everkeep_${evidence.state}`;
   if (Object.prototype.hasOwnProperty.call(evidence, "reason")) {
     reason = text(evidence.reason, "evidence.reason", null, 500);
   }
 
-  if (evidence.state === "satisfied" && verified && evidenceReferences.length > 0 && producerFresh && maxEvidenceAgeMs === null) {
+  if (
+    evidence.state === "satisfied" &&
+    verified &&
+    evidenceReferences.length > 0 &&
+    fresh &&
+    completionHorizonIncomplete
+  ) {
+    status = nowMs > due ? "overdue" : "pending";
+    reason = nowMs > due
+      ? `${validatedObligation.operation}_horizon_unverified`
+      : `${validatedObligation.operation}_horizon_incomplete`;
+  } else if (evidence.state === "satisfied" && verified && evidenceReferences.length > 0 && producerFresh && maxEvidenceAgeMs === null) {
     status = due !== null && nowMs > due ? "overdue" : "unknown";
     reason = "consumer_freshness_policy_missing";
   } else if (evidence.state === "satisfied" && (!verified || evidenceReferences.length === 0 || !fresh)) {
