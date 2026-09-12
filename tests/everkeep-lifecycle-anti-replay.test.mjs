@@ -44,23 +44,24 @@ function evidence(observed_at) {
 }
 
 const now = new Date("2026-09-12T07:00:00.000Z");
+const maxEvidenceAgeMs = 2 * 60 * 60 * 1000;
 
 test("Everkeep evidence observed before the obligation cannot be replayed into satisfaction", () => {
   assert.throws(
     () => assessEverkeepLifecycleEvidence(
       obligation(),
       evidence("2026-09-12T05:59:59.999Z"),
-      {now},
+      {now, maxEvidenceAgeMs},
     ),
     /predate the lifecycle obligation/,
   );
 });
 
-test("evidence observed at obligation issuance remains eligible for normal freshness checks", () => {
+test("evidence observed at obligation issuance remains eligible for bounded freshness checks", () => {
   const result = assessEverkeepLifecycleEvidence(
     obligation(),
     evidence("2026-09-12T06:00:00.000Z"),
-    {now},
+    {now, maxEvidenceAgeMs},
   );
   assert.equal(result.status, "satisfied");
   assert.equal(result.execution_verified, true);
