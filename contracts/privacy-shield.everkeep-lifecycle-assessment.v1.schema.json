@@ -23,12 +23,20 @@
   },
   "allOf": [
     {
-      "if": {"properties": {"status": {"const": "satisfied"}}},
+      "if": {"properties": {"status": {"const": "satisfied"}}, "required": ["status"]},
       "then": {
         "required": ["observed_at", "fresh_until"],
         "properties": {
           "execution_verified": {"const": true},
           "evidence_references": {"minItems": 1}
+        }
+      }
+    },
+    {
+      "if": {"properties": {"execution_verified": {"const": true}}, "required": ["execution_verified"]},
+      "then": {
+        "properties": {
+          "status": {"const": "satisfied"}
         }
       }
     }
