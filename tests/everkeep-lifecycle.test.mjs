@@ -4,6 +4,7 @@ import test from "node:test";
 import {
   EVERKEEP_AUTHORITY,
   EVERKEEP_SOURCE_REVISION,
+  EVERKEEP_STATUS_SCHEMA,
   createEverkeepLifecycleObligation,
   assessEverkeepLifecycleEvidence,
 } from "../src/everkeep-lifecycle.mjs";
@@ -32,6 +33,8 @@ function evidence(overrides = {}) {
   return {
     obligation_id: "obl-1",
     producer: EVERKEEP_AUTHORITY,
+    producer_revision: EVERKEEP_SOURCE_REVISION,
+    status_schema: EVERKEEP_STATUS_SCHEMA,
     execution_authority: "GoreeCloud/goreecloud-drive",
     resource_scope: "drive:file:opaque-1",
     operation: "delete",
@@ -49,6 +52,7 @@ test("builds a non-authorizing lifecycle obligation pinned to current Everkeep s
   const record = obligation();
   assert.equal(record.everkeep_authority, EVERKEEP_AUTHORITY);
   assert.equal(record.everkeep_source_revision, EVERKEEP_SOURCE_REVISION);
+  assert.equal(record.everkeep_status_schema, EVERKEEP_STATUS_SCHEMA);
   assert.equal(record.authorization_effect, false);
   assert.equal(record.execution_authorization, false);
   assert.equal(record.authority_transfer, false);
@@ -108,6 +112,25 @@ test("execution verification must be an explicit boolean", () => {
   assert.throws(
     () => assessEverkeepLifecycleEvidence(obligation(), evidence({execution_verified: "true"}), {now}),
     /must be boolean/,
+  );
+});
+
+test("Everkeep evidence must bind the exact pinned source revision and status schema", () => {
+  assert.throws(
+    () => assessEverkeepLifecycleEvidence(
+      obligation(),
+      evidence({producer_revision: "0".repeat(40)}),
+      {now},
+    ),
+    /source revision binding mismatch/,
+  );
+  assert.throws(
+    () => assessEverkeepLifecycleEvidence(
+      obligation(),
+      evidence({status_schema: "contracts/other.schema.json"}),
+      {now},
+    ),
+    /status schema binding mismatch/,
   );
 });
 
