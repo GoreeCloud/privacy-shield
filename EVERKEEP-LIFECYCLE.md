@@ -59,7 +59,9 @@ A `satisfied` assessment requires all of the following:
 6. the producer revision and status schema exactly match the obligation's Everkeep pins; and
 7. all other exact obligation bindings match.
 
-Missing, stale, future-dated, pre-obligation, unverified, source/schema-mismatched, or otherwise mismatched evidence fails closed. A pending obligation becomes `overdue` when its defined lifecycle deadline has passed. Stale or unbounded evidence cannot be reused as current proof of lifecycle completion.
+`execution_verified: true` is valid only with `state: satisfied`. A record that claims verified execution while reporting `pending`, `failed`, or `unknown` is internally contradictory and is rejected instead of being normalized into a weaker state. The published assessment schema mirrors this invariant in both directions: `satisfied` requires verified execution, and verified execution requires `satisfied`.
+
+Missing, stale, future-dated, pre-obligation, unverified, contradictory, source/schema-mismatched, or otherwise mismatched evidence fails closed. A pending obligation becomes `overdue` when its defined lifecycle deadline has passed. Stale or unbounded evidence cannot be reused as current proof of lifecycle completion.
 
 ## Everkeep relationship
 
