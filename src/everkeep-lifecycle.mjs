@@ -220,7 +220,10 @@ export function assessEverkeepLifecycleEvidence(obligation, evidence, { now = ne
   const evidenceReferences = refs(evidence.evidence_references ?? [], "evidence.evidence_references");
   const verified = evidence.execution_verified;
   let status = evidence.state;
-  let reason = evidence.reason ? text(evidence.reason, "evidence.reason") : `everkeep_${evidence.state}`;
+  let reason = `everkeep_${evidence.state}`;
+  if (Object.prototype.hasOwnProperty.call(evidence, "reason")) {
+    reason = text(evidence.reason, "evidence.reason");
+  }
 
   if (evidence.state === "satisfied" && (!verified || evidenceReferences.length === 0 || !fresh)) {
     status = due !== null && nowMs > due ? "overdue" : "unknown";
