@@ -4,6 +4,7 @@ const PRIVACY_AUTHORITY = "GoreeCloud/goreecloud-privacy-shield";
 const EVERKEEP_AUTHORITY = "GoreeCloud/goreecloud-everkeep";
 const EVERKEEP_SOURCE_REVISION = "37f77a2c330a60c116aca107661a852bb8b5f031";
 const EVERKEEP_STATUS_SCHEMA = "contracts/continuity.status.schema.json";
+const MAX_EVIDENCE_REFERENCES = 128;
 const OPERATIONS = new Set(["retain", "delete", "export", "recovery", "succession", "preservation"]);
 const EVIDENCE_STATES = new Set(["pending", "satisfied", "failed", "unknown"]);
 const ID = /^[A-Za-z0-9][A-Za-z0-9._:-]{0,239}$/;
@@ -64,8 +65,8 @@ function time(value, name) {
   return parsed;
 }
 
-function refs(value, name, minimum = 0) {
-  if (!Array.isArray(value) || value.length < minimum) throw new TypeError(`${name} is invalid`);
+function refs(value, name, minimum = 0, maximum = MAX_EVIDENCE_REFERENCES) {
+  if (!Array.isArray(value) || value.length < minimum || value.length > maximum) throw new TypeError(`${name} is invalid`);
   const normalized = value.map((item, index) => text(item, `${name}[${index}]`));
   if (new Set(normalized).size !== normalized.length) throw new TypeError(`${name} contains duplicates`);
   return normalized;
