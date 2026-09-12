@@ -8,6 +8,7 @@ const OPERATIONS = new Set(["retain", "delete", "export", "recovery", "successio
 const EVIDENCE_STATES = new Set(["pending", "satisfied", "failed", "unknown"]);
 const ID = /^[A-Za-z0-9][A-Za-z0-9._:-]{0,239}$/;
 const TIMEZONE_SUFFIX = /(?:Z|[+-]\d{2}:\d{2})$/;
+const CONTROL_CHARACTERS = /[\u0000-\u001F\u007F-\u009F]/;
 const OBLIGATION_FIELDS = new Set([
   "schema_version",
   "obligation_id",
@@ -31,8 +32,15 @@ const OBLIGATION_FIELDS = new Set([
 ]);
 
 function text(value, name, pattern = null) {
-  if (typeof value !== "string" || value.length === 0 || value.length > 1000 || (pattern && !pattern.test(value))) {
-    throw new TypeError(`${name} is invalid`);
+  if (
+    typeof value !== "string" ||
+    value.length === 0 ||
+    value.length > 1000 ||
+    value !== value.trim() ||
+    CONTROL_CHARACTERS.test(value) ||
+    (pattern && !pattern.test(value))
+  ) {
+    throw new TypeError(`${name} is invalid or noncanonical`);
   }
   return value;
 }
@@ -47,7 +55,8 @@ function closed(value, allowed, name) {
 }
 
 function time(value, name) {
-  if (typeof value !== "string" || !TIMEZONE_SUFFIX.test(value)) {
+  text(value, name);
+  if (!TIMEZONE_SUFFIX.test(value)) {
     throw new TypeError(`${name} must be an ISO date-time with explicit timezone`);
   }
   const parsed = Date.parse(value);
