@@ -8,6 +8,27 @@ const OPERATIONS = new Set(["retain", "delete", "export", "recovery", "successio
 const EVIDENCE_STATES = new Set(["pending", "satisfied", "failed", "unknown"]);
 const ID = /^[A-Za-z0-9][A-Za-z0-9._:-]{0,239}$/;
 const TIMEZONE_SUFFIX = /(?:Z|[+-]\d{2}:\d{2})$/;
+const OBLIGATION_FIELDS = new Set([
+  "schema_version",
+  "obligation_id",
+  "subject_id",
+  "application_id",
+  "resource_scope",
+  "operation",
+  "purpose",
+  "privacy_basis",
+  "privacy_authority",
+  "execution_authority",
+  "everkeep_authority",
+  "everkeep_source_revision",
+  "everkeep_status_schema",
+  "issued_at",
+  "parameters",
+  "evidence_references",
+  "authorization_effect",
+  "execution_authorization",
+  "authority_transfer",
+]);
 
 function text(value, name, pattern = null) {
   if (typeof value !== "string" || value.length === 0 || value.length > 1000 || (pattern && !pattern.test(value))) {
@@ -67,6 +88,35 @@ function deadline(operation, value) {
   return null;
 }
 
+function validateObligationForAssessment(obligation) {
+  object(obligation, "obligation");
+  closed(obligation, OBLIGATION_FIELDS, "obligation");
+  if (obligation.schema_version !== OBLIGATION_SCHEMA) throw new TypeError("obligation schema is invalid");
+
+  for (const key of ["obligation_id", "subject_id", "application_id", "resource_scope", "purpose", "privacy_basis"]) {
+    text(obligation[key], `obligation.${key}`, ID);
+  }
+  const operation = text(obligation.operation, "obligation.operation", ID);
+  if (!OPERATIONS.has(operation)) throw new TypeError("obligation operation is unsupported");
+  if (obligation.privacy_authority !== PRIVACY_AUTHORITY) throw new TypeError("obligation privacy authority is invalid");
+  const executionAuthority = text(obligation.execution_authority, "obligation.execution_authority");
+  if (executionAuthority === PRIVACY_AUTHORITY) throw new TypeError("Privacy Shield cannot be lifecycle execution authority");
+  if (obligation.everkeep_authority !== EVERKEEP_AUTHORITY) throw new TypeError("obligation Everkeep authority is invalid");
+  if (obligation.everkeep_source_revision !== EVERKEEP_SOURCE_REVISION) throw new TypeError("obligation Everkeep source revision is invalid");
+  if (obligation.everkeep_status_schema !== EVERKEEP_STATUS_SCHEMA) throw new TypeError("obligation Everkeep status schema is invalid");
+  if (obligation.authorization_effect !== false || obligation.execution_authorization !== false || obligation.authority_transfer !== false) {
+    throw new TypeError("obligation must remain non-authorizing and non-transferring");
+  }
+
+  const issuedAt = time(obligation.issued_at, "obligation.issued_at");
+  if (new Date(issuedAt).toISOString() !== obligation.issued_at) throw new TypeError("obligation issued_at must remain canonical UTC");
+  const normalizedParameters = parameters(operation, obligation.parameters);
+  const due = deadline(operation, normalizedParameters);
+  if (due !== null && due <= issuedAt) throw new TypeError("lifecycle deadline must follow issued_at");
+  refs(obligation.evidence_references, "obligation.evidence_references");
+  return {operation, parameters: normalizedParameters, due};
+}
+
 export function createEverkeepLifecycleObligation(input) {
   object(input, "obligation");
   closed(input, new Set(["obligation_id", "subject_id", "application_id", "resource_scope", "operation", "purpose", "privacy_basis", "execution_authority", "issued_at", "parameters", "evidence_references"]), "obligation");
@@ -103,10 +153,10 @@ export function createEverkeepLifecycleObligation(input) {
 }
 
 export function assessEverkeepLifecycleEvidence(obligation, evidence, { now = new Date() } = {}) {
-  if (!obligation || obligation.schema_version !== OBLIGATION_SCHEMA) throw new TypeError("obligation schema is invalid");
+  const validatedObligation = validateObligationForAssessment(obligation);
   const nowMs = now instanceof Date ? now.getTime() : time(now, "now");
   if (!Number.isFinite(nowMs)) throw new TypeError("now must be a valid date-time");
-  const due = deadline(obligation.operation, obligation.parameters);
+  const due = validatedObligation.due;
   const base = {
     schema_version: ASSESSMENT_SCHEMA,
     obligation_id: obligation.obligation_id,
@@ -125,8 +175,9 @@ export function assessEverkeepLifecycleEvidence(obligation, evidence, { now = ne
   if (evidence.producer !== EVERKEEP_AUTHORITY) throw new TypeError("evidence producer must be Everkeep");
   if (evidence.execution_authority !== obligation.execution_authority) throw new TypeError("execution authority binding mismatch");
   if (evidence.resource_scope !== obligation.resource_scope) throw new TypeError("resource scope binding mismatch");
-  if (evidence.operation !== obligation.operation) throw new TypeError("operation binding mismatch");
+  if (evidence.operation !== validatedObligation.operation) throw new TypeError("operation binding mismatch");
   if (!EVIDENCE_STATES.has(evidence.state)) throw new TypeError("evidence state is invalid");
+  if (typeof evidence.execution_verified !== "boolean") throw new TypeError("evidence.execution_verified must be boolean");
 
   const observed = time(evidence.observed_at, "evidence.observed_at");
   if (observed > nowMs) throw new TypeError("evidence cannot be future-dated");
@@ -139,7 +190,7 @@ export function assessEverkeepLifecycleEvidence(obligation, evidence, { now = ne
     fresh = parsed > nowMs;
   }
   const evidenceReferences = refs(evidence.evidence_references ?? [], "evidence.evidence_references");
-  const verified = evidence.execution_verified === true;
+  const verified = evidence.execution_verified;
   let status = evidence.state;
   let reason = evidence.reason ? text(evidence.reason, "evidence.reason") : `everkeep_${evidence.state}`;
 
