@@ -50,24 +50,24 @@ function references(count) {
   return Array.from({length: count}, (_, index) => `evidence+sha256:ref-${index}`);
 }
 
-test("lifecycle obligation rejects an unbounded evidence manifest", () => {
+test("lifecycle obligation rejects a manifest beyond the schema ceiling", () => {
   assert.throws(
-    () => baseObligation(references(129)),
+    () => baseObligation(references(51)),
     /evidence_references is invalid/,
   );
 });
 
-test("lifecycle evidence rejects an unbounded evidence manifest", () => {
+test("lifecycle evidence rejects a manifest beyond the assessment schema ceiling", () => {
   const obligation = baseObligation(["evidence+sha256:privacy-decision"]);
   assert.throws(
-    () => assessEverkeepLifecycleEvidence(obligation, baseEvidence(references(129)), {now}),
+    () => assessEverkeepLifecycleEvidence(obligation, baseEvidence(references(51)), {now}),
     /evidence\.evidence_references is invalid/,
   );
 });
 
-test("the bounded manifest ceiling remains accepted", () => {
-  const obligation = baseObligation(references(128));
-  const result = assessEverkeepLifecycleEvidence(obligation, baseEvidence(references(128)), {now});
+test("the published 50-reference schema ceiling remains accepted", () => {
+  const obligation = baseObligation(references(50));
+  const result = assessEverkeepLifecycleEvidence(obligation, baseEvidence(references(50)), {now});
   assert.equal(result.status, "satisfied");
-  assert.equal(result.evidence_references.length, 128);
+  assert.equal(result.evidence_references.length, 50);
 });
