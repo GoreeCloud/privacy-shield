@@ -11,6 +11,8 @@ import {
 
 const issued = "2026-09-12T06:00:00.000Z";
 const now = new Date("2026-09-12T07:00:00.000Z");
+const maxEvidenceAgeMs = 2 * 60 * 60 * 1000;
+const assessment = {now, maxEvidenceAgeMs};
 
 function obligation(overrides = {}) {
   return createEverkeepLifecycleObligation({
@@ -74,12 +76,39 @@ test("operation-specific required lifecycle parameters fail closed", () => {
   assert.throws(() => obligation({operation: "recovery", parameters: {}}), /recovery requires recovery_scope/);
 });
 
-test("verified current Everkeep handoff evidence can satisfy the obligation", () => {
-  const result = assessEverkeepLifecycleEvidence(obligation(), evidence(), {now});
+test("verified current Everkeep handoff evidence can satisfy the obligation under explicit consumer freshness", () => {
+  const result = assessEverkeepLifecycleEvidence(obligation(), evidence(), assessment);
   assert.equal(result.status, "satisfied");
   assert.equal(result.execution_verified, true);
   assert.equal(result.authorization_effect, false);
   assert.equal(result.authority_transfer, false);
+});
+
+test("satisfied evidence without consumer freshness policy cannot satisfy the obligation", () => {
+  const result = assessEverkeepLifecycleEvidence(obligation(), evidence(), {now});
+  assert.equal(result.status, "unknown");
+  assert.equal(result.reason, "consumer_freshness_policy_missing");
+  assert.equal(result.execution_verified, false);
+});
+
+test("consumer freshness policy must be a positive safe integer duration", () => {
+  for (const maxEvidenceAgeMs of [0, -1, 1.5, Number.MAX_SAFE_INTEGER + 1]) {
+    assert.throws(
+      () => assessEverkeepLifecycleEvidence(obligation(), evidence(), {now, maxEvidenceAgeMs}),
+      /positive safe integer duration/,
+    );
+  }
+});
+
+test("producer freshness cannot extend consumer acceptance past the consumer age ceiling", () => {
+  const result = assessEverkeepLifecycleEvidence(
+    obligation(),
+    evidence({fresh_until: "2027-09-12T08:30:00.000Z"}),
+    {now, maxEvidenceAgeMs: 20 * 60 * 1000},
+  );
+  assert.equal(result.status, "unknown");
+  assert.equal(result.reason, "satisfaction_not_currently_verified");
+  assert.equal(result.execution_verified, false);
 });
 
 test("assessment revalidates the complete obligation instead of trusting schema label alone", () => {
@@ -95,7 +124,7 @@ test("assessment revalidates the complete obligation instead of trusting schema 
   for (const mutate of mutations) {
     const record = structuredClone(obligation());
     mutate(record);
-    assert.throws(() => assessEverkeepLifecycleEvidence(record, evidence(), {now}));
+    assert.throws(() => assessEverkeepLifecycleEvidence(record, evidence(), assessment));
   }
 });
 
@@ -103,14 +132,14 @@ test("assessment rejects noncanonical obligation issue timestamps", () => {
   const record = obligation();
   record.issued_at = "2026-09-12T01:00:00-05:00";
   assert.throws(
-    () => assessEverkeepLifecycleEvidence(record, evidence(), {now}),
+    () => assessEverkeepLifecycleEvidence(record, evidence(), assessment),
     /canonical UTC/,
   );
 });
 
 test("execution verification must be an explicit boolean", () => {
   assert.throws(
-    () => assessEverkeepLifecycleEvidence(obligation(), evidence({execution_verified: "true"}), {now}),
+    () => assessEverkeepLifecycleEvidence(obligation(), evidence({execution_verified: "true"}), assessment),
     /must be boolean/,
   );
 });
@@ -118,7 +147,7 @@ test("execution verification must be an explicit boolean", () => {
 test("verified execution cannot contradict a non-satisfied evidence state", () => {
   for (const state of ["pending", "failed", "unknown"]) {
     assert.throws(
-      () => assessEverkeepLifecycleEvidence(obligation(), evidence({state, execution_verified: true}), {now}),
+      () => assessEverkeepLifecycleEvidence(obligation(), evidence({state, execution_verified: true}), assessment),
       /verified execution requires satisfied evidence state/,
     );
   }
@@ -129,7 +158,7 @@ test("Everkeep evidence must bind the exact pinned source revision and status sc
     () => assessEverkeepLifecycleEvidence(
       obligation(),
       evidence({producer_revision: "0".repeat(40)}),
-      {now},
+      assessment,
     ),
     /source revision binding mismatch/,
   );
@@ -137,7 +166,7 @@ test("Everkeep evidence must bind the exact pinned source revision and status sc
     () => assessEverkeepLifecycleEvidence(
       obligation(),
       evidence({status_schema: "contracts/other.schema.json"}),
-      {now},
+      assessment,
     ),
     /status schema binding mismatch/,
   );
@@ -147,7 +176,7 @@ test("Everkeep acknowledgement alone cannot become execution success", () => {
   const result = assessEverkeepLifecycleEvidence(
     obligation(),
     evidence({state: "satisfied", execution_verified: false}),
-    {now},
+    assessment,
   );
   assert.equal(result.status, "unknown");
   assert.equal(result.reason, "satisfaction_not_currently_verified");
@@ -158,7 +187,7 @@ test("stale satisfaction evidence fails closed", () => {
   const result = assessEverkeepLifecycleEvidence(
     obligation(),
     evidence({fresh_until: "2026-09-12T06:45:00.000Z"}),
-    {now},
+    assessment,
   );
   assert.equal(result.status, "unknown");
   assert.equal(result.execution_verified, false);
@@ -166,27 +195,31 @@ test("stale satisfaction evidence fails closed", () => {
 
 test("missing or pending evidence becomes overdue after the lifecycle deadline", () => {
   const late = new Date("2026-09-14T00:00:00.000Z");
-  assert.equal(assessEverkeepLifecycleEvidence(obligation(), null, {now: late}).status, "overdue");
+  assert.equal(assessEverkeepLifecycleEvidence(obligation(), null, {now: late, maxEvidenceAgeMs}).status, "overdue");
   assert.equal(
-    assessEverkeepLifecycleEvidence(obligation(), evidence({state: "pending", execution_verified: false}), {now: late}).status,
+    assessEverkeepLifecycleEvidence(
+      obligation(),
+      evidence({state: "pending", execution_verified: false}),
+      {now: late, maxEvidenceAgeMs},
+    ).status,
     "overdue",
   );
 });
 
 test("scope, operation, producer, and execution authority are exact-bound", () => {
-  assert.throws(() => assessEverkeepLifecycleEvidence(obligation(), evidence({producer: "other"}), {now}), /producer/);
-  assert.throws(() => assessEverkeepLifecycleEvidence(obligation(), evidence({resource_scope: "drive:file:other"}), {now}), /scope/);
-  assert.throws(() => assessEverkeepLifecycleEvidence(obligation(), evidence({operation: "retain"}), {now}), /operation/);
-  assert.throws(() => assessEverkeepLifecycleEvidence(obligation(), evidence({execution_authority: "GoreeCloud/other"}), {now}), /authority/);
+  assert.throws(() => assessEverkeepLifecycleEvidence(obligation(), evidence({producer: "other"}), assessment), /producer/);
+  assert.throws(() => assessEverkeepLifecycleEvidence(obligation(), evidence({resource_scope: "drive:file:other"}), assessment), /scope/);
+  assert.throws(() => assessEverkeepLifecycleEvidence(obligation(), evidence({operation: "retain"}), assessment), /operation/);
+  assert.throws(() => assessEverkeepLifecycleEvidence(obligation(), evidence({execution_authority: "GoreeCloud/other"}), assessment), /authority/);
 });
 
 test("future-dated evidence and unsupported fields are rejected", () => {
   assert.throws(
-    () => assessEverkeepLifecycleEvidence(obligation(), evidence({observed_at: "2026-09-13T00:00:00.000Z"}), {now}),
+    () => assessEverkeepLifecycleEvidence(obligation(), evidence({observed_at: "2026-09-13T00:00:00.000Z"}), assessment),
     /future-dated/,
   );
   assert.throws(
-    () => assessEverkeepLifecycleEvidence(obligation(), {...evidence(), raw_payload: "forbidden"}, {now}),
+    () => assessEverkeepLifecycleEvidence(obligation(), {...evidence(), raw_payload: "forbidden"}, assessment),
     /unsupported/,
   );
 });
