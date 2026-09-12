@@ -3,6 +3,15 @@ import {
   MemoryPrivacyStateStore,
   mutatePrivacyState,
 } from "./privacy-state-store.mjs";
+export {
+  PRIVACY_PREVIEW_CONTRACT,
+  PRIVACY_RECEIPT_CONTRACT,
+  PrivacyReceiptLedger,
+  buildPrivacyExplanation,
+  createPrivacyReceipt,
+  previewPrivacyDecision,
+  verifyPrivacyReceipt,
+} from "./privacy-receipts.mjs";
 
 function id(prefix) { return `${prefix}_${crypto.randomUUID()}`; }
 function canonical(value) {
@@ -11,7 +20,6 @@ function canonical(value) {
   return JSON.stringify(value);
 }
 function digest(value) { return crypto.createHash("sha256").update(canonical(value)).digest("hex"); }
-function sign(value, secret) { return crypto.createHmac("sha256", secret).update(canonical(value)).digest("base64url"); }
 
 export class PrivacyEvidenceLedger {
   constructor({ store = new MemoryPrivacyStateStore() } = {}) { this.store = store; }
@@ -61,18 +69,4 @@ export class PrivacyEvidenceLedger {
   }
 
   checkpoint() { const integrity=this.verifyIntegrity(); if(!integrity.valid) throw new Error(integrity.reason); return { checkpoint_id:id("pscp"), created_at:new Date().toISOString(), event_count:integrity.count, head_hash:integrity.head_hash }; }
-}
-
-export function createPrivacyReceipt({ request, decision, evidence, signing_secret = null }) {
-  const receipt={ receipt_id:id("psr"), schema_version:2, created_at:new Date().toISOString(), request_id:request.request_id, decision_id:decision.decision_id, evidence_id:evidence.evidence_id, evidence_hash:evidence.evidence_hash, requester:request.requester.id, resource:request.resource.id, purpose:request.purpose, operation:request.operation, outcome:decision.outcome, processing_zone:decision.processing_zone, destination:request.destination, retention:decision.retention, external_disclosure:Boolean(request.external_disclosure), policy_references:decision.policy_references, explanation:decision.reason_code };
-  if (signing_secret) receipt.signature={ algorithm:"HMAC-SHA256", value:sign(receipt,signing_secret) };
-  return receipt;
-}
-
-export function verifyPrivacyReceipt(receipt, signing_secret) {
-  if (!receipt?.signature?.value) return { valid:false, reason:"RECEIPT_SIGNATURE_MISSING" };
-  const unsigned=structuredClone(receipt); const supplied=unsigned.signature.value; delete unsigned.signature;
-  const expected=sign(unsigned,signing_secret);
-  const a=Buffer.from(expected), b=Buffer.from(supplied);
-  return a.length===b.length&&crypto.timingSafeEqual(a,b) ? { valid:true } : { valid:false, reason:"RECEIPT_SIGNATURE_INVALID" };
 }
