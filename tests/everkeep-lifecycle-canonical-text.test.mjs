@@ -3,6 +3,8 @@ import test from "node:test";
 
 import {
   EVERKEEP_AUTHORITY,
+  EVERKEEP_SOURCE_REVISION,
+  EVERKEEP_STATUS_SCHEMA,
   createEverkeepLifecycleObligation,
   assessEverkeepLifecycleEvidence,
 } from "../src/everkeep-lifecycle.mjs";
@@ -31,6 +33,8 @@ function evidence(overrides = {}) {
   return {
     obligation_id: "obl-canonical-1",
     producer: EVERKEEP_AUTHORITY,
+    producer_revision: EVERKEEP_SOURCE_REVISION,
+    status_schema: EVERKEEP_STATUS_SCHEMA,
     execution_authority: "GoreeCloud/goreecloud-drive",
     resource_scope: "drive:file:opaque-1",
     operation: "delete",
