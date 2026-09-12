@@ -124,7 +124,7 @@ function validateObligationForAssessment(obligation) {
   const due = deadline(operation, normalizedParameters);
   if (due !== null && due <= issuedAt) throw new TypeError("lifecycle deadline must follow issued_at");
   refs(obligation.evidence_references, "obligation.evidence_references");
-  return {operation, parameters: normalizedParameters, due};
+  return {operation, parameters: normalizedParameters, due, issuedAt};
 }
 
 export function createEverkeepLifecycleObligation(input) {
@@ -190,6 +190,7 @@ export function assessEverkeepLifecycleEvidence(obligation, evidence, { now = ne
   if (typeof evidence.execution_verified !== "boolean") throw new TypeError("evidence.execution_verified must be boolean");
 
   const observed = time(evidence.observed_at, "evidence.observed_at");
+  if (observed < validatedObligation.issuedAt) throw new TypeError("evidence cannot predate the lifecycle obligation");
   if (observed > nowMs) throw new TypeError("evidence cannot be future-dated");
   let freshUntil = null;
   let fresh = false;
