@@ -115,6 +115,15 @@ test("execution verification must be an explicit boolean", () => {
   );
 });
 
+test("verified execution cannot contradict a non-satisfied evidence state", () => {
+  for (const state of ["pending", "failed", "unknown"]) {
+    assert.throws(
+      () => assessEverkeepLifecycleEvidence(obligation(), evidence({state, execution_verified: true}), {now}),
+      /verified execution requires satisfied evidence state/,
+    );
+  }
+});
+
 test("Everkeep evidence must bind the exact pinned source revision and status schema", () => {
   assert.throws(
     () => assessEverkeepLifecycleEvidence(
