@@ -61,6 +61,12 @@ const ARTIFACT_KINDS = new Set([
   "macos-bundle",
   "other-compiled-artifact",
 ]);
+const ARTIFACT_PLATFORM = new Map([
+  ["android-apk", "android"],
+  ["linux-binary", "linux"],
+  ["windows-binary", "windows"],
+  ["macos-bundle", "macos"],
+]);
 const PLATFORMS = new Set(["android", "linux", "windows", "macos", "other"]);
 const ENGINE_FAMILIES = new Set([
   "android-system-webview-chromium",
@@ -199,6 +205,10 @@ export function assessBrowserRuntimeAcceptance(record, {
   closed(target, TARGET_FIELDS, "target");
   if (!PLATFORMS.has(target.platform)) throw new Error("target.platform is unsupported");
   if (!ENGINE_FAMILIES.has(target.engine_family)) throw new Error("target.engine_family is unsupported");
+  const requiredPlatform = ARTIFACT_PLATFORM.get(artifact.kind);
+  if (requiredPlatform && target.platform !== requiredPlatform) {
+    throw new Error(`artifact kind ${artifact.kind} requires target platform ${requiredPlatform}`);
+  }
   text(target.os_name, "target.os_name", 120);
   text(target.os_version, "target.os_version", 120);
   text(target.device_class, "target.device_class", 160);
