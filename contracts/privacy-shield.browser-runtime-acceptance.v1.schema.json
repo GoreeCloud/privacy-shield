@@ -106,5 +106,23 @@
     "authorization_effect": {"const": false},
     "authority_transfer": {"const": false},
     "production_approved": {"const": false}
-  }
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"artifact": {"properties": {"kind": {"const": "android-apk"}}}}},
+      "then": {"properties": {"target": {"properties": {"platform": {"const": "android"}}}}}
+    },
+    {
+      "if": {"properties": {"artifact": {"properties": {"kind": {"const": "linux-binary"}}}}},
+      "then": {"properties": {"target": {"properties": {"platform": {"const": "linux"}}}}}
+    },
+    {
+      "if": {"properties": {"artifact": {"properties": {"kind": {"const": "windows-binary"}}}}},
+      "then": {"properties": {"target": {"properties": {"platform": {"const": "windows"}}}}}
+    },
+    {
+      "if": {"properties": {"artifact": {"properties": {"kind": {"const": "macos-bundle"}}}}},
+      "then": {"properties": {"target": {"properties": {"platform": {"const": "macos"}}}}}
+    }
+  ]
 }
