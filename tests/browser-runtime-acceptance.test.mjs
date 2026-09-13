@@ -115,6 +115,23 @@ test("FR-013 requires independent exact source, tree, Privacy Shield, and artifa
   );
 });
 
+test("FR-013 binds known compiled artifact kinds to the matching target platform", () => {
+  const androidOnWindows = record();
+  androidOnWindows.target.platform = "windows";
+  androidOnWindows.target.os_name = "Windows";
+  assert.throws(
+    () => assessBrowserRuntimeAcceptance(androidOnWindows, assessmentOptions()),
+    /artifact kind android-apk requires target platform android/,
+  );
+
+  const linuxOnAndroid = record();
+  linuxOnAndroid.artifact.kind = "linux-binary";
+  assert.throws(
+    () => assessBrowserRuntimeAcceptance(linuxOnAndroid, assessmentOptions()),
+    /artifact kind linux-binary requires target platform linux/,
+  );
+});
+
 test("FR-013 fails closed when any required Browser privacy dimension is missing, duplicated, or not passed", () => {
   const missing = record();
   missing.dimensions = missing.dimensions.slice(1);
