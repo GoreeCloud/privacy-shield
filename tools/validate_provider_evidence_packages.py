@@ -232,6 +232,8 @@ def validate_package(path: Path, record: dict, now: datetime | None = None) -> d
         fail(f"{path}: artifact.source_authority must be non-empty")
     collected_at = parse_time(artifact.get("collected_at"), f"{path}: artifact.collected_at")
     valid_until = parse_time(artifact.get("valid_until"), f"{path}: artifact.valid_until")
+    if collected_at > now:
+        fail(f"{path}: artifact.collected_at cannot be future-dated")
     if valid_until <= collected_at:
         fail(f"{path}: artifact.valid_until must be later than collected_at")
 
@@ -254,6 +256,8 @@ def validate_package(path: Path, record: dict, now: datetime | None = None) -> d
     reviewed_at_value = governance.get("reviewed_at")
     if status == "reviewed":
         reviewed_at = parse_time(reviewed_at_value, f"{path}: governance.reviewed_at")
+        if reviewed_at > now:
+            fail(f"{path}: governance.reviewed_at cannot be future-dated")
         if reviewed_at < collected_at:
             fail(f"{path}: reviewed_at cannot predate artifact collection")
         if reviewed_at >= valid_until:
@@ -369,6 +373,7 @@ def validate_documentation() -> None:
         "not** a candidate evaluation",
         "evidence+sha256:",
         "evaluation-summary",
+        "independently rejects future collection and review timestamps",
         "zero provider evidence package JSON records",
     ):
         if marker not in text:
