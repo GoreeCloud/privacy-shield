@@ -131,7 +131,7 @@ test("missing or malformed bearer credential fails before capability authority",
     }),
   });
 
-  for (const authorization of [null, "identity-direct-token", "Bearer two tokens", "Basic abc"] ) {
+  for (const authorization of [null, "identity-direct-token", "Bearer two tokens", "Basic abc"]) {
     const response = await handler(requestFor(verificationPayload(), authorization));
     assert.equal(response.status, 401);
     assert.equal(response.headers.get("cache-control"), "no-store");
@@ -162,16 +162,32 @@ test("Identity verifier failure stays opaque and never reaches capability author
   assert.equal(capabilityCalls, 0);
 });
 
-test("verified Identity metadata must exactly bind Search and Privacy Shield", async () => {
+test("verified Identity metadata must exactly bind Search and Privacy Shield", async (t) => {
   const cases = [
-    { name: "wrong service", serviceId: "goreecloud-browser", audience: IDENTITY_DIRECT_SERVICE_AUDIENCE },
-    { name: "service whitespace", serviceId: " goreecloud-search ", audience: IDENTITY_DIRECT_SERVICE_AUDIENCE },
-    { name: "wrong audience", serviceId: IDENTITY_DIRECT_SERVICE_SEARCH_ID, audience: "goreecloud-mesh" },
-    { name: "audience whitespace", serviceId: IDENTITY_DIRECT_SERVICE_SEARCH_ID, audience: " goreecloud-privacy-shield " },
+    {
+      name: "wrong service",
+      serviceId: "goreecloud-browser",
+      audience: IDENTITY_DIRECT_SERVICE_AUDIENCE,
+    },
+    {
+      name: "service whitespace",
+      serviceId: " goreecloud-search ",
+      audience: IDENTITY_DIRECT_SERVICE_AUDIENCE,
+    },
+    {
+      name: "wrong audience",
+      serviceId: IDENTITY_DIRECT_SERVICE_SEARCH_ID,
+      audience: "goreecloud-mesh",
+    },
+    {
+      name: "audience whitespace",
+      serviceId: IDENTITY_DIRECT_SERVICE_SEARCH_ID,
+      audience: " goreecloud-privacy-shield ",
+    },
   ];
 
   for (const item of cases) {
-    await test(item.name, async () => {
+    await t.test(item.name, async () => {
       let capabilityCalls = 0;
       const handler = createIdentityAuthenticatedCapabilityVerificationHTTPHandler({
         verificationService: successfulVerificationService(() => {
