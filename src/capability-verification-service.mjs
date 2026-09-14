@@ -1,3 +1,5 @@
+const CAPABILITY_VERIFICATION_CONTRACT_VERSION = 1;
+
 const REQUIRED_EXPECTED_CLAIMS = Object.freeze([
   "requester_id",
   "resource_id",
@@ -12,6 +14,13 @@ function requireNonEmptyString(value, label) {
   const normalized = String(value ?? "").trim();
   if (!normalized) throw new TypeError(`${label} is required`);
   return normalized;
+}
+
+function requireContractVersion(value) {
+  if (value !== CAPABILITY_VERIFICATION_CONTRACT_VERSION) {
+    throw new Error("CAPABILITY_VERIFICATION_CONTRACT_VERSION_UNSUPPORTED");
+  }
+  return value;
 }
 
 function requireExpectedClaims(expected) {
@@ -33,6 +42,9 @@ function requireExpectedClaims(expected) {
  * allowlist. A concrete IPC/network adapter must derive consumer_id from its
  * authenticated transport identity rather than trusting arbitrary request data.
  * This service never returns the signed token or signing keys.
+ *
+ * The envelope is versioned independently from capability-token format so IPC
+ * clients can fail closed when the verification protocol itself changes.
  */
 export class PrivacyCapabilityVerificationService {
   constructor({ enforcementPoint, allowedConsumers = [] } = {}) {
@@ -46,7 +58,15 @@ export class PrivacyCapabilityVerificationService {
     );
   }
 
-  verify({ consumer_id, capability_reference, expected, consume = false } = {}) {
+  verify({
+    contract_version,
+    consumer_id,
+    capability_reference,
+    expected,
+    consume = false,
+  } = {}) {
+    requireContractVersion(contract_version);
+
     const consumerId = requireNonEmptyString(consumer_id, "Capability verification consumer_id");
     if (!this.allowedConsumers.has(consumerId)) {
       throw new Error("CAPABILITY_VERIFICATION_CONSUMER_NOT_ALLOWED");
@@ -66,6 +86,7 @@ export class PrivacyCapabilityVerificationService {
       : this.enforcementPoint.enforceReference(reference, normalizedExpected);
 
     return Object.freeze({
+      contract_version: CAPABILITY_VERIFICATION_CONTRACT_VERSION,
       authorized: result.authorized === true,
       capability_reference: reference,
       constraints: Object.freeze({ ...result.constraints }),
@@ -73,4 +94,7 @@ export class PrivacyCapabilityVerificationService {
   }
 }
 
-export { REQUIRED_EXPECTED_CLAIMS };
+export {
+  CAPABILITY_VERIFICATION_CONTRACT_VERSION,
+  REQUIRED_EXPECTED_CLAIMS,
+};
