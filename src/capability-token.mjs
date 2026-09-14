@@ -72,7 +72,18 @@ export class PrivacyCapabilityAuthority {
     const body = encode(payload);
     const secret = this.keys.get(this.activeKeyId);
     const signature = crypto.createHmac("sha256", secret).update(body).digest("base64url");
-    return `${body}.${signature}`;
+    const token = `${body}.${signature}`;
+
+    // The signed bearer token remains authority-local. Consumers may carry only
+    // the opaque jti reference while Privacy Shield resolves and verifies the
+    // original signed token inside its own trust boundary. This avoids sharing
+    // HMAC signing keys with every service that needs to enforce authorization.
+    this.store.set("capability_token", payload.jti, {
+      token,
+      issued_at: new Date(payload.iat * 1000).toISOString(),
+      expires_at: new Date(payload.exp * 1000).toISOString()
+    });
+    return token;
   }
 
   parseAndVerify(token, { check_state = true } = {}) {
@@ -112,6 +123,28 @@ export class PrivacyCapabilityAuthority {
     for (const [key, value] of Object.entries(expected)) {
       if (value !== undefined && claims[key] !== value) throw new Error(`CAPABILITY_${key.toUpperCase()}_MISMATCH`);
     }
+    return claims;
+  }
+
+  tokenForReference(reference) {
+    const jti = String(reference ?? "").trim();
+    if (!jti.startsWith("psc_")) throw new Error("INVALID_CAPABILITY_ID");
+    const record = this.store.get("capability_token", jti);
+    if (!record?.token) throw new Error("CAPABILITY_REFERENCE_NOT_FOUND");
+    return { jti, token: record.token };
+  }
+
+  verifyReference(reference, expected = {}) {
+    const { jti, token } = this.tokenForReference(reference);
+    const claims = this.verify(token, expected);
+    if (claims.jti !== jti) throw new Error("CAPABILITY_REFERENCE_MISMATCH");
+    return claims;
+  }
+
+  consumeReference(reference, expected = {}) {
+    const { jti, token } = this.tokenForReference(reference);
+    const claims = this.consume(token, expected);
+    if (claims.jti !== jti) throw new Error("CAPABILITY_REFERENCE_MISMATCH");
     return claims;
   }
 
