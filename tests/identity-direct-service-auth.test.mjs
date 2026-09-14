@@ -222,6 +222,22 @@ test("verified Identity metadata must contain the operation-required scope", asy
   assert.equal(capabilityCalls, 0);
 });
 
+test("unexpected verified Identity scope fails closed", async () => {
+  let capabilityCalls = 0;
+  const handler = createIdentityAuthenticatedCapabilityVerificationHTTPHandler({
+    verificationService: successfulVerificationService(() => {
+      capabilityCalls += 1;
+    }),
+    identityTokenVerifier: identityVerifier({
+      scopes: [IDENTITY_DIRECT_SERVICE_CONSUME_SCOPE, "privacy.admin"],
+    }),
+  });
+
+  const response = await handler(requestFor(verificationPayload({ consume: true })));
+  assert.equal(response.status, 401);
+  assert.equal(capabilityCalls, 0);
+});
+
 test("request-body consumer identity still cannot override verified service identity", async () => {
   let capabilityCalls = 0;
   const handler = createIdentityAuthenticatedCapabilityVerificationHTTPHandler({
