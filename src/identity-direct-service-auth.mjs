@@ -8,6 +8,10 @@ const IDENTITY_DIRECT_SERVICE_AUDIENCE = "goreecloud-privacy-shield";
 const IDENTITY_DIRECT_SERVICE_SEARCH_ID = "goreecloud-search";
 const IDENTITY_DIRECT_SERVICE_VERIFY_SCOPE = "privacy.capability-reference.verify";
 const IDENTITY_DIRECT_SERVICE_CONSUME_SCOPE = "privacy.capability-reference.consume";
+const IDENTITY_DIRECT_SERVICE_ALLOWED_SCOPES = new Set([
+  IDENTITY_DIRECT_SERVICE_VERIFY_SCOPE,
+  IDENTITY_DIRECT_SERVICE_CONSUME_SCOPE,
+]);
 
 function responseHeaders(extra = {}) {
   return {
@@ -85,7 +89,10 @@ function acceptedIdentityVerification(result, requiredScope) {
   if (!Array.isArray(result.scopes) || !result.scopes.every((scope) => typeof scope === "string")) {
     return null;
   }
-  if (!result.scopes.includes(requiredScope)) {
+  if (
+    !result.scopes.includes(requiredScope) ||
+    result.scopes.some((scope) => !IDENTITY_DIRECT_SERVICE_ALLOWED_SCOPES.has(scope))
+  ) {
     return null;
   }
   return result.service_id;
