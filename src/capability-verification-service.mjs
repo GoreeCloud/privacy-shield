@@ -10,10 +10,14 @@ const REQUIRED_EXPECTED_CLAIMS = Object.freeze([
   "retention_mode",
 ]);
 
-function requireNonEmptyString(value, label) {
-  const normalized = String(value ?? "").trim();
-  if (!normalized) throw new TypeError(`${label} is required`);
-  return normalized;
+function requireExactNonEmptyString(value, label) {
+  if (typeof value !== "string" || !value) {
+    throw new TypeError(`${label} is required`);
+  }
+  if (value !== value.trim()) {
+    throw new TypeError(`${label} must not contain leading or trailing whitespace`);
+  }
+  return value;
 }
 
 function requireContractVersion(value) {
@@ -29,7 +33,7 @@ function requireExpectedClaims(expected) {
   }
   const normalized = {};
   for (const key of REQUIRED_EXPECTED_CLAIMS) {
-    normalized[key] = requireNonEmptyString(expected[key], `Capability expected claim ${key}`);
+    normalized[key] = requireExactNonEmptyString(expected[key], `Capability expected claim ${key}`);
   }
   return normalized;
 }
@@ -54,7 +58,7 @@ export class PrivacyCapabilityVerificationService {
     }
     this.enforcementPoint = enforcementPoint;
     this.allowedConsumers = new Set(
-      [...allowedConsumers].map(value => requireNonEmptyString(value, "Allowed capability consumer")),
+      [...allowedConsumers].map(value => requireExactNonEmptyString(value, "Allowed capability consumer")),
     );
   }
 
@@ -67,12 +71,12 @@ export class PrivacyCapabilityVerificationService {
   } = {}) {
     requireContractVersion(contract_version);
 
-    const consumerId = requireNonEmptyString(consumer_id, "Capability verification consumer_id");
+    const consumerId = requireExactNonEmptyString(consumer_id, "Capability verification consumer_id");
     if (!this.allowedConsumers.has(consumerId)) {
       throw new Error("CAPABILITY_VERIFICATION_CONSUMER_NOT_ALLOWED");
     }
 
-    const reference = requireNonEmptyString(
+    const reference = requireExactNonEmptyString(
       capability_reference,
       "Capability verification capability_reference",
     );
