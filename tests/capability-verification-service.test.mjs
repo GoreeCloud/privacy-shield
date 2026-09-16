@@ -128,6 +128,20 @@ test("verification service requires the complete operation-bound claim set", () 
   assert.equal(calls.length, 0);
 });
 
+test("verification service rejects unknown expected claims before authority work", () => {
+  const { service, calls } = fixture();
+  assert.throws(
+    () => service.verify(verificationRequest({
+      expected: {
+        ...expectedSearchClaims,
+        inferred_authority: "allow",
+      },
+    })),
+    /expected claims contain unsupported fields: inferred_authority/,
+  );
+  assert.equal(calls.length, 0);
+});
+
 test("verification service rejects normalized variants of operation-bound expected claims", () => {
   for (const key of Object.keys(expectedSearchClaims)) {
     const { service, calls } = fixture();
@@ -166,6 +180,17 @@ test("verification service can consume a single-use reference through the author
 
   assert.equal(calls.length, 1);
   assert.equal(calls[0].mode, "consume");
+});
+
+test("verification service rejects non-boolean consume values before authority work", () => {
+  for (const consume of ["false", 0, 1, null, {}, []]) {
+    const { service, calls } = fixture();
+    assert.throws(
+      () => service.verify(verificationRequest({ consume })),
+      /consume must be boolean/,
+    );
+    assert.equal(calls.length, 0);
+  }
 });
 
 test("verification service rejects non-Privacy-Shield capability identifiers", () => {
