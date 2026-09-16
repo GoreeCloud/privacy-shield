@@ -127,8 +127,10 @@ export class PrivacyCapabilityAuthority {
   }
 
   tokenForReference(reference) {
-    const jti = String(reference ?? "").trim();
-    if (!jti.startsWith("psc_")) throw new Error("INVALID_CAPABILITY_ID");
+    const jti = String(reference ?? "");
+    if (!jti || jti !== jti.trim() || !jti.startsWith("psc_")) {
+      throw new Error("INVALID_CAPABILITY_ID");
+    }
     const record = this.store.get("capability_token", jti);
     if (!record?.token) throw new Error("CAPABILITY_REFERENCE_NOT_FOUND");
     return { jti, token: record.token };
