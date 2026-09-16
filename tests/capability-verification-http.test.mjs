@@ -72,6 +72,33 @@ test("body consumer cannot override authenticated transport identity", async () 
   assert.deepEqual(await response.json(), { error: "consumer_identity_mismatch" });
 });
 
+test("consumer identities require exact strings without whitespace normalization", async () => {
+  let calls = 0;
+  const handler = createCapabilityVerificationHTTPHandler({
+    verificationService: {
+      verify() {
+        calls += 1;
+        return {};
+      },
+    },
+  });
+
+  const paddedTransport = await handler(
+    requestFor(verificationPayload()),
+    { authenticatedConsumerId: " goreecloud-search " },
+  );
+  assert.equal(paddedTransport.status, 401);
+  assert.equal(calls, 0);
+
+  const paddedBody = await handler(
+    requestFor(verificationPayload("goreecloud-search ")),
+    { authenticatedConsumerId: "goreecloud-search" },
+  );
+  assert.equal(paddedBody.status, 403);
+  assert.equal(calls, 0);
+  assert.deepEqual(await paddedBody.json(), { error: "consumer_identity_mismatch" });
+});
+
 test("authenticated consumer identity is injected into verification service", async () => {
   let observed;
   const handler = createCapabilityVerificationHTTPHandler({
@@ -94,7 +121,7 @@ test("authenticated consumer identity is injected into verification service", as
 
   const response = await handler(
     requestFor(verificationPayload()),
-    { authenticatedConsumerId: " goreecloud-search " },
+    { authenticatedConsumerId: "goreecloud-search" },
   );
   assert.equal(response.status, 200);
   assert.equal(observed.consumer_id, "goreecloud-search");
