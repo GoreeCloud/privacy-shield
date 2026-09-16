@@ -21,8 +21,11 @@ function normalizedMediaType(value) {
   return String(value ?? "").split(";", 1)[0].trim().toLowerCase();
 }
 
-function normalizedIdentity(value) {
-  return String(value ?? "").trim();
+function exactIdentity(value) {
+  if (typeof value !== "string" || !value || value !== value.trim()) {
+    return "";
+  }
+  return value;
 }
 
 function isRecord(value) {
@@ -60,7 +63,7 @@ export function createCapabilityVerificationHTTPHandler({ verificationService } 
       return jsonResponse(415, { error: "unsupported_media_type" });
     }
 
-    const authenticatedIdentity = normalizedIdentity(authenticatedConsumerId);
+    const authenticatedIdentity = exactIdentity(authenticatedConsumerId);
     if (!authenticatedIdentity) {
       return jsonResponse(401, { error: "authenticated_consumer_required" });
     }
@@ -90,7 +93,7 @@ export function createCapabilityVerificationHTTPHandler({ verificationService } 
       return jsonResponse(400, { error: "invalid_request" });
     }
 
-    const bodyConsumer = normalizedIdentity(payload.consumer_id);
+    const bodyConsumer = exactIdentity(payload.consumer_id);
     if (!bodyConsumer || bodyConsumer !== authenticatedIdentity) {
       return jsonResponse(403, { error: "consumer_identity_mismatch" });
     }
