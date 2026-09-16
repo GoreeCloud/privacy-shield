@@ -84,6 +84,18 @@ test("capability reference cannot be replayed for another purpose", () => {
   }), /CAPABILITY_PURPOSE_MISMATCH/);
 });
 
+test("capability reference rejects surrounding whitespace instead of normalizing it", () => {
+  const { request, enforcementPoint } = fixture();
+  const result = enforcementPoint.authorize(request);
+  const reference = result.decision.capability_token_reference;
+  for (const padded of [` ${reference}`, `${reference} `, `\t${reference}`]) {
+    assert.throws(
+      () => enforcementPoint.enforceReference(padded, { requester_id: request.requester.id }),
+      /INVALID_CAPABILITY_ID/,
+    );
+  }
+});
+
 test("revoked consent is denied after PDP state is refreshed", () => {
   const { request, enforcementPoint, consentAuthority, consent } = fixture();
   const revoked = consentAuthority.revoke({
