@@ -31,11 +31,23 @@ function requireExpectedClaims(expected) {
   if (!expected || typeof expected !== "object" || Array.isArray(expected)) {
     throw new TypeError("Capability verification expected claims are required");
   }
+  const keys = Object.keys(expected);
+  const unexpected = keys.filter(key => !REQUIRED_EXPECTED_CLAIMS.includes(key));
+  if (unexpected.length > 0) {
+    throw new TypeError(`Capability verification expected claims contain unsupported fields: ${unexpected.join(", ")}`);
+  }
   const normalized = {};
   for (const key of REQUIRED_EXPECTED_CLAIMS) {
     normalized[key] = requireExactNonEmptyString(expected[key], `Capability expected claim ${key}`);
   }
   return normalized;
+}
+
+function requireConsumeFlag(value) {
+  if (typeof value !== "boolean") {
+    throw new TypeError("Capability verification consume must be boolean");
+  }
+  return value;
 }
 
 /**
@@ -85,7 +97,8 @@ export class PrivacyCapabilityVerificationService {
     }
 
     const normalizedExpected = requireExpectedClaims(expected);
-    const result = consume
+    const consumeFlag = requireConsumeFlag(consume);
+    const result = consumeFlag
       ? this.enforcementPoint.enforceReferenceOnce(reference, normalizedExpected)
       : this.enforcementPoint.enforceReference(reference, normalizedExpected);
 
