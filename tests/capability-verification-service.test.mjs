@@ -98,6 +98,26 @@ test("verification service rejects consumers outside the authenticated allowlist
   assert.equal(calls.length, 0);
 });
 
+test("verification service rejects surrounding whitespace in consumer identity", () => {
+  const { service, calls } = fixture();
+  assert.throws(
+    () => service.verify(verificationRequest({ consumer_id: " goreecloud-search" })),
+    /must not contain leading or trailing whitespace/,
+  );
+  assert.equal(calls.length, 0);
+});
+
+test("verification service rejects surrounding whitespace in opaque capability references", () => {
+  const { service, calls } = fixture();
+  for (const capability_reference of [" psc_search-operation", "psc_search-operation ", "\tpsc_search-operation"]) {
+    assert.throws(
+      () => service.verify(verificationRequest({ capability_reference })),
+      /must not contain leading or trailing whitespace/,
+    );
+  }
+  assert.equal(calls.length, 0);
+});
+
 test("verification service requires the complete operation-bound claim set", () => {
   const { service, calls } = fixture();
   const { destination: _destination, ...incomplete } = expectedSearchClaims;
@@ -106,6 +126,35 @@ test("verification service requires the complete operation-bound claim set", () 
     /Capability expected claim destination is required/,
   );
   assert.equal(calls.length, 0);
+});
+
+test("verification service rejects normalized variants of operation-bound expected claims", () => {
+  for (const key of Object.keys(expectedSearchClaims)) {
+    const { service, calls } = fixture();
+    assert.throws(
+      () => service.verify(verificationRequest({
+        expected: {
+          ...expectedSearchClaims,
+          [key]: ` ${expectedSearchClaims[key]}`,
+        },
+      })),
+      /must not contain leading or trailing whitespace/,
+    );
+    assert.equal(calls.length, 0);
+  }
+});
+
+test("verification service configuration rejects padded allowed consumer identities", () => {
+  assert.throws(
+    () => new PrivacyCapabilityVerificationService({
+      enforcementPoint: {
+        enforceReference() {},
+        enforceReferenceOnce() {},
+      },
+      allowedConsumers: ["goreecloud-search "],
+    }),
+    /must not contain leading or trailing whitespace/,
+  );
 });
 
 test("verification service can consume a single-use reference through the authority boundary", () => {
