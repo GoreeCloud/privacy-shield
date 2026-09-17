@@ -47,7 +47,7 @@ platform_systems:
     evidence:
     - website/GLAZE-UI-2.1-ADOPTION.md
     - website/glaze-ui-2.1.0.css
-    notes: Privacy Center source still carries the pre-reset Glaze UI 2.1.0 implementation. The current shared consumer target is GLAZE UI V1.5 / 1.5.0, so repository-specific migration, rendered acceptance, accessibility/resilience validation, rollback, and production acceptance remain required.
+    notes: Privacy Center source still carries the pre-reset Glaze UI 2.1.0 implementation. The current shared consumer target is GLAZE UI V1.5 / 1.5.1, so repository-specific migration, rendered acceptance, accessibility/resilience validation, rollback, and production acceptance remain required.
   mesh:
     result: applicable-migration-required
     version: null
@@ -100,10 +100,10 @@ continuity:
 external_dependencies: []
 compatibility:
   platform_contract: '0.2'
-  glaze_ui_required: 1.5.0
+  glaze_ui_required: 1.5.1
   requires:
   - goreecloud-platform-contract==0.2
-  - glaze-ui==1.5.0
+  - glaze-ui==1.5.1
   provides:
   - privacy-shield-durable-runtime-single-host
   - privacy-shield-mesh-evidence-delivery
@@ -160,7 +160,7 @@ conformance:
   - website/GLAZE-UI-2.1-ADOPTION.md
   blockers:
   - GoreeCloud Privacy Shield remains in Development and its platform authorization core is not production accepted.
-  - Privacy Center requires migration and exact-revision acceptance against the current Stable Glaze UI 1.5.0 baseline.
+  - Privacy Center requires migration and exact-revision acceptance against the current Stable Glaze UI 1.5.1 baseline.
   - GoreeCloud Sync privacy-authorization and synchronization-governance integration remains unaccepted; Sync remains separately governed and is not an eighth Integral Platform System.
   - Single-host durable consent, policy, capability replay or revocation, and privacy evidence state are implemented and source-tested, but production/distributed durability and accepted Everkeep-backed recovery remain open.
   - Production signing-key custody and rotation operations remain pending.
