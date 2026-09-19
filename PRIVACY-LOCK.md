@@ -80,6 +80,10 @@ Each assessment records the exact lock ID and expiry, application, category, res
 
 These fields are designed to feed Privacy Receipts 2.0 and Privacy Center without collecting the private operation content solely for presentation detail.
 
+## Integration control
+
+FR-009 source integration must remain isolated from historical stacked roadmap edits and unrelated feature state. Repository roadmap, Drive roadmap, and Tasks Management status are reconciled only from verified authoritative post-merge state; none of those records may promote Privacy Lock runtime coverage or production acceptance solely because this source slice merges.
+
 ## Current acceptance boundary
 
 This FR-009 source slice does not establish:
