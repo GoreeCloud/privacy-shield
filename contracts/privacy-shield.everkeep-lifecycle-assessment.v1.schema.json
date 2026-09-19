@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://goreecloud.com/schemas/privacy-shield.everkeep-lifecycle-assessment.v1.schema.json",
+  "title": "Privacy Shield Everkeep Lifecycle Assessment v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "obligation_id", "status", "reason", "evidence_references",
+    "execution_verified", "authorization_effect", "execution_authorization", "authority_transfer"
+  ],
+  "properties": {
+    "schema_version": {"const": "goreecloud.privacy-shield.everkeep-lifecycle-assessment.v1"},
+    "obligation_id": {"type": "string", "minLength": 1, "maxLength": 240},
+    "status": {"enum": ["pending", "satisfied", "failed", "unknown", "overdue"]},
+    "reason": {"type": "string", "minLength": 1, "maxLength": 500},
+    "observed_at": {"type": ["string", "null"], "format": "date-time", "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"},
+    "fresh_until": {"type": ["string", "null"], "format": "date-time", "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"},
+    "evidence_references": {"type": "array", "uniqueItems": true, "maxItems": 50, "items": {"type": "string", "minLength": 1, "maxLength": 1000}},
+    "execution_verified": {"type": "boolean"},
+    "authorization_effect": {"const": false},
+    "execution_authorization": {"const": false},
+    "authority_transfer": {"const": false}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"status": {"const": "satisfied"}}, "required": ["status"]},
+      "then": {
+        "required": ["observed_at", "fresh_until"],
+        "properties": {
+          "execution_verified": {"const": true},
+          "evidence_references": {"minItems": 1}
+        }
+      }
+    },
+    {
+      "if": {"properties": {"execution_verified": {"const": true}}, "required": ["execution_verified"]},
+      "then": {
+        "properties": {
+          "status": {"const": "satisfied"}
+        }
+      }
+    }
+  ]
+}
