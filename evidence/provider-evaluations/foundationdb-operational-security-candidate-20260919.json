@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "contract_id": "goreecloud.privacy-shield.provider-evidence-package.v1",
+  "evidence_id": "foundationdb-operational-security-docs-20260919",
+  "provider_class": "state-provider",
+  "provider_id": "foundationdb-self-hosted-multihost",
+  "provider_name": "FoundationDB self-hosted multi-host cluster",
+  "provider_implementation": "FoundationDB self-hosted multi-host cluster",
+  "integration_authority": "GoreeCloud/goreecloud-privacy-shield",
+  "scope": {
+    "service": "privacy-shield",
+    "capability": "durable-authorization-state",
+    "authority_state": [
+      "consent",
+      "policy_versions_and_active_pointer",
+      "capability_revocation",
+      "single_use_capability_consumption",
+      "privacy_evidence_and_chain_head"
+    ],
+    "environments": [
+      "production"
+    ]
+  },
+  "evidence_ref": "evidence+sha256:0ca034c0f7618b2684006f0b6dc47c8720de410b36da131f3405e30b1806ca30:github://GoreeCloud/goreecloud-privacy-shield/evidence/provider-evaluations/foundationdb-operational-security-candidate-20260919.md",
+  "artifact": {
+    "digest_algorithm": "sha256",
+    "digest": "0ca034c0f7618b2684006f0b6dc47c8720de410b36da131f3405e30b1806ca30",
+    "locator": "github://GoreeCloud/goreecloud-privacy-shield/evidence/provider-evaluations/foundationdb-operational-security-candidate-20260919.md",
+    "media_type": "text/markdown",
+    "source_authority": "Apple FoundationDB official documentation",
+    "collected_at": "2026-09-19T22:33:00Z",
+    "valid_until": "2026-10-19T22:33:00Z"
+  },
+  "supports": [
+    "restart_recovery",
+    "migration_rollback",
+    "access_control_isolation",
+    "privacy_safe_observability",
+    "operational_ownership"
+  ],
+  "governance": {
+    "status": "captured",
+    "authorizing": false,
+    "production_acceptance_authorized": false,
+    "reviewed_at": null
+  },
+  "privacy": {
+    "credentials_in_package": false,
+    "secret_material_in_package": false,
+    "raw_private_payloads_in_package": false,
+    "full_capability_tokens_in_package": false
+  },
+  "limitations": [
+    "Public-source capability and limitation evidence only; no GoreeCloud FoundationDB deployment exists.",
+    "Current one-VPS topology cannot satisfy failure-isolated multi-host production requirements.",
+    "Official documentation states FoundationDB is not itself a user-level security boundary; experimental tenant/authorization capabilities are not treated as production acceptance.",
+    "No criterion is resolved until governed evidence review and deployed qualification occur.",
+    "No infrastructure purchase, deployment, provider selection, or production acceptance is authorized."
+  ]
+}
