@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "contract_id": "goreecloud.privacy-shield.provider-evidence-review.v1",
+  "review_id": "ovhcloud-kms-hsm-signing-docs-review-20260919",
+  "evidence_id": "ovhcloud-kms-hsm-signing-docs-20260919",
+  "evidence_ref": "evidence+sha256:45593ed53b2f5bb2dac7bb24d912cdf234c8484430cf58beceadf1e11709ad68:github://GoreeCloud/goreecloud-privacy-shield/evidence/provider-evaluations/ovhcloud-kms-hsm-signing-candidate-20260919.md",
+  "provider_class": "signing-key-provider",
+  "provider_id": "ovhcloud-kms-hsm",
+  "provider_name": "OVHcloud KMS HSM-backed asymmetric signing",
+  "integration_authority": "GoreeCloud/goreecloud-privacy-shield",
+  "scope": {
+    "service": "privacy-shield",
+    "capability": "operation-bound-capability-signing",
+    "producer_identity": "goreecloud-privacy-shield",
+    "environments": [
+      "production"
+    ]
+  },
+  "supports": [
+    "non_exportable_signing_material",
+    "opaque_key_references",
+    "stable_key_identifiers",
+    "outage_degraded_behavior",
+    "access_control_isolation",
+    "evaluation-summary"
+  ],
+  "review": {
+    "decision": "accepted-for-evaluation",
+    "review_authority": "GoreeCloud owner decision under authoritative software licensing and open-source governance",
+    "review_authority_reference": "evidence+sha256:ee9cc15deb658a201b1769a52669eab442762245e061aae5cfcb96d289e6bd4e:github://GoreeCloud/goreecloud-privacy-shield/reviews/provider-evidence/goreecloud-owner-review-authority-20260919.md",
+    "review_evidence_reference": "evidence+sha256:e6cb1119e8f992c25f45ef708c08a8f641c690543141f3257b9398010d92be72:github://GoreeCloud/goreecloud-privacy-shield/reviews/provider-evidence/ovhcloud-kms-hsm-signing-docs-review-20260919.md",
+    "reviewed_at": "2026-09-19T22:50:00Z",
+    "valid_until": "2026-10-18T22:00:00Z"
+  },
+  "governance": {
+    "status": "active",
+    "authorizing": false,
+    "provider_selection_authorized": false,
+    "production_acceptance_authorized": false,
+    "review_authority_validated_by_schema": false
+  },
+  "privacy": {
+    "credentials_in_review": false,
+    "secret_material_in_review": false,
+    "raw_private_payloads_in_review": false,
+    "full_capability_tokens_in_review": false
+  },
+  "limitations": [
+    "Evidence acceptance does not approve the proprietary managed-service exception or establish provider selection.",
+    "No KMS order, billing change, key creation, adapter implementation, deployment, production acceptance, release, or Stable state is authorized.",
+    "Separate explicit cost/order authorization remains required before any billable KMS action."
+  ]
+}
