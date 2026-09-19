@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "contract_id": "goreecloud.privacy-shield.provider-evidence-package.v1",
+  "evidence_id": "ovhcloud-kms-signing-lifecycle-audit-docs-20260919",
+  "provider_class": "signing-key-provider",
+  "provider_id": "ovhcloud-kms-hsm",
+  "provider_name": "OVHcloud KMS HSM-backed asymmetric signing",
+  "integration_authority": "GoreeCloud/goreecloud-privacy-shield",
+  "scope": {
+    "service": "privacy-shield",
+    "capability": "operation-bound-capability-signing",
+    "producer_identity": "goreecloud-privacy-shield",
+    "environments": [
+      "production"
+    ]
+  },
+  "evidence_ref": "evidence+sha256:0e9a6ba3a62e9b22eec42d343a6f59c10904c6adcaa44176c945464e0e55a446:github://GoreeCloud/goreecloud-privacy-shield/evidence/provider-evaluations/ovhcloud-kms-signing-lifecycle-audit-candidate-20260919.md",
+  "artifact": {
+    "digest_algorithm": "sha256",
+    "digest": "0e9a6ba3a62e9b22eec42d343a6f59c10904c6adcaa44176c945464e0e55a446",
+    "locator": "github://GoreeCloud/goreecloud-privacy-shield/evidence/provider-evaluations/ovhcloud-kms-signing-lifecycle-audit-candidate-20260919.md",
+    "media_type": "text/markdown",
+    "source_authority": "OVHcloud official Key Management Service documentation",
+    "collected_at": "2026-09-19T22:33:00Z",
+    "valid_until": "2026-10-19T22:33:00Z"
+  },
+  "supports": [
+    "digest_only_signing",
+    "rotation_retirement_revocation",
+    "privacy_safe_audit",
+    "fail_closed_untrusted_state",
+    "recovery_continuity",
+    "operational_ownership"
+  ],
+  "governance": {
+    "status": "captured",
+    "authorizing": false,
+    "production_acceptance_authorized": false,
+    "reviewed_at": null
+  },
+  "privacy": {
+    "credentials_in_package": false,
+    "secret_material_in_package": false,
+    "raw_private_payloads_in_package": false,
+    "full_capability_tokens_in_package": false
+  },
+  "limitations": [
+    "Public-source capability evidence only; no GoreeCloud KMS domain, signing key, adapter, or production IAM policy exists.",
+    "The documented isdigest API and key-state behavior require exact Privacy Shield adapter and lifecycle qualification before any criterion can resolve.",
+    "Producer-identity binding is not established by this package.",
+    "OVHcloud KMS is proprietary managed infrastructure and remains subject to GoreeCloud exception/necessity review and explicit cost/order authorization.",
+    "No order, billing change, key creation, provider selection, deployment, or production acceptance is authorized."
+  ]
+}
