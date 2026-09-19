@@ -234,6 +234,26 @@ test("Privacy Lock is temporary, reversible, and singular per subject", () => {
   );
 });
 
+test("Privacy Lock rejects pre-creation release and is inactive before creation", () => {
+  const authority = new PrivacyLockAuthority();
+  const lock = createStrict(authority);
+
+  assert.equal(
+    authority.activeFor("user-1", new Date("2026-09-12T03:59:59.999Z")),
+    null,
+  );
+  assert.throws(
+    () =>
+      authority.release(lock.lock_id, {
+        actor: { id: "user-1", type: "user" },
+        reason_code: "INVALID_PRE_CREATION_RELEASE",
+        now: new Date("2026-09-12T03:59:59.999Z"),
+      }),
+    /PRIVACY_LOCK_RELEASE_BEFORE_CREATION/,
+  );
+  assert.notEqual(authority.activeFor("user-1", NOW), null);
+});
+
 test("custom Privacy Lock rejects attempts to target independently governed categories", () => {
   const authority = new PrivacyLockAuthority();
   assert.throws(
