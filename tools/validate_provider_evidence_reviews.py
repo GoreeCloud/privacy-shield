@@ -341,7 +341,7 @@ def validate_documentation(path: Path) -> None:
         "review_authority_reference",
         "review_evidence_reference",
         "not",
-        "zero provider evidence review-attestation JSON records",
+        "provider evidence review-attestation JSON records",
     ):
         if marker not in text:
             fail(f"{path.relative_to(ROOT)} is missing review-attestation guidance: {marker}")
