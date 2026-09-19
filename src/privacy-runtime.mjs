@@ -4,7 +4,8 @@ import { PrivacyCapabilityAuthority } from "./capability-token.mjs";
 import { ConsentAuthority } from "./consent-authority.mjs";
 import { PrivacyEvidenceLedger } from "./privacy-evidence.mjs";
 import { PrivacyPolicyStore } from "./privacy-policy-store.mjs";
-import { requireSigningKeyProviderAcceptance } from "./signing-key-acceptance.mjs";\nimport { requireStateProviderAcceptance } from "./state-provider-acceptance.mjs";
+import { requireSigningKeyProviderAcceptance } from "./signing-key-acceptance.mjs";
+import { requireStateProviderAcceptance } from "./state-provider-acceptance.mjs";
 import {
   FilePrivacyStateStore,
   PRIVACY_STATE_PROVIDER_CONTRACT,
