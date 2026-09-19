@@ -12,15 +12,27 @@ function id(prefix) {
 }
 
 function requiredString(value, field) {
-  if (typeof value !== "string" || !value.trim()) {
-    throw new TypeError(`Consent record requires ${field}`);
+  if (
+    typeof value !== "string"
+    || !value
+    || value !== value.trim()
+    || value.length > 256
+    || /[\u0000-\u001F\u007F-\u009F]/.test(value)
+  ) {
+    throw new TypeError(`Consent record requires canonical ${field}`);
   }
-  return value.trim();
+  return value;
 }
 
 function optionalTimestamp(value, field) {
   if (value === undefined || value === null) return undefined;
-  if (typeof value !== "string" || !Number.isFinite(Date.parse(value))) {
+  if (
+    typeof value !== "string"
+    || !value
+    || value !== value.trim()
+    || !/(?:Z|[+-]\\d{2}:\\d{2})$/.test(value)
+    || !Number.isFinite(Date.parse(value))
+  ) {
     throw new TypeError(`Consent record has invalid ${field}`);
   }
   return value;
@@ -52,7 +64,19 @@ function normalizeRecord(record) {
 
   const not_before = optionalTimestamp(record.not_before, "not_before");
   const expires_at = optionalTimestamp(record.expires_at, "expires_at");
+  const consent_id = record.consent_id === undefined
+    ? id("pscns")
+    : requiredString(record.consent_id, "consent_id");
+  const supersedes_consent_id = record.supersedes_consent_id === undefined
+    ? undefined
+    : requiredString(record.supersedes_consent_id, "supersedes_consent_id");
   const now = Date.now();
+  const granted_at = decision === "granted"
+    ? (optionalTimestamp(record.granted_at, "granted_at") ?? new Date(now).toISOString())
+    : undefined;
+  const denied_at = decision === "denied"
+    ? (optionalTimestamp(record.denied_at, "denied_at") ?? new Date(now).toISOString())
+    : undefined;
 
   if (not_before && expires_at && Date.parse(expires_at) <= Date.parse(not_before)) {
     throw new TypeError("Consent expires_at must be later than not_before");
@@ -88,13 +112,10 @@ function normalizeRecord(record) {
     not_before,
     expires_at,
     session_id,
-    consent_id: record.consent_id ?? id("pscns"),
-    granted_at: decision === "granted"
-      ? (record.granted_at ?? new Date(now).toISOString())
-      : undefined,
-    denied_at: decision === "denied"
-      ? (record.denied_at ?? new Date(now).toISOString())
-      : undefined,
+    consent_id,
+    supersedes_consent_id,
+    granted_at,
+    denied_at,
     revoked: false,
     uses_remaining: grant_type === "one_time" && decision === "granted" ? 1 : undefined,
   };
@@ -114,7 +135,12 @@ function lifecycleContext(context) {
   if (!Number.isFinite(now)) {
     throw new TypeError("Consent lifecycle context has invalid now");
   }
-  return { now, session_id: context.session_id };
+  return {
+    now,
+    session_id: context.session_id === undefined
+      ? undefined
+      : requiredString(context.session_id, "session_id"),
+  };
 }
 
 export class ConsentAuthority {
@@ -124,7 +150,11 @@ export class ConsentAuthority {
   }
 
   key({ requester_id, resource_id, purpose }) {
-    return `${requester_id}:${resource_id}:${purpose}`;
+    return JSON.stringify([
+      requiredString(requester_id, "requester_id"),
+      requiredString(resource_id, "resource_id"),
+      requiredString(purpose, "purpose"),
+    ]);
   }
 
   put(record) {
@@ -180,10 +210,11 @@ export class ConsentAuthority {
 
   endSession({ requester_id, resource_id, purpose, session_id }) {
     const key = this.key({ requester_id, resource_id, purpose });
+    const canonical_session_id = requiredString(session_id, "session_id");
     return mutatePrivacyState(this.store, store => {
       const existing = store.get("consent", key);
       if (!existing) return null;
-      if (existing.grant_type !== "session" || existing.session_id !== session_id) {
+      if (existing.grant_type !== "session" || existing.session_id !== canonical_session_id) {
         throw new Error("CONSENT_SESSION_MISMATCH");
       }
       if (existing.revoked) return structuredClone(existing);

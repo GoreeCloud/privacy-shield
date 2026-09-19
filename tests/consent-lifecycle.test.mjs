@@ -114,3 +114,77 @@ test("new records cannot inject revoked or consumed authority state", () => {
     /Only expiring consent/,
   );
 });
+
+test("authority-bearing consent identifiers fail closed instead of normalizing whitespace", () => {
+  const consent = authority();
+  for (const field of ["requester_id", "resource_id", "purpose"]) {
+    assert.throws(
+      () => consent.put({ ...base, [field]: ` ${base[field]}` }),
+      new RegExp(`canonical ${field}`),
+    );
+  }
+  assert.throws(
+    () => consent.put({ ...base, grant_type: "session", session_id: " session-a" }),
+    /canonical session_id/,
+  );
+  const session = consent.put({ ...base, grant_type: "session", session_id: "session-a" });
+  assert.throws(
+    () => consent.isEffective(session, { session_id: "session-a " }),
+    /canonical session_id/,
+  );
+});
+
+test("consent identifiers and supersession references are exact-bound", () => {
+  const consent = authority();
+  assert.throws(
+    () => consent.put({ ...base, consent_id: " pscns-explicit" }),
+    /canonical consent_id/,
+  );
+  const original = consent.put(base);
+  assert.throws(
+    () => consent.put({ ...base, supersedes_consent_id: `${original.consent_id} ` }),
+    /canonical supersedes_consent_id/,
+  );
+});
+
+test("consent timestamps require canonical timezone-qualified values", () => {
+  const consent = authority();
+  for (const expires_at of [
+    " 2030-01-01T00:00:00.000Z",
+    "2030-01-01T00:00:00",
+  ]) {
+    assert.throws(
+      () => consent.put({ ...base, grant_type: "expiring", expires_at }),
+      /invalid expires_at/,
+    );
+  }
+  assert.throws(
+    () => consent.put({ ...base, granted_at: "2030-01-01T00:00:00" }),
+    /invalid granted_at/,
+  );
+});
+
+test("authority tuple keying cannot collide on delimiter characters", () => {
+  const consent = authority();
+  const first = consent.put({
+    requester_id: "service:a",
+    resource_id: "resource",
+    purpose: "purpose",
+  });
+  const second = consent.put({
+    requester_id: "service",
+    resource_id: "a:resource",
+    purpose: "purpose",
+  });
+
+  assert.notEqual(first.consent_id, second.consent_id);
+  assert.equal(
+    consent.get({ requester_id: "service:a", resource_id: "resource", purpose: "purpose" }).consent_id,
+    first.consent_id,
+  );
+  assert.equal(
+    consent.get({ requester_id: "service", resource_id: "a:resource", purpose: "purpose" }).consent_id,
+    second.consent_id,
+  );
+});
+
