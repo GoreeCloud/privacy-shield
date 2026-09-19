@@ -21,6 +21,10 @@ import {
   PRIVACY_SIGNING_KEY_ACCEPTANCE_CONTRACT,
   REQUIRED_SIGNING_KEY_QUALIFICATIONS,
 } from "../src/signing-key-acceptance.mjs";
+import {
+  PRIVACY_STATE_PROVIDER_ACCEPTANCE_CONTRACT,
+  REQUIRED_STATE_PROVIDER_QUALIFICATIONS,
+} from "../src/state-provider-acceptance.mjs";
 
 function stateFile() {
   const directory = fs.mkdtempSync(path.join(os.tmpdir(), "privacy-runtime-"));
@@ -34,12 +38,19 @@ const capabilityKeys = {
   },
 };
 const runtimeRevision = "a".repeat(40);
+const runtimeTreeSha = "b".repeat(40);
 const deploymentId = "privacy-signing-test-prod";
+const stateEnvironment = "test";
+const stateTopologyId = "topology-a";
 
 class ContractTestProductionStore extends MemoryPrivacyStateStore {
   stateProviderCapabilities() {
     return {
       contract: PRIVACY_STATE_PROVIDER_CONTRACT,
+      provider_id: "distributed-test-provider",
+      provider_version: "1.0.0",
+      provider_implementation: "ContractTestProductionStore",
+      provider_authority: "GoreeCloud/goreecloud-privacy-shield",
       durable: true,
       restart_recovery: true,
       atomic_transactions: true,
@@ -82,6 +93,59 @@ class ContractTestProductionKeyProvider {
   describeKey(keyId) { return this.#inner.describeKey(keyId); }
   signDigest(input) { return this.#inner.signDigest(input); }
   verifyDigest(input) { return this.#inner.verifyDigest(input); }
+}
+
+function stateAcceptance() {
+  const qualification = Object.fromEntries(
+    Object.keys(REQUIRED_STATE_PROVIDER_QUALIFICATIONS).map(name => [name, "passed"]),
+  );
+  const evidence = Object.entries(REQUIRED_STATE_PROVIDER_QUALIFICATIONS).map(
+    ([name, category]) => ({
+      id: `test-state-${name.replaceAll("_", "-")}`,
+      category,
+      result: "passed",
+      reference: `test://state/${category}`,
+    }),
+  );
+  return {
+    schema_version: 1,
+    contract_id: PRIVACY_STATE_PROVIDER_ACCEPTANCE_CONTRACT,
+    provider_id: "distributed-test-provider",
+    provider_implementation: "ContractTestProductionStore",
+    provider_authority: "GoreeCloud/goreecloud-privacy-shield",
+    exact_source_revision: runtimeRevision,
+    source_tree_sha: runtimeTreeSha,
+    provider_version: "1.0.0",
+    deployment: {
+      environment: stateEnvironment,
+      topology_id: stateTopologyId,
+      distributed: true,
+      multi_writer: true,
+      replica_count: 3,
+    },
+    capabilities: {
+      durable: true,
+      restart_recovery: true,
+      atomic_transactions: true,
+      multi_writer_serializable: true,
+      distributed: true,
+      fail_closed_on_conflict: true,
+    },
+    qualification,
+    privacy: {
+      raw_private_payloads_in_acceptance_evidence: false,
+      secret_material_in_acceptance_evidence: false,
+    },
+    acceptance: {
+      status: "passed",
+      production_approved: true,
+      exact_revision_required: true,
+      observed_date: "2026-09-19",
+      valid_until: "2099-01-01T00:00:00Z",
+    },
+    evidence,
+    limitations: ["Test-only structural provider."],
+  };
 }
 
 function signingAcceptance() {
@@ -234,6 +298,41 @@ test("production runtime requires state, signing provider, and fresh acceptance 
     () => createPrivacyRuntime({
       store,
       capability_keys: capabilityKeys,
+      runtime_revision: runtimeRevision,
+      runtime_tree_sha: runtimeTreeSha,
+      state_provider_environment: stateEnvironment,
+      state_provider_topology_id: stateTopologyId,
+      production: true,
+    }),
+    /PRODUCTION_STATE_PROVIDER_ACCEPTANCE_REQUIRED/,
+  );
+
+  const mismatchedState = stateAcceptance();
+  mismatchedState.deployment.topology_id = "topology-b";
+  assert.throws(
+    () => createPrivacyRuntime({
+      store,
+      state_provider_acceptance: mismatchedState,
+      state_provider_environment: stateEnvironment,
+      state_provider_topology_id: stateTopologyId,
+      runtime_revision: runtimeRevision,
+      runtime_tree_sha: runtimeTreeSha,
+      capability_keys: capabilityKeys,
+      production: true,
+    }),
+    /STATE_PROVIDER_ACCEPTANCE_TOPOLOGY_MISMATCH/,
+  );
+
+  const acceptedState = stateAcceptance();
+  assert.throws(
+    () => createPrivacyRuntime({
+      store,
+      state_provider_acceptance: acceptedState,
+      state_provider_environment: stateEnvironment,
+      state_provider_topology_id: stateTopologyId,
+      runtime_revision: runtimeRevision,
+      runtime_tree_sha: runtimeTreeSha,
+      capability_keys: capabilityKeys,
       production: true,
     }),
     /PRODUCTION_CAPABILITY_KEY_PROVIDER_REQUIRED/,
@@ -243,6 +342,10 @@ test("production runtime requires state, signing provider, and fresh acceptance 
   assert.throws(
     () => createPrivacyRuntime({
       store,
+      state_provider_acceptance: acceptedState,
+      state_provider_environment: stateEnvironment,
+      state_provider_topology_id: stateTopologyId,
+      runtime_tree_sha: runtimeTreeSha,
       capability_key_provider: provider,
       runtime_revision: runtimeRevision,
       capability_key_deployment_id: deploymentId,
@@ -253,6 +356,10 @@ test("production runtime requires state, signing provider, and fresh acceptance 
 
   const runtime = createPrivacyRuntime({
     store,
+    state_provider_acceptance: acceptedState,
+    state_provider_environment: stateEnvironment,
+    state_provider_topology_id: stateTopologyId,
+    runtime_tree_sha: runtimeTreeSha,
     capability_key_provider: provider,
     capability_key_acceptance: signingAcceptance(),
     capability_key_deployment_id: deploymentId,
@@ -261,6 +368,10 @@ test("production runtime requires state, signing provider, and fresh acceptance 
   });
   assert.equal(runtime.production, true);
   assert.equal(runtime.store, store);
+  assert.equal(runtime.state_acceptance.provider_id, "distributed-test-provider");
+  assert.equal(runtime.state_acceptance.provider_version, "1.0.0");
+  assert.equal(runtime.state_acceptance.environment, stateEnvironment);
+  assert.equal(runtime.state_acceptance.topology_id, stateTopologyId);
   assert.equal(runtime.signing_acceptance.provider_id, "test-kms");
   assert.equal(runtime.signing_acceptance.provider_version, "test-kms-v1");
   assert.equal(runtime.signing_acceptance.deployment_id, deploymentId);
