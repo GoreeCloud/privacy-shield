@@ -62,6 +62,9 @@ Consent is not effective or authorizing when any applicable lifecycle or scope r
 - expired records never authorize an operation;
 - one-time records authorize at most one successful consumption;
 - session records require the exact session context;
+- requester, resource, purpose, session, consent, and supersession identifiers are exact-bound and reject surrounding whitespace/control characters rather than being normalized;
+- consent keys use collision-safe tuple encoding rather than delimiter concatenation;
+- lifecycle timestamps are timezone-qualified and reject padded or ambiguous local-time text;
 - a record already present for the same requester/resource/purpose cannot be silently overwritten;
 - replacement requires `supersedes_consent_id` to bind the new decision to the exact prior consent record;
 - a new record cannot inject revocation or one-time-consumption state;
