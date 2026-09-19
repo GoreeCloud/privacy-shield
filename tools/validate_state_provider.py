@@ -40,6 +40,12 @@ REQUIRED_CAPABILITIES = {
     "distributed",
     "fail_closed_on_conflict",
 }
+REQUIRED_IDENTITY_METADATA = {
+    "provider_id",
+    "provider_version",
+    "provider_implementation",
+    "provider_authority",
+}
 REQUIRED_QUALIFICATIONS = {
     "concurrent_writer_serialization": "concurrency",
     "atomic_commit_and_rollback": "atomicity",
@@ -274,6 +280,10 @@ def main() -> None:
         fail("state-provider contract id drifted")
     if set(contract.get("required_methods", [])) != REQUIRED_METHODS:
         fail("required state-provider methods drifted")
+
+    identity_metadata = contract.get("required_production_identity_metadata")
+    if not isinstance(identity_metadata, list) or set(identity_metadata) != REQUIRED_IDENTITY_METADATA:
+        fail("production state-provider identity metadata vocabulary drifted")
 
     capabilities = contract.get("required_production_capabilities")
     if not isinstance(capabilities, dict) or set(capabilities) != REQUIRED_CAPABILITIES:
