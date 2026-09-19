@@ -38,6 +38,8 @@ The validator requires exact agreement between the selection and its dossier for
 
 An approved selection additionally requires a `complete`, current evaluation with every criterion passed. This prevents selection records from self-asserting favorable evaluation results without separate evidence provenance.
 
+Production acceptance must then carry the exact `selection_decision_id` of the active approved selection. Provider identity or environment similarity is not sufficient: the acceptance artifact must be traceable to the precise governed decision that authorized provider-specific implementation.
+
 ## Privacy boundary
 
 Candidate evaluation records must not become stores for operational secrets or user activity. State-provider evaluation records exclude credentials, secret material, and raw private payloads. Signing-key provider evaluation records additionally exclude full capability tokens.
