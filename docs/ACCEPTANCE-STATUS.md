@@ -10,7 +10,7 @@ Current `main` HEAD is `a779655dc5ee545857b5cdb767abdf89ade7949d`, a documentati
 
 Draft PR #73 extends that merged baseline with the transactional production state-provider boundary and independent provider-acceptance gate. Its reconciled exact head `204605975032252118aa22cc6584c4e75c6e160d` is source-validation green but remains Development/Draft/non-production.
 
-Draft PR #80 is stacked on PR #73 and advances Privacy Shield 2.0 signing-key custody. It now contains the opaque provider boundary, fail-closed exact-provider acceptance layer, and provider-neutral operational qualification harness. It remains Development/Draft/non-production and does not inherit production acceptance from PR #73, source validation, or qualification-harness results.
+PR #80 carries the current Privacy Shield 2.0 P0 state-provider and signing-key-custody source line on top of current authoritative main. It contains the transactional state-provider boundary, runtime-enforced exact state-provider acceptance gate, opaque signing-provider boundary, fail-closed exact signing-provider acceptance layer, provider-neutral operational qualification harnesses, and provider-governance evidence/selection controls. The work remains Development/non-production and does not inherit production acceptance from source validation, qualification-harness results, or any historical stacked ancestry.
 
 ## Acceptance gates
 
@@ -38,11 +38,13 @@ Draft PR #73 requires the V1 state-provider capability profile: durability, rest
 
 Production acceptance requires exact-provider and exact-deployment concurrency, failure/recovery, backup/restore, topology, access-control, operational evidence, and a fresh production-approved acceptance record. No source-controlled provider currently carries production acceptance.
 
+The production runtime now consumes that record directly rather than trusting provider capability claims. Startup requires exact source revision and source-tree binding, the requested environment/topology, matching provider identity/version/implementation/authority metadata, complete passing qualification evidence, and a fresh production-approved state-provider acceptance record.
+
 ### 4. Production signing-key custody
 
 **State: Source custody boundary, exact acceptance gate, and provider-neutral operational qualification harness implemented in Draft development; real production provider and production acceptance pending.**
 
-Draft PR #80 moves capability signing behind `goreecloud.privacy-shield.signing-key-provider.v1`. `PrivacyCapabilityAuthority` computes a local SHA-256 digest and delegates only the digest plus an opaque key identifier to the provider. Tokens bind the key ID, provider ID, provider version, producer identity, and signing algorithm. Privacy Shield independently rejects untrusted public key state before provider signature verification can run.
+PR #80 moves capability signing behind `goreecloud.privacy-shield.signing-key-provider.v1`. `PrivacyCapabilityAuthority` computes a local SHA-256 digest and delegates only the digest plus an opaque key identifier to the provider. Tokens bind the key ID, provider ID, provider version, producer identity, and signing algorithm. Privacy Shield independently rejects untrusted public key state before provider signature verification can run.
 
 Production runtime construction requires more than provider capability declarations. `createPrivacyRuntime({ production: true, ... })` requires a fresh passing `goreecloud.privacy-shield.signing-key-provider-acceptance.v1` record that matches the exact Privacy Shield source revision, exact provider ID and provider version, producer identity, accepted signing algorithm, and deployment ID. Every required custody qualification must be passed and backed by passing evidence.
 

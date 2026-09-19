@@ -167,6 +167,18 @@ class ProviderEvidencePackageTests(unittest.TestCase):
         with self.assertRaises(SystemExit):
             validator.validate_package(Path("stale.json"), record, now=NOW)
 
+    def test_future_collection_fails_closed(self) -> None:
+        record = state_package()
+        record["artifact"]["collected_at"] = "2026-09-10T12:00:01Z"
+        with self.assertRaises(SystemExit):
+            validator.validate_package(Path("future-collection.json"), record, now=NOW)
+
+    def test_future_review_fails_closed(self) -> None:
+        record = state_package()
+        record["governance"]["reviewed_at"] = "2026-09-10T12:00:01Z"
+        with self.assertRaises(SystemExit):
+            validator.validate_package(Path("future-review.json"), record, now=NOW)
+
     def test_provider_scope_mismatch_fails(self) -> None:
         record = state_package()
         packages = validator.package_map([(Path("state.json"), record)], now=NOW)

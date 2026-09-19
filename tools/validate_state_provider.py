@@ -13,6 +13,7 @@ CONTRACT = ROOT / "contracts" / "privacy-shield.state-provider.json"
 ACCEPTANCE_SCHEMA = ROOT / "contracts" / "privacy-shield.state-provider-acceptance.schema.json"
 ACCEPTANCE_DIR = ROOT / "acceptance" / "state-providers"
 STATE_STORE = ROOT / "src" / "privacy-state-store.mjs"
+STATE_ACCEPTANCE_RUNTIME = ROOT / "src" / "state-provider-acceptance.mjs"
 RUNTIME = ROOT / "src" / "privacy-runtime.mjs"
 TRANSACTIONAL_AUTHORITIES = (
     ROOT / "src" / "consent-authority.mjs",
@@ -38,6 +39,12 @@ REQUIRED_CAPABILITIES = {
     "multi_writer_serializable",
     "distributed",
     "fail_closed_on_conflict",
+}
+REQUIRED_IDENTITY_METADATA = {
+    "provider_id",
+    "provider_version",
+    "provider_implementation",
+    "provider_authority",
 }
 REQUIRED_QUALIFICATIONS = {
     "concurrent_writer_serialization": "concurrency",
@@ -274,6 +281,10 @@ def main() -> None:
     if set(contract.get("required_methods", [])) != REQUIRED_METHODS:
         fail("required state-provider methods drifted")
 
+    identity_metadata = contract.get("required_production_identity_metadata")
+    if not isinstance(identity_metadata, list) or set(identity_metadata) != REQUIRED_IDENTITY_METADATA:
+        fail("production state-provider identity metadata vocabulary drifted")
+
     capabilities = contract.get("required_production_capabilities")
     if not isinstance(capabilities, dict) or set(capabilities) != REQUIRED_CAPABILITIES:
         fail("production capability vocabulary drifted")
@@ -321,6 +332,7 @@ def main() -> None:
                 approved_count += 1
 
     state_source = STATE_STORE.read_text(encoding="utf-8")
+    acceptance_runtime_source = STATE_ACCEPTANCE_RUNTIME.read_text(encoding="utf-8")
     runtime_source = RUNTIME.read_text(encoding="utf-8")
     for marker in (CONTRACT_ID, "transaction(mutation)", "stateProviderCapabilities()"):
         if marker not in state_source:
@@ -328,6 +340,26 @@ def main() -> None:
     for capability in REQUIRED_CAPABILITIES:
         if capability not in state_source or capability not in runtime_source:
             fail(f"runtime/source capability marker missing: {capability}")
+    for marker in (
+        ACCEPTANCE_CONTRACT_ID,
+        "requireStateProviderAcceptance",
+        "PRODUCTION_STATE_PROVIDER_ACCEPTANCE_REQUIRED",
+        "STATE_PROVIDER_ACCEPTANCE_SOURCE_REVISION_MISMATCH",
+        "STATE_PROVIDER_ACCEPTANCE_SOURCE_TREE_MISMATCH",
+        "STATE_PROVIDER_ACCEPTANCE_TOPOLOGY_MISMATCH",
+    ):
+        if marker not in acceptance_runtime_source:
+            fail(f"state-provider runtime acceptance gate is missing {marker!r}")
+    for marker in (
+        "state_provider_acceptance",
+        "state_provider_environment",
+        "state_provider_topology_id",
+        "runtime_tree_sha",
+        "requireStateProviderAcceptance",
+        "state_acceptance: stateAcceptance",
+    ):
+        if marker not in runtime_source:
+            fail(f"production runtime is missing state-provider acceptance binding: {marker}")
     if "production: true" not in runtime_source:
         fail("runtime must document the explicit production state-provider path")
     if "Production Privacy Shield state provider must implement transaction()" not in runtime_source:
