@@ -162,6 +162,13 @@ test("consent timestamps require canonical timezone-qualified values", () => {
     () => consent.put({ ...base, granted_at: "2030-01-01T00:00:00" }),
     /invalid granted_at/,
   );
+
+  const offset = consent.put({
+    ...base,
+    grant_type: "expiring",
+    expires_at: "2030-01-01T05:30:00+05:30",
+  });
+  assert.equal(consent.isEffective(offset, Date.parse("2029-12-31T23:59:59Z")), true);
 });
 
 test("authority tuple keying cannot collide on delimiter characters", () => {
