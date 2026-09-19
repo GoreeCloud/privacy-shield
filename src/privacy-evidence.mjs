@@ -1,8 +1,5 @@
 import crypto from "node:crypto";
-import {
-  MemoryPrivacyStateStore,
-  mutatePrivacyState,
-} from "./privacy-state-store.mjs";
+import { MemoryPrivacyStateStore } from "./privacy-state-store.mjs";
 
 function id(prefix) { return `${prefix}_${crypto.randomUUID()}`; }
 function canonical(value) {
@@ -18,29 +15,22 @@ export class PrivacyEvidenceLedger {
   head() { return this.store.get("evidence_meta", "head"); }
 
   record({ request, decision, capability = null, metadata = {} }) {
-    return mutatePrivacyState(this.store, store => {
-      const previous = store.get("evidence_meta", "head");
-      const event = {
-        evidence_id: decision?.evidence_reference ?? id("pse"), recorded_at: new Date().toISOString(),
-        request_id: request?.request_id ?? null, decision_id: decision?.decision_id ?? null,
-        requester_id: request?.requester?.id ?? null, resource_id: request?.resource?.id ?? null,
-        purpose: request?.purpose ?? null, operation: request?.operation ?? null,
-        processing_zone: decision?.processing_zone ?? request?.processing_zone ?? null,
-        destination: request?.destination ?? null, outcome: decision?.outcome ?? null,
-        reason_code: decision?.reason_code ?? null, policy_references: decision?.policy_references ?? [],
-        obligations: decision?.obligations ?? [], capability_jti: capability?.jti ?? null, metadata,
-        previous_evidence_hash: previous?.hash ?? null
-      };
-      event.evidence_hash = digest(event);
-      if (store.get("evidence", event.evidence_id)) throw new Error("PRIVACY_EVIDENCE_ID_EXISTS");
-      store.set("evidence", event.evidence_id, event);
-      store.set("evidence_meta", "head", {
-        evidence_id: event.evidence_id,
-        hash: event.evidence_hash,
-        recorded_at: event.recorded_at,
-      });
-      return structuredClone(event);
-    });
+    const previous = this.head();
+    const event = {
+      evidence_id: decision?.evidence_reference ?? id("pse"), recorded_at: new Date().toISOString(),
+      request_id: request?.request_id ?? null, decision_id: decision?.decision_id ?? null,
+      requester_id: request?.requester?.id ?? null, resource_id: request?.resource?.id ?? null,
+      purpose: request?.purpose ?? null, operation: request?.operation ?? null,
+      processing_zone: decision?.processing_zone ?? request?.processing_zone ?? null,
+      destination: request?.destination ?? null, outcome: decision?.outcome ?? null,
+      reason_code: decision?.reason_code ?? null, policy_references: decision?.policy_references ?? [],
+      obligations: decision?.obligations ?? [], capability_jti: capability?.jti ?? null, metadata,
+      previous_evidence_hash: previous?.hash ?? null
+    };
+    event.evidence_hash = digest(event);
+    this.store.set("evidence", event.evidence_id, event);
+    this.store.set("evidence_meta", "head", { evidence_id: event.evidence_id, hash: event.evidence_hash, recorded_at: event.recorded_at });
+    return structuredClone(event);
   }
 
   list({ request_id, requester_id, resource_id } = {}) {
