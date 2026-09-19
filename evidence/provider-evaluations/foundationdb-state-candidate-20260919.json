@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "contract_id": "goreecloud.privacy-shield.provider-evidence-package.v1",
+  "evidence_id": "foundationdb-state-candidate-docs-20260919",
+  "provider_class": "state-provider",
+  "provider_id": "foundationdb-self-hosted-multihost",
+  "provider_name": "FoundationDB self-hosted multi-host cluster",
+  "provider_implementation": "FoundationDB self-hosted multi-host cluster",
+  "integration_authority": "GoreeCloud/goreecloud-privacy-shield",
+  "scope": {
+    "service": "privacy-shield",
+    "capability": "durable-authorization-state",
+    "authority_state": [
+      "consent",
+      "policy_versions_and_active_pointer",
+      "capability_revocation",
+      "single_use_capability_consumption",
+      "privacy_evidence_and_chain_head"
+    ],
+    "environments": [
+      "production"
+    ]
+  },
+  "evidence_ref": "evidence+sha256:48f47b24f596a1756c11a1150d49a77ade9d0a923be28ed105738c08a2c03be8:github://GoreeCloud/goreecloud-privacy-shield/evidence/provider-evaluations/foundationdb-state-candidate-20260919.md",
+  "artifact": {
+    "digest_algorithm": "sha256",
+    "digest": "48f47b24f596a1756c11a1150d49a77ade9d0a923be28ed105738c08a2c03be8",
+    "locator": "github://GoreeCloud/goreecloud-privacy-shield/evidence/provider-evaluations/foundationdb-state-candidate-20260919.md",
+    "media_type": "text/markdown",
+    "source_authority": "Apple FoundationDB official documentation and apple/foundationdb upstream repository",
+    "collected_at": "2026-09-19T22:10:00Z",
+    "valid_until": "2026-10-19T22:10:00Z"
+  },
+  "supports": [
+    "durability",
+    "atomic_transactions",
+    "multi_writer_serializability",
+    "distributed_topology",
+    "fail_closed_conflict_behavior",
+    "backup_restore",
+    "evaluation-summary"
+  ],
+  "governance": {
+    "status": "captured",
+    "authorizing": false,
+    "production_acceptance_authorized": false,
+    "reviewed_at": null
+  },
+  "privacy": {
+    "credentials_in_package": false,
+    "secret_material_in_package": false,
+    "raw_private_payloads_in_package": false,
+    "full_capability_tokens_in_package": false
+  },
+  "limitations": [
+    "Public-source capability evidence only; no GoreeCloud deployment exists.",
+    "Current GoreeCloud infrastructure has one production VPS and cannot satisfy the candidate's required physical distribution.",
+    "No criterion is resolved until evidence review and deployed qualification occur.",
+    "No infrastructure purchase, deployment, provider selection, or production acceptance is authorized."
+  ]
+}

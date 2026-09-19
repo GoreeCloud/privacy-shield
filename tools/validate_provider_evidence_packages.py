@@ -374,7 +374,7 @@ def validate_documentation() -> None:
         "evidence+sha256:",
         "evaluation-summary",
         "independently rejects future collection and review timestamps",
-        "zero provider evidence package JSON records",
+        "captured provider evidence package JSON records",
     ):
         if marker not in text:
             fail(f"provider evidence-package documentation is missing required concept: {marker}")

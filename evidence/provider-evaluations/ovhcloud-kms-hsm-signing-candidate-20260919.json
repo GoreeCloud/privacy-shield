@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "contract_id": "goreecloud.privacy-shield.provider-evidence-package.v1",
+  "evidence_id": "ovhcloud-kms-hsm-signing-docs-20260919",
+  "provider_class": "signing-key-provider",
+  "provider_id": "ovhcloud-kms-hsm",
+  "provider_name": "OVHcloud KMS HSM-backed asymmetric signing",
+  "integration_authority": "GoreeCloud/goreecloud-privacy-shield",
+  "scope": {
+    "service": "privacy-shield",
+    "capability": "operation-bound-capability-signing",
+    "producer_identity": "goreecloud-privacy-shield",
+    "environments": [
+      "production"
+    ]
+  },
+  "evidence_ref": "evidence+sha256:45593ed53b2f5bb2dac7bb24d912cdf234c8484430cf58beceadf1e11709ad68:github://GoreeCloud/goreecloud-privacy-shield/evidence/provider-evaluations/ovhcloud-kms-hsm-signing-candidate-20260919.md",
+  "artifact": {
+    "digest_algorithm": "sha256",
+    "digest": "45593ed53b2f5bb2dac7bb24d912cdf234c8484430cf58beceadf1e11709ad68",
+    "locator": "github://GoreeCloud/goreecloud-privacy-shield/evidence/provider-evaluations/ovhcloud-kms-hsm-signing-candidate-20260919.md",
+    "media_type": "text/markdown",
+    "source_authority": "OVHcloud official Key Management Service documentation",
+    "collected_at": "2026-09-19T22:10:00Z",
+    "valid_until": "2026-10-19T22:10:00Z"
+  },
+  "supports": [
+    "non_exportable_signing_material",
+    "opaque_key_references",
+    "stable_key_identifiers",
+    "outage_degraded_behavior",
+    "access_control_isolation",
+    "evaluation-summary"
+  ],
+  "governance": {
+    "status": "captured",
+    "authorizing": false,
+    "production_acceptance_authorized": false,
+    "reviewed_at": null
+  },
+  "privacy": {
+    "credentials_in_package": false,
+    "secret_material_in_package": false,
+    "raw_private_payloads_in_package": false,
+    "full_capability_tokens_in_package": false
+  },
+  "limitations": [
+    "Public-source capability evidence only; no GoreeCloud KMS domain, signing key, or adapter is created by this package.",
+    "Digest-only signing compatibility, lifecycle semantics, audit minimization, and exact recovery behavior remain unproven.",
+    "The managed KMS is proprietary and requires a documented GoreeCloud exception/necessity review before long-term production selection.",
+    "No ordering, billing, subscription change, key creation, provider selection, deployment, or production acceptance is authorized."
+  ]
+}

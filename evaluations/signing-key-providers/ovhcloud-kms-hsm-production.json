@@ -1,0 +1,97 @@
+{
+  "schema_version": 1,
+  "contract_id": "goreecloud.privacy-shield.signing-key-provider-evaluation.v1",
+  "evaluation_id": "ovhcloud-kms-hsm-production",
+  "provider_id": "ovhcloud-kms-hsm",
+  "provider_name": "OVHcloud KMS HSM-backed asymmetric signing",
+  "integration_authority": "GoreeCloud/goreecloud-privacy-shield",
+  "scope": {
+    "service": "privacy-shield",
+    "capability": "operation-bound-capability-signing",
+    "producer_identity": "goreecloud-privacy-shield",
+    "environments": [
+      "production"
+    ]
+  },
+  "criteria": {
+    "digest_only_signing": {
+      "result": "pending",
+      "evidence_refs": []
+    },
+    "non_exportable_signing_material": {
+      "result": "pending",
+      "evidence_refs": [
+        "evidence+sha256:45593ed53b2f5bb2dac7bb24d912cdf234c8484430cf58beceadf1e11709ad68:github://GoreeCloud/goreecloud-privacy-shield/evidence/provider-evaluations/ovhcloud-kms-hsm-signing-candidate-20260919.md"
+      ]
+    },
+    "opaque_key_references": {
+      "result": "pending",
+      "evidence_refs": [
+        "evidence+sha256:45593ed53b2f5bb2dac7bb24d912cdf234c8484430cf58beceadf1e11709ad68:github://GoreeCloud/goreecloud-privacy-shield/evidence/provider-evaluations/ovhcloud-kms-hsm-signing-candidate-20260919.md"
+      ]
+    },
+    "stable_key_identifiers": {
+      "result": "pending",
+      "evidence_refs": [
+        "evidence+sha256:45593ed53b2f5bb2dac7bb24d912cdf234c8484430cf58beceadf1e11709ad68:github://GoreeCloud/goreecloud-privacy-shield/evidence/provider-evaluations/ovhcloud-kms-hsm-signing-candidate-20260919.md"
+      ]
+    },
+    "rotation_retirement_revocation": {
+      "result": "pending",
+      "evidence_refs": []
+    },
+    "producer_identity_binding": {
+      "result": "pending",
+      "evidence_refs": []
+    },
+    "privacy_safe_audit": {
+      "result": "pending",
+      "evidence_refs": []
+    },
+    "fail_closed_untrusted_state": {
+      "result": "pending",
+      "evidence_refs": []
+    },
+    "outage_degraded_behavior": {
+      "result": "pending",
+      "evidence_refs": [
+        "evidence+sha256:45593ed53b2f5bb2dac7bb24d912cdf234c8484430cf58beceadf1e11709ad68:github://GoreeCloud/goreecloud-privacy-shield/evidence/provider-evaluations/ovhcloud-kms-hsm-signing-candidate-20260919.md"
+      ]
+    },
+    "recovery_continuity": {
+      "result": "pending",
+      "evidence_refs": []
+    },
+    "access_control_isolation": {
+      "result": "pending",
+      "evidence_refs": [
+        "evidence+sha256:45593ed53b2f5bb2dac7bb24d912cdf234c8484430cf58beceadf1e11709ad68:github://GoreeCloud/goreecloud-privacy-shield/evidence/provider-evaluations/ovhcloud-kms-hsm-signing-candidate-20260919.md"
+      ]
+    },
+    "operational_ownership": {
+      "result": "pending",
+      "evidence_refs": []
+    }
+  },
+  "governance": {
+    "status": "draft",
+    "authorizing": false,
+    "production_acceptance_authorized": false,
+    "evidence_reference": "evidence+sha256:45593ed53b2f5bb2dac7bb24d912cdf234c8484430cf58beceadf1e11709ad68:github://GoreeCloud/goreecloud-privacy-shield/evidence/provider-evaluations/ovhcloud-kms-hsm-signing-candidate-20260919.md",
+    "evaluated_at": "2026-09-19T22:10:00Z",
+    "valid_until": "2026-10-19T22:10:00Z"
+  },
+  "privacy": {
+    "secret_material_in_evaluation_record": false,
+    "credentials_in_evaluation_record": false,
+    "raw_private_payloads_in_evaluation_record": false,
+    "full_capability_tokens_in_evaluation_record": false
+  },
+  "limitations": [
+    "Candidate is a proprietary managed external service and requires a documented GoreeCloud exception/necessity review before long-term production selection.",
+    "No KMS order, key creation, billing change, adapter implementation, or exact runtime qualification is authorized or performed.",
+    "Captured OVHcloud documentation has not yet received the separate governed evidence review required to resolve criteria.",
+    "Digest-only signing semantics, key lifecycle, audit minimization, fail-closed stale-key behavior, continuity, and operational ownership remain open.",
+    "This draft evaluation is non-authorizing and is not a provider selection or production acceptance."
+  ]
+}
