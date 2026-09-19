@@ -1,7 +1,10 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import {\n  CONSENT_SCOPE_CONTRACT,\n  ConsentAuthority,\n} from "../src/consent-authority.mjs";
+import {
+  CONSENT_SCOPE_CONTRACT,
+  ConsentAuthority,
+} from "../src/consent-authority.mjs";
 import { MemoryPrivacyStateStore } from "../src/privacy-state-store.mjs";
 
 function authority() {
@@ -31,7 +34,8 @@ test("purpose-bound grant remains effective only for its exact authority key", (
   const record = consent.put(base);
 
   assert.equal(record.grant_type, "purpose_bound");
-  assert.equal(record.decision, "granted");\n  assert.equal(record.scope.contract, CONSENT_SCOPE_CONTRACT);
+  assert.equal(record.decision, "granted");
+  assert.equal(record.scope.contract, CONSENT_SCOPE_CONTRACT);
   assert.equal(consent.isEffective(record), true);
   assert.equal(consent.get(base).consent_id, record.consent_id);
   assert.equal(consent.get({ ...base, purpose: "analytics" }), null);
