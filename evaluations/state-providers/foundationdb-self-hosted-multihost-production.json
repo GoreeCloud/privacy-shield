@@ -1,0 +1,100 @@
+{
+  "schema_version": 1,
+  "contract_id": "goreecloud.privacy-shield.state-provider-evaluation.v1",
+  "evaluation_id": "foundationdb-self-hosted-multihost-production",
+  "provider_id": "foundationdb-self-hosted-multihost",
+  "provider_name": "FoundationDB self-hosted multi-host cluster",
+  "provider_implementation": "FoundationDB self-hosted multi-host cluster",
+  "integration_authority": "GoreeCloud/goreecloud-privacy-shield",
+  "scope": {
+    "service": "privacy-shield",
+    "capability": "durable-authorization-state",
+    "authority_state": [
+      "consent",
+      "policy_versions_and_active_pointer",
+      "capability_revocation",
+      "single_use_capability_consumption",
+      "privacy_evidence_and_chain_head"
+    ],
+    "environments": [
+      "production"
+    ]
+  },
+  "criteria": {
+    "durability": {
+      "result": "pending",
+      "evidence_refs": [
+        "evidence+sha256:48f47b24f596a1756c11a1150d49a77ade9d0a923be28ed105738c08a2c03be8:github://GoreeCloud/goreecloud-privacy-shield/evidence/provider-evaluations/foundationdb-state-candidate-20260919.md"
+      ]
+    },
+    "restart_recovery": {
+      "result": "pending",
+      "evidence_refs": []
+    },
+    "atomic_transactions": {
+      "result": "pending",
+      "evidence_refs": [
+        "evidence+sha256:48f47b24f596a1756c11a1150d49a77ade9d0a923be28ed105738c08a2c03be8:github://GoreeCloud/goreecloud-privacy-shield/evidence/provider-evaluations/foundationdb-state-candidate-20260919.md"
+      ]
+    },
+    "multi_writer_serializability": {
+      "result": "pending",
+      "evidence_refs": [
+        "evidence+sha256:48f47b24f596a1756c11a1150d49a77ade9d0a923be28ed105738c08a2c03be8:github://GoreeCloud/goreecloud-privacy-shield/evidence/provider-evaluations/foundationdb-state-candidate-20260919.md"
+      ]
+    },
+    "distributed_topology": {
+      "result": "pending",
+      "evidence_refs": [
+        "evidence+sha256:48f47b24f596a1756c11a1150d49a77ade9d0a923be28ed105738c08a2c03be8:github://GoreeCloud/goreecloud-privacy-shield/evidence/provider-evaluations/foundationdb-state-candidate-20260919.md"
+      ]
+    },
+    "fail_closed_conflict_behavior": {
+      "result": "pending",
+      "evidence_refs": [
+        "evidence+sha256:48f47b24f596a1756c11a1150d49a77ade9d0a923be28ed105738c08a2c03be8:github://GoreeCloud/goreecloud-privacy-shield/evidence/provider-evaluations/foundationdb-state-candidate-20260919.md"
+      ]
+    },
+    "backup_restore": {
+      "result": "pending",
+      "evidence_refs": [
+        "evidence+sha256:48f47b24f596a1756c11a1150d49a77ade9d0a923be28ed105738c08a2c03be8:github://GoreeCloud/goreecloud-privacy-shield/evidence/provider-evaluations/foundationdb-state-candidate-20260919.md"
+      ]
+    },
+    "migration_rollback": {
+      "result": "pending",
+      "evidence_refs": []
+    },
+    "access_control_isolation": {
+      "result": "pending",
+      "evidence_refs": []
+    },
+    "privacy_safe_observability": {
+      "result": "pending",
+      "evidence_refs": []
+    },
+    "operational_ownership": {
+      "result": "pending",
+      "evidence_refs": []
+    }
+  },
+  "governance": {
+    "status": "draft",
+    "authorizing": false,
+    "production_acceptance_authorized": false,
+    "evidence_reference": "evidence+sha256:48f47b24f596a1756c11a1150d49a77ade9d0a923be28ed105738c08a2c03be8:github://GoreeCloud/goreecloud-privacy-shield/evidence/provider-evaluations/foundationdb-state-candidate-20260919.md",
+    "evaluated_at": "2026-09-19T22:10:00Z",
+    "valid_until": "2026-10-19T22:10:00Z"
+  },
+  "privacy": {
+    "credentials_in_evaluation_record": false,
+    "raw_private_payloads_in_evaluation_record": false,
+    "secret_material_in_evaluation_record": false
+  },
+  "limitations": [
+    "Candidate is not deployable as production on the currently documented single-VPS topology.",
+    "Captured vendor/upstream documentation has not yet received the separate governed evidence review required to resolve criteria.",
+    "At least three genuinely failure-isolated hosts plus exact network, TLS, backup, restore, observability, and rollback qualification remain required.",
+    "This draft evaluation is non-authorizing and is not a provider selection or production acceptance."
+  ]
+}
