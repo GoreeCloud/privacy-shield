@@ -13,6 +13,8 @@ validator = importlib.util.module_from_spec(SPEC)
 sys.modules[SPEC.name] = validator
 SPEC.loader.exec_module(validator)
 
+DECISION_DIGEST = "d" * 64
+
 
 def base_evaluation() -> dict:
     return {
@@ -63,7 +65,7 @@ def base_record() -> dict:
             "status": "approved",
             "implementation_authorized": True,
             "production_acceptance_authorized": False,
-            "decision_reference": "GoreeCloud governed provider-selection decision",
+            "decision_reference": f"evidence+sha256:{DECISION_DIGEST}:artifact:state-provider-selection-decision.json",
             "decided_at": "2026-09-10T06:00:00Z",
             "review_by": "2099-01-01T00:00:00Z",
         },
@@ -100,6 +102,24 @@ class StateProviderSelectionTests(unittest.TestCase):
         result = validator.validate_selection_record(Path("approved.json"), base_record(), evaluation_map())
         self.assertEqual(result[0], "distributed-state-provider-production")
         self.assertFalse(result[4]["governance"]["production_acceptance_authorized"])
+
+    def test_mutable_decision_reference_fails(self) -> None:
+        record = base_record()
+        record["governance"]["decision_reference"] = "GoreeCloud governed provider-selection decision"
+        with self.assertRaises(SystemExit):
+            validator.validate_selection_record(Path("mutable-decision-reference.json"), record, evaluation_map())
+
+    def test_all_zero_decision_reference_fails(self) -> None:
+        record = base_record()
+        record["governance"]["decision_reference"] = f"evidence+sha256:{'0' * 64}:artifact:decision.json"
+        with self.assertRaises(SystemExit):
+            validator.validate_selection_record(Path("zero-decision-reference.json"), record, evaluation_map())
+
+    def test_future_decision_timestamp_fails(self) -> None:
+        record = base_record()
+        record["governance"]["decided_at"] = "2099-01-01T00:00:00Z"
+        with self.assertRaises(SystemExit):
+            validator.validate_selection_record(Path("future-decision.json"), record, evaluation_map())
 
     def test_selection_without_referenced_evaluation_fails(self) -> None:
         with self.assertRaises(SystemExit):

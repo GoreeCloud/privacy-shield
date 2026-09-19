@@ -73,6 +73,67 @@ class ProviderGovernanceTemporalIntegrityTests(unittest.TestCase):
                 now=NOW,
             )
 
+    def test_current_captured_provider_evidence_package_passes(self) -> None:
+        validator.validate_package(
+            Path("evidence/provider-evaluations/current.json"),
+            {
+                "artifact": {
+                    "collected_at": "2026-09-11T22:00:00Z",
+                    "valid_until": "2026-09-12T22:00:00Z",
+                },
+                "governance": {"status": "captured", "reviewed_at": None},
+            },
+            now=NOW,
+        )
+
+    def test_future_provider_evidence_collection_fails(self) -> None:
+        with self.assertRaises(SystemExit):
+            validator.validate_package(
+                Path("evidence/provider-evaluations/future.json"),
+                {
+                    "artifact": {
+                        "collected_at": "2026-09-12T00:00:00Z",
+                        "valid_until": "2026-09-13T00:00:00Z",
+                    },
+                    "governance": {"status": "captured", "reviewed_at": None},
+                },
+                now=NOW,
+            )
+
+    def test_future_provider_evidence_package_review_fails(self) -> None:
+        with self.assertRaises(SystemExit):
+            validator.validate_package(
+                Path("evidence/provider-evaluations/future-review.json"),
+                {
+                    "artifact": {
+                        "collected_at": "2026-09-11T22:00:00Z",
+                        "valid_until": "2026-09-13T00:00:00Z",
+                    },
+                    "governance": {
+                        "status": "reviewed",
+                        "reviewed_at": "2026-09-12T00:00:00Z",
+                    },
+                },
+                now=NOW,
+            )
+
+    def test_stale_reviewed_provider_evidence_package_fails(self) -> None:
+        with self.assertRaises(SystemExit):
+            validator.validate_package(
+                Path("evidence/provider-evaluations/stale-reviewed.json"),
+                {
+                    "artifact": {
+                        "collected_at": "2026-09-10T00:00:00Z",
+                        "valid_until": "2026-09-11T22:00:00Z",
+                    },
+                    "governance": {
+                        "status": "reviewed",
+                        "reviewed_at": "2026-09-10T01:00:00Z",
+                    },
+                },
+                now=NOW,
+            )
+
     def test_future_evidence_review_timestamp_fails(self) -> None:
         with self.assertRaises(SystemExit):
             validator.validate_review(

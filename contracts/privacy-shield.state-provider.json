@@ -74,5 +74,11 @@
     "exact_provider_runtime_acceptance_required": true,
     "failure_and_recovery_exercises_required": true,
     "operational_backup_and_restore_acceptance_required": true
-  }
+  },
+  "required_production_identity_metadata": [
+    "provider_id",
+    "provider_version",
+    "provider_implementation",
+    "provider_authority"
+  ]
 }
