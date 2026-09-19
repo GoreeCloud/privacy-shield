@@ -56,13 +56,27 @@ function sign(value, secret) {
 }
 
 function requiredString(value, field) {
-  if (typeof value !== "string" || !value.trim()) throw new TypeError(`Privacy receipt requires ${field}`);
-  return value.trim();
+  if (
+    typeof value !== "string"
+    || !value
+    || value !== value.trim()
+    || value.length > 256
+    || /[\u0000-\u001F\u007F-\u009F]/.test(value)
+  ) {
+    throw new TypeError(`Privacy receipt requires canonical ${field}`);
+  }
+  return value;
 }
 
 function optionalTimestamp(value, field) {
   if (value === undefined || value === null) return null;
-  if (typeof value !== "string" || !Number.isFinite(Date.parse(value))) {
+  if (
+    typeof value !== "string"
+    || !value
+    || value !== value.trim()
+    || !/(?:Z|[+-]\d{2}:\d{2})$/.test(value)
+    || !Number.isFinite(Date.parse(value))
+  ) {
     throw new TypeError(`Privacy receipt has invalid ${field}`);
   }
   return value;
