@@ -22,7 +22,7 @@ A later stage cannot stand in for an earlier stage. Runtime evidence without cur
 
 ## Evidence freshness
 
-A passed stage requires an observation time, an expiration time, and at least one bounded evidence reference. Future-dated observations and inverted validity windows are rejected. Once evidence expires, the matrix falls back to the strongest still-current earlier stage and reports the row as expired rather than silently preserving the stronger claim.
+A passed stage requires an observation time, an expiration time, and at least one bounded evidence reference. Future-dated observations, timezone-ambiguous timestamps, non-canonical bounded strings, hidden input fields, oversized evidence collections, and inverted validity windows are rejected. Once evidence expires, the matrix falls back to the strongest still-current earlier stage and reports the row as expired rather than silently preserving the stronger claim.
 
 The matrix reports `unknown`, `current`, `expired`, or `conflicting` freshness. Failed stage evidence remains visible as `failed`; it is not converted into a reassuring unknown state.
 
@@ -34,4 +34,4 @@ The matrix intentionally complements rather than replaces `privacy-shield.adapte
 
 ## Acceptance boundary
 
-This source candidate does not establish real application/runtime adoption, current production evidence, production provider acceptance, Privacy Center adoption, GoreeCloud-wide protection, production acceptance, or Stable qualification. Every participating application, adapter, runtime, target, and capability must still prove its own accepted evidence.
+This source candidate does not establish real application/runtime adoption, current production evidence, production provider acceptance, Privacy Center adoption, GoreeCloud-wide protection, production acceptance, or Stable qualification. Every participating application, adapter, runtime, target, and capability must still prove its own accepted evidence. The evaluator also treats its input as an exact-bound closed shape and rejects ambiguous timestamps or silently normalized identifiers so malformed evidence cannot be upgraded by convenience parsing.
