@@ -16,7 +16,9 @@
   "criteria": {
     "digest_only_signing": {
       "result": "pending",
-      "evidence_refs": []
+      "evidence_refs": [
+        "evidence+sha256:212607e3358fcf6a9140c3df1f7f7f130a8b6bf496648dcf1bd2e3e5e18dac46:github://GoreeCloud/goreecloud-privacy-shield/evidence/provider-evaluations/ovhcloud-kms-signing-lifecycle-audit-candidate-20260919.md"
+      ]
     },
     "non_exportable_signing_material": {
       "result": "pending",
@@ -38,7 +40,9 @@
     },
     "rotation_retirement_revocation": {
       "result": "pending",
-      "evidence_refs": []
+      "evidence_refs": [
+        "evidence+sha256:212607e3358fcf6a9140c3df1f7f7f130a8b6bf496648dcf1bd2e3e5e18dac46:github://GoreeCloud/goreecloud-privacy-shield/evidence/provider-evaluations/ovhcloud-kms-signing-lifecycle-audit-candidate-20260919.md"
+      ]
     },
     "producer_identity_binding": {
       "result": "pending",
@@ -46,11 +50,15 @@
     },
     "privacy_safe_audit": {
       "result": "pending",
-      "evidence_refs": []
+      "evidence_refs": [
+        "evidence+sha256:212607e3358fcf6a9140c3df1f7f7f130a8b6bf496648dcf1bd2e3e5e18dac46:github://GoreeCloud/goreecloud-privacy-shield/evidence/provider-evaluations/ovhcloud-kms-signing-lifecycle-audit-candidate-20260919.md"
+      ]
     },
     "fail_closed_untrusted_state": {
       "result": "pending",
-      "evidence_refs": []
+      "evidence_refs": [
+        "evidence+sha256:212607e3358fcf6a9140c3df1f7f7f130a8b6bf496648dcf1bd2e3e5e18dac46:github://GoreeCloud/goreecloud-privacy-shield/evidence/provider-evaluations/ovhcloud-kms-signing-lifecycle-audit-candidate-20260919.md"
+      ]
     },
     "outage_degraded_behavior": {
       "result": "pending",
@@ -60,7 +68,9 @@
     },
     "recovery_continuity": {
       "result": "pending",
-      "evidence_refs": []
+      "evidence_refs": [
+        "evidence+sha256:212607e3358fcf6a9140c3df1f7f7f130a8b6bf496648dcf1bd2e3e5e18dac46:github://GoreeCloud/goreecloud-privacy-shield/evidence/provider-evaluations/ovhcloud-kms-signing-lifecycle-audit-candidate-20260919.md"
+      ]
     },
     "access_control_isolation": {
       "result": "pending",
@@ -70,7 +80,9 @@
     },
     "operational_ownership": {
       "result": "pending",
-      "evidence_refs": []
+      "evidence_refs": [
+        "evidence+sha256:212607e3358fcf6a9140c3df1f7f7f130a8b6bf496648dcf1bd2e3e5e18dac46:github://GoreeCloud/goreecloud-privacy-shield/evidence/provider-evaluations/ovhcloud-kms-signing-lifecycle-audit-candidate-20260919.md"
+      ]
     }
   },
   "governance": {
