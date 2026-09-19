@@ -1,3 +1,4 @@
+import crypto from "node:crypto";
 import assert from "node:assert/strict";
 import test from "node:test";
 import { PrivacyDecisionPoint, PrivacyDecision } from "../src/privacy-decision-point.mjs";
@@ -44,32 +45,55 @@ function fixture({ capabilityAuthority } = {}) {
     external_disclosure: false,
     consent_reference: consent.consent_id
   };
-  return { request, enforcementPoint, evidenceLedger, consentAuthority, consent, capabilityAuthority };
+  return { request, decisionPoint, enforcementPoint, evidenceLedger, consentAuthority, consent, capabilityAuthority };
 }
 
-test("authorization pipeline issues and enforces an operation-bound capability", () => {
+test("raw decision point does not invent an executable capability reference", () => {
+  const { request, decisionPoint } = fixture();
+  const decision = decisionPoint.evaluate(request);
+  assert.equal(decision.outcome, PrivacyDecision.ALLOW_WITH_CONSTRAINTS);
+  assert.equal(decision.capability_token_reference, null);
+});
+
+test("authorization pipeline issues and enforces an operation-bound capability reference", () => {
   const { request, enforcementPoint, evidenceLedger } = fixture();
   const result = enforcementPoint.authorize(request);
   assert.equal(result.decision.outcome, PrivacyDecision.ALLOW_WITH_CONSTRAINTS);
   assert.ok(result.capability_token);
+  assert.match(result.decision.capability_token_reference, /^psc_/);
   assert.ok(result.receipt);
   assert.equal(evidenceLedger.list({ request_id: request.request_id }).length, 1);
-  const enforced = enforcementPoint.enforce(result.capability_token, {
+  const enforced = enforcementPoint.enforceReference(result.decision.capability_token_reference, {
     requester_id: request.requester.id,
     resource_id: request.resource.id,
     purpose: request.purpose,
     operation: request.operation,
-    destination: request.destination
+    processing_zone: request.processing_zone,
+    destination: request.destination,
+    retention_mode: request.retention.mode
   });
   assert.equal(enforced.authorized, true);
+  assert.equal(enforced.claims.jti, result.decision.capability_token_reference);
 });
 
-test("capability cannot be replayed for another purpose", () => {
+test("capability reference cannot be replayed for another purpose", () => {
   const { request, enforcementPoint } = fixture();
   const result = enforcementPoint.authorize(request);
-  assert.throws(() => enforcementPoint.enforce(result.capability_token, {
+  assert.throws(() => enforcementPoint.enforceReference(result.decision.capability_token_reference, {
     purpose: "train-model"
   }), /CAPABILITY_PURPOSE_MISMATCH/);
+});
+
+test("capability reference rejects surrounding whitespace instead of normalizing it", () => {
+  const { request, enforcementPoint } = fixture();
+  const result = enforcementPoint.authorize(request);
+  const reference = result.decision.capability_token_reference;
+  for (const padded of [` ${reference}`, `${reference} `, `\t${reference}`]) {
+    assert.throws(
+      () => enforcementPoint.enforceReference(padded, { requester_id: request.requester.id }),
+      /INVALID_CAPABILITY_ID/,
+    );
+  }
 });
 
 test("revoked consent is denied after PDP state is refreshed", () => {
@@ -83,49 +107,41 @@ test("revoked consent is denied after PDP state is refreshed", () => {
   const result = enforcementPoint.authorize(request);
   assert.equal(result.decision.outcome, PrivacyDecision.DENY);
   assert.equal(result.capability_token, null);
+  assert.equal(result.decision.capability_token_reference, null);
   assert.equal(result.receipt, null);
 });
 
-test("capability revocation blocks subsequent enforcement", () => {
+test("capability revocation blocks subsequent reference enforcement", () => {
   const { request, enforcementPoint } = fixture();
   const result = enforcementPoint.authorize(request);
-  enforcementPoint.revokeCapability(result.capability_token);
-  assert.throws(() => enforcementPoint.enforce(result.capability_token, {
+  const reference = result.decision.capability_token_reference;
+  enforcementPoint.revokeCapability(reference);
+  assert.throws(() => enforcementPoint.enforceReference(reference, {
     requester_id: request.requester.id
   }), /CAPABILITY_REVOKED/);
 });
 
-test("single-use capability cannot be enforced twice", () => {
+test("single-use capability reference cannot be enforced twice", () => {
   const { request, enforcementPoint } = fixture();
   const result = enforcementPoint.authorize(request, { replay_policy: "single_use" });
-  const first = enforcementPoint.enforceOnce(result.capability_token, {
+  const reference = result.decision.capability_token_reference;
+  const first = enforcementPoint.enforceReferenceOnce(reference, {
     requester_id: request.requester.id,
     purpose: request.purpose
   });
   assert.equal(first.authorized, true);
-  assert.throws(() => enforcementPoint.enforceOnce(result.capability_token, {
+  assert.throws(() => enforcementPoint.enforceReferenceOnce(reference, {
     requester_id: request.requester.id,
     purpose: request.purpose
   }), /CAPABILITY_ALREADY_CONSUMED/);
 });
 
-test("key rotation preserves verification with retained old keys", () => {
-  const authority = new PrivacyCapabilityAuthority({
-    active_key_id: "key-a",
-    keys: {
-      "key-a": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-      "key-b": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
-    }
-  });
-  const { request, enforcementPoint } = fixture({ capabilityAuthority: authority });
-  const oldToken = enforcementPoint.authorize(request).capability_token;
-  authority.rotate("key-c", "cccccccccccccccccccccccccccccccc");
-  const newToken = enforcementPoint.authorize({ ...request, request_id: "req-2" }).capability_token;
-  assert.equal(authority.verify(oldToken).kid, "key-a");
-  assert.equal(authority.verify(newToken).kid, "key-c");
+test("unknown capability reference fails closed", () => {
+  const { enforcementPoint } = fixture();
+  assert.throws(() => enforcementPoint.enforceReference(`psc_${crypto.randomUUID()}`, {}), /CAPABILITY_REFERENCE_NOT_FOUND/);
 });
 
-test("retiring a non-active key invalidates capabilities signed by it", () => {
+test("key rotation preserves reference verification with retained old keys", () => {
   const authority = new PrivacyCapabilityAuthority({
     active_key_id: "key-a",
     keys: {
@@ -134,8 +150,24 @@ test("retiring a non-active key invalidates capabilities signed by it", () => {
     }
   });
   const { request, enforcementPoint } = fixture({ capabilityAuthority: authority });
-  const token = enforcementPoint.authorize(request).capability_token;
+  const oldResult = enforcementPoint.authorize(request);
+  authority.rotate("key-c", "cccccccccccccccccccccccccccccccc");
+  const newResult = enforcementPoint.authorize({ ...request, request_id: "req-2" });
+  assert.equal(enforcementPoint.enforceReference(oldResult.decision.capability_token_reference, {}).claims.kid, "key-a");
+  assert.equal(enforcementPoint.enforceReference(newResult.decision.capability_token_reference, {}).claims.kid, "key-c");
+});
+
+test("retiring a non-active key invalidates capability references signed by it", () => {
+  const authority = new PrivacyCapabilityAuthority({
+    active_key_id: "key-a",
+    keys: {
+      "key-a": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "key-b": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    }
+  });
+  const { request, enforcementPoint } = fixture({ capabilityAuthority: authority });
+  const result = enforcementPoint.authorize(request);
   authority.rotate("key-b", "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb");
   authority.retire("key-a");
-  assert.throws(() => authority.verify(token), /UNKNOWN_CAPABILITY_KEY/);
+  assert.throws(() => enforcementPoint.enforceReference(result.decision.capability_token_reference, {}), /UNKNOWN_CAPABILITY_KEY/);
 });

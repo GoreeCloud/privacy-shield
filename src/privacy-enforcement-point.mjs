@@ -61,6 +61,16 @@ export class PrivacyEnforcementPoint {
     return { authorized: true, claims, constraints: this.constraintsFor(claims) };
   }
 
+  enforceReference(reference, expected) {
+    const claims = this.capabilityAuthority.verifyReference(reference, expected);
+    return { authorized: true, claims, constraints: this.constraintsFor(claims) };
+  }
+
+  enforceReferenceOnce(reference, expected) {
+    const claims = this.capabilityAuthority.consumeReference(reference, expected);
+    return { authorized: true, claims, constraints: this.constraintsFor(claims) };
+  }
+
   revokeCapability(tokenOrJti) {
     return this.capabilityAuthority.revoke(tokenOrJti);
   }

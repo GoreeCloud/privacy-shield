@@ -1,0 +1,102 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://goreecloud.dev/schemas/privacy-shield/capability-reference-verification/v1",
+  "title": "Privacy Shield Capability Reference Verification Contract",
+  "type": "object",
+  "required": [
+    "contract_version",
+    "consumer_id",
+    "capability_reference",
+    "expected",
+    "consume"
+  ],
+  "properties": {
+    "contract_version": { "const": 1 },
+    "consumer_id": { "type": "string", "minLength": 1 },
+    "capability_reference": {
+      "type": "string",
+      "minLength": 5,
+      "maxLength": 512,
+      "pattern": "^psc_[^\\s]+$"
+    },
+    "expected": {
+      "type": "object",
+      "required": [
+        "requester_id",
+        "resource_id",
+        "purpose",
+        "operation",
+        "processing_zone",
+        "destination",
+        "retention_mode"
+      ],
+      "properties": {
+        "requester_id": { "type": "string", "minLength": 1 },
+        "resource_id": { "type": "string", "minLength": 1 },
+        "purpose": { "type": "string", "minLength": 1 },
+        "operation": { "type": "string", "minLength": 1 },
+        "processing_zone": {
+          "enum": ["local", "private_goreecloud", "trusted_service", "external"]
+        },
+        "destination": { "type": "string", "minLength": 1 },
+        "retention_mode": {
+          "enum": [
+            "none",
+            "session",
+            "temporary",
+            "user_defined",
+            "application_defined",
+            "organizational",
+            "permanent"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "consume": { "type": "boolean" }
+  },
+  "$defs": {
+    "response": {
+      "type": "object",
+      "required": [
+        "contract_version",
+        "authorized",
+        "capability_reference",
+        "constraints"
+      ],
+      "properties": {
+        "contract_version": { "const": 1 },
+        "authorized": { "type": "boolean" },
+        "capability_reference": {
+          "type": "string",
+          "minLength": 5,
+          "maxLength": 512,
+          "pattern": "^psc_[^\\s]+$"
+        },
+        "constraints": {
+          "type": "object",
+          "properties": {
+            "processing_zone": {
+              "enum": ["local", "private_goreecloud", "trusted_service", "external"]
+            },
+            "destination": { "type": "string", "minLength": 1 },
+            "retention_mode": {
+              "enum": [
+                "none",
+                "session",
+                "temporary",
+                "user_defined",
+                "application_defined",
+                "organizational",
+                "permanent"
+              ]
+            }
+          },
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
