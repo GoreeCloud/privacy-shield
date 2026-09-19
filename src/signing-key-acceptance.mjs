@@ -18,6 +18,7 @@ export const REQUIRED_SIGNING_KEY_QUALIFICATIONS = Object.freeze([
 ]);
 
 const SHA40 = /^[0-9a-f]{40}$/;
+const SELECTION_ID = /^[a-z0-9][a-z0-9-]*$/;
 
 function requireObject(value, code) {
   if (!value || typeof value !== "object" || Array.isArray(value)) throw new Error(code);
@@ -69,6 +70,13 @@ export function requireSigningKeyProviderAcceptance(provider, {
   }
   if (acceptanceRecord.contract_id !== PRIVACY_SIGNING_KEY_ACCEPTANCE_CONTRACT) {
     throw new Error("SIGNING_KEY_ACCEPTANCE_CONTRACT_MISMATCH");
+  }
+  const selectionDecisionId = requireString(
+    acceptanceRecord.selection_decision_id,
+    "SIGNING_KEY_ACCEPTANCE_SELECTION_DECISION_REQUIRED",
+  );
+  if (!SELECTION_ID.test(selectionDecisionId)) {
+    throw new Error("INVALID_SIGNING_KEY_ACCEPTANCE_SELECTION_DECISION");
   }
 
   const acceptance = requireObject(
@@ -162,6 +170,7 @@ export function requireSigningKeyProviderAcceptance(provider, {
 
   return Object.freeze({
     contract_id: PRIVACY_SIGNING_KEY_ACCEPTANCE_CONTRACT,
+    selection_decision_id: selectionDecisionId,
     provider_id: key.provider_id,
     provider_version: key.provider_version,
     producer_identity: key.producer_identity,
