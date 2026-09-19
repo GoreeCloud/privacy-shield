@@ -1,0 +1,181 @@
+{
+  "contract_version": 1,
+  "status_schema_version": 1,
+  "vectors": [
+    {
+      "name": "accepted-protected-runtime",
+      "observed_at": "2026-09-19T21:30:00Z",
+      "record": {
+        "schema_version": 1,
+        "producer": {
+          "adapter_id": "browser",
+          "product": "GoreeCloud Browser",
+          "runtime_authority": "GoreeCloud/goreecloud-browser",
+          "adapter_contract_version": 1
+        },
+        "generated_at": "2026-09-19T21:00:00Z",
+        "valid_until": "2026-09-19T22:00:00Z",
+        "state": "protected",
+        "capabilities": [
+          {"id": "content-blocking", "state": "active"}
+        ],
+        "privacy": {
+          "raw_private_activity_included": false,
+          "contains_credentials": false,
+          "contains_identifiers": false
+        },
+        "acceptance": {
+          "runtime_acceptance_required": true,
+          "production_approved": true
+        }
+      },
+      "expected_valid": true,
+      "expected_expired": false
+    },
+    {
+      "name": "expired-protected-runtime",
+      "observed_at": "2026-09-19T23:00:00Z",
+      "record": {
+        "schema_version": 1,
+        "producer": {
+          "adapter_id": "browser",
+          "product": "GoreeCloud Browser",
+          "runtime_authority": "GoreeCloud/goreecloud-browser",
+          "adapter_contract_version": 1
+        },
+        "generated_at": "2026-09-19T21:00:00Z",
+        "valid_until": "2026-09-19T22:00:00Z",
+        "state": "protected",
+        "capabilities": [
+          {"id": "content-blocking", "state": "active"}
+        ],
+        "privacy": {
+          "raw_private_activity_included": false,
+          "contains_credentials": false,
+          "contains_identifiers": false
+        },
+        "acceptance": {
+          "runtime_acceptance_required": true,
+          "production_approved": true
+        }
+      },
+      "expected_valid": true,
+      "expected_expired": true
+    },
+    {
+      "name": "development-runtime-without-expiry",
+      "observed_at": "2026-09-19T21:30:00Z",
+      "record": {
+        "schema_version": 1,
+        "producer": {
+          "adapter_id": "monitor",
+          "product": "GoreeCloud Monitor",
+          "runtime_authority": "GoreeCloud/goreecloud-monitor",
+          "adapter_contract_version": 1
+        },
+        "generated_at": "2026-09-19T21:00:00Z",
+        "state": "development",
+        "capabilities": [
+          {"id": "status-minimization", "state": "pending-acceptance"}
+        ],
+        "privacy": {
+          "raw_private_activity_included": false,
+          "contains_credentials": false,
+          "contains_identifiers": false
+        },
+        "acceptance": {
+          "runtime_acceptance_required": true,
+          "production_approved": false
+        }
+      },
+      "expected_valid": true,
+      "expected_expired": false
+    },
+    {
+      "name": "unsafe-private-activity",
+      "observed_at": "2026-09-19T21:30:00Z",
+      "record": {
+        "schema_version": 1,
+        "producer": {
+          "adapter_id": "browser",
+          "product": "GoreeCloud Browser",
+          "runtime_authority": "GoreeCloud/goreecloud-browser",
+          "adapter_contract_version": 1
+        },
+        "generated_at": "2026-09-19T21:00:00Z",
+        "valid_until": "2026-09-19T22:00:00Z",
+        "state": "protected",
+        "capabilities": [
+          {"id": "content-blocking", "state": "active"}
+        ],
+        "privacy": {
+          "raw_private_activity_included": true,
+          "contains_credentials": false,
+          "contains_identifiers": false
+        },
+        "acceptance": {
+          "runtime_acceptance_required": true,
+          "production_approved": true
+        }
+      },
+      "expected_valid": false
+    },
+    {
+      "name": "duplicate-capability-id",
+      "observed_at": "2026-09-19T21:30:00Z",
+      "record": {
+        "schema_version": 1,
+        "producer": {
+          "adapter_id": "notify",
+          "product": "GoreeCloud Notify",
+          "runtime_authority": "GoreeCloud/goreecloud-notify",
+          "adapter_contract_version": 1
+        },
+        "generated_at": "2026-09-19T21:00:00Z",
+        "state": "attention",
+        "capabilities": [
+          {"id": "notification-redaction", "state": "active"},
+          {"id": "notification-redaction", "state": "pending-acceptance"}
+        ],
+        "privacy": {
+          "raw_private_activity_included": false,
+          "contains_credentials": false,
+          "contains_identifiers": false
+        },
+        "acceptance": {
+          "runtime_acceptance_required": true,
+          "production_approved": false
+        }
+      },
+      "expected_valid": false
+    },
+    {
+      "name": "production-approval-without-expiry",
+      "observed_at": "2026-09-19T21:30:00Z",
+      "record": {
+        "schema_version": 1,
+        "producer": {
+          "adapter_id": "browser",
+          "product": "GoreeCloud Browser",
+          "runtime_authority": "GoreeCloud/goreecloud-browser",
+          "adapter_contract_version": 1
+        },
+        "generated_at": "2026-09-19T21:00:00Z",
+        "state": "partial",
+        "capabilities": [
+          {"id": "content-blocking", "state": "active"}
+        ],
+        "privacy": {
+          "raw_private_activity_included": false,
+          "contains_credentials": false,
+          "contains_identifiers": false
+        },
+        "acceptance": {
+          "runtime_acceptance_required": true,
+          "production_approved": true
+        }
+      },
+      "expected_valid": false
+    }
+  ]
+}
