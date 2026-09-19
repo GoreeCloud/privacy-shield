@@ -1,0 +1,176 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://goreecloud.com/schemas/privacy-shield.runtime-trust-acceptance-matrix.v1.schema.json",
+  "title": "GoreeCloud Privacy Shield Runtime Trust and Acceptance Matrix",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "generated_at",
+    "authorization_effect",
+    "authority_transfer",
+    "entries"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "goreecloud.privacy-shield.runtime-trust-acceptance-matrix.v1"
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "authorization_effect": {
+      "const": false
+    },
+    "authority_transfer": {
+      "const": false
+    },
+    "entries": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/entry"
+      },
+      "maxItems": 4096
+    }
+  },
+  "$defs": {
+    "stage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "state",
+        "observed_at",
+        "expires_at",
+        "evidence_references"
+      ],
+      "properties": {
+        "state": {
+          "type": "string",
+          "enum": [
+            "unknown",
+            "pending",
+            "passed",
+            "failed"
+          ]
+        },
+        "observed_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "expires_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "evidence_references": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          },
+          "maxItems": 256
+        }
+      }
+    },
+    "entry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "application_id",
+        "adapter_id",
+        "runtime_authority",
+        "representative_target",
+        "capability_id",
+        "exact_source_revision",
+        "source_tree_sha",
+        "source",
+        "runtime",
+        "production",
+        "effective_state",
+        "freshness",
+        "limitations"
+      ],
+      "properties": {
+        "application_id": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9-]*$",
+          "maxLength": 160
+        },
+        "adapter_id": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9-]*$",
+          "maxLength": 160
+        },
+        "runtime_authority": {
+          "type": "string",
+          "pattern": "^GoreeCloud/[A-Za-z0-9._-]+$",
+          "maxLength": 256
+        },
+        "representative_target": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "capability_id": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9._-]*$",
+          "maxLength": 160
+        },
+        "exact_source_revision": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "source_tree_sha": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "source": {
+          "$ref": "#/$defs/stage"
+        },
+        "runtime": {
+          "$ref": "#/$defs/stage"
+        },
+        "production": {
+          "$ref": "#/$defs/stage"
+        },
+        "effective_state": {
+          "type": "string",
+          "enum": [
+            "unknown",
+            "source-validated",
+            "runtime-validated",
+            "production-accepted",
+            "failed"
+          ]
+        },
+        "freshness": {
+          "type": "string",
+          "enum": [
+            "unknown",
+            "current",
+            "stale",
+            "expired",
+            "conflicting"
+          ]
+        },
+        "limitations": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          },
+          "maxItems": 128
+        }
+      }
+    }
+  }
+}
