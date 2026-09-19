@@ -43,18 +43,35 @@ function id(prefix) {
 }
 
 function requiredString(value, field) {
-  if (typeof value !== "string" || !value.trim()) {
-    throw new TypeError(`Privacy Lock requires ${field}`);
+  if (
+    typeof value !== "string"
+    || !value
+    || value !== value.trim()
+    || value.length > 256
+    || /[\u0000-\u001F\u007F-\u009F]/.test(value)
+  ) {
+    throw new TypeError(`Privacy Lock requires canonical ${field}`);
   }
-  return value.trim();
+  return value;
 }
 
 function timestamp(value, field) {
-  const date = value instanceof Date ? value : new Date(value);
-  if (!Number.isFinite(date.getTime())) {
+  if (value instanceof Date) {
+    if (!Number.isFinite(value.getTime())) {
+      throw new TypeError(`Privacy Lock requires valid ${field}`);
+    }
+    return value.toISOString();
+  }
+  if (
+    typeof value !== "string"
+    || !value
+    || value !== value.trim()
+    || !/(?:Z|[+-]\d{2}:\d{2})$/.test(value)
+    || !Number.isFinite(Date.parse(value))
+  ) {
     throw new TypeError(`Privacy Lock requires valid ${field}`);
   }
-  return date.toISOString();
+  return new Date(value).toISOString();
 }
 
 function normalizeActor(actor, field = "actor") {

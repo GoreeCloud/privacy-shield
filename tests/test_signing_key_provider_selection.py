@@ -13,6 +13,8 @@ validator = importlib.util.module_from_spec(SPEC)
 sys.modules[SPEC.name] = validator
 SPEC.loader.exec_module(validator)
 
+DECISION_DIGEST = "d" * 64
+
 
 def base_evaluation() -> dict:
     return {
@@ -61,7 +63,7 @@ def base_record() -> dict:
             "status": "approved",
             "implementation_authorized": True,
             "production_acceptance_authorized": False,
-            "decision_reference": "GoreeCloud governed signing-provider selection decision",
+            "decision_reference": f"evidence+sha256:{DECISION_DIGEST}:artifact:signing-provider-selection-decision.json",
             "decided_at": "2026-09-10T06:00:00Z",
             "review_by": "2099-01-01T00:00:00Z",
         },

@@ -41,6 +41,8 @@ When a participating runtime is under an active lock, missing or unsupported Pri
 
 A lock requires a creation time and a future expiration time. Only one active lock may exist for the same subject at a time. A lock may be released early with a release actor and reason code.
 
+Privacy Lock identifiers and authority-bearing strings are exact-bound rather than silently normalized. Required strings reject leading/trailing whitespace, control characters, empty values, and oversized values. String timestamps must be explicit timezone-qualified values; timezone-ambiguous local timestamps are rejected rather than interpreted implicitly.
+
 Lock state is stored through the injected Privacy Shield state-provider boundary. Its durability therefore inherits the guarantees of the selected provider. Memory and single-host development providers do not become production accepted merely because they can store Privacy Lock state.
 
 ## Monotonic restriction rule

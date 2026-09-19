@@ -98,7 +98,7 @@
         "status": {"type": "string", "enum": ["proposed", "approved", "rejected", "superseded", "revoked"]},
         "implementation_authorized": {"type": "boolean"},
         "production_acceptance_authorized": {"const": false},
-        "decision_reference": {"type": "string", "minLength": 1, "maxLength": 1000},
+        "decision_reference": {"type": "string", "pattern": "^evidence\\+sha256:[0-9a-f]{64}:(?:github://|gdrive://|qualification-run:|artifact:)[A-Za-z0-9._+:/-]+$", "maxLength": 1000},
         "decided_at": {"type": "string", "format": "date-time"},
         "review_by": {"type": "string", "format": "date-time"}
       }

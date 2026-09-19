@@ -16,6 +16,8 @@ The canonical source contract is `goreecloud.privacy-shield.privacy-receipt.v2`.
 
 A receipt binds to the exact request ID, decision ID, evidence ID, evidence digest, and evidence timestamp. Receipt construction fails closed when the evidence does not bind to the same request and decision or when the evidence timestamp is future-dated relative to receipt creation.
 
+Authority- and provenance-bearing receipt strings are exact-bound rather than silently normalized. Required identifiers reject leading/trailing whitespace, control characters, empty values, and oversized values. Evidence, retention, consent, and decision timestamps must be explicit timezone-qualified timestamps; timezone-ambiguous local timestamps are rejected rather than interpreted implicitly.
+
 Receipts contain only bounded privacy metadata needed to explain the decision:
 
 - requesting application or service identity;

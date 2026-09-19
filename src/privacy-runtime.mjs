@@ -5,6 +5,7 @@ import { ConsentAuthority } from "./consent-authority.mjs";
 import { PrivacyEvidenceLedger } from "./privacy-evidence.mjs";
 import { PrivacyPolicyStore } from "./privacy-policy-store.mjs";
 import { requireSigningKeyProviderAcceptance } from "./signing-key-acceptance.mjs";
+import { requireStateProviderAcceptance } from "./state-provider-acceptance.mjs";
 import {
   FilePrivacyStateStore,
   PRIVACY_STATE_PROVIDER_CONTRACT,
@@ -76,13 +77,17 @@ function signingConfiguration({ capability_keys, capability_key_provider, produc
  * replay/revocation, and evidence state cannot drift across independently cached
  * namespace snapshots. `production: true` is fail closed for both durable state
  * and capability-signing custody: the state provider must expose the V1 production
- * state profile, capability signing must use an independently production-eligible
- * opaque key provider, and that exact provider version/deployment must have a
- * fresh passing acceptance record bound to the exact Privacy Shield runtime
- * revision. Structural declarations alone are insufficient.
+ * state profile and a fresh exact-provider/source-tree/environment/topology
+ * acceptance record; capability signing must use an independently
+ * production-eligible opaque key provider with a fresh exact-provider/deployment
+ * acceptance record. Structural declarations alone are insufficient.
  */
 export function createPrivacyRuntime({
   store,
+  state_provider_acceptance,
+  state_provider_environment,
+  state_provider_topology_id,
+  runtime_tree_sha,
   capability_keys,
   capability_key_provider,
   capability_key_acceptance,
@@ -92,6 +97,16 @@ export function createPrivacyRuntime({
   production = false,
 } = {}) {
   const stateStore = requireStateStore(store, { production });
+  const stateAcceptance = production
+    ? requireStateProviderAcceptance(stateStore, {
+        record: state_provider_acceptance,
+        runtime_revision,
+        runtime_tree_sha,
+        environment: state_provider_environment,
+        topology_id: state_provider_topology_id,
+      })
+    : null;
+
   const signing = signingConfiguration({
     capability_keys,
     capability_key_provider,
@@ -121,6 +136,7 @@ export function createPrivacyRuntime({
     capabilities,
     evidence,
     policies,
+    state_acceptance: stateAcceptance,
     signing_acceptance: signingAcceptance,
     production,
   });

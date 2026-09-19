@@ -22,6 +22,7 @@ SELECTION_DIRS = (
     ROOT / "decisions" / "state-providers",
     ROOT / "decisions" / "signing-key-providers",
 )
+PACKAGE_DIR = ROOT / "evidence" / "provider-evaluations"
 REVIEW_DIR = ROOT / "reviews" / "provider-evidence"
 
 
@@ -105,6 +106,40 @@ def validate_selection(path: Path, record: dict, *, now: datetime) -> None:
         fail(f"{label}: approved provider selection is stale")
 
 
+def validate_package(path: Path, record: dict, *, now: datetime) -> None:
+    label = display_path(path)
+    artifact = record.get("artifact")
+    if not isinstance(artifact, dict):
+        fail(f"{label}: artifact must be an object")
+    collected_at = parse_time(
+        artifact.get("collected_at"),
+        label=f"{label} artifact.collected_at",
+    )
+    valid_until = parse_time(
+        artifact.get("valid_until"),
+        label=f"{label} artifact.valid_until",
+    )
+    if collected_at > now:
+        fail(f"{label}: provider-evidence collection timestamp is in the future")
+    if valid_until <= collected_at:
+        fail(f"{label}: provider-evidence validity window is invalid")
+
+    governance = _governance(record, path)
+    if governance.get("status") == "reviewed":
+        reviewed_at = parse_time(
+            governance.get("reviewed_at"),
+            label=f"{label} governance.reviewed_at",
+        )
+        if reviewed_at > now:
+            fail(f"{label}: provider-evidence package review timestamp is in the future")
+        if reviewed_at < collected_at:
+            fail(f"{label}: provider-evidence package review predates collection")
+        if reviewed_at >= valid_until:
+            fail(f"{label}: provider-evidence package review is outside the evidence validity window")
+        if valid_until <= now:
+            fail(f"{label}: reviewed provider-evidence package is stale")
+
+
 def validate_review(path: Path, record: dict, *, now: datetime) -> None:
     label = display_path(path)
     review = record.get("review")
@@ -144,6 +179,8 @@ def validate_repository(*, now: datetime | None = None) -> None:
         validate_evaluation(path, load_json(path), now=now)
     for path in json_records(SELECTION_DIRS):
         validate_selection(path, load_json(path), now=now)
+    for path in json_records((PACKAGE_DIR,)):
+        validate_package(path, load_json(path), now=now)
     for path in json_records((REVIEW_DIR,)):
         validate_review(path, load_json(path), now=now)
 

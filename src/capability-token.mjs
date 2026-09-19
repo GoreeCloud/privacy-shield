@@ -137,7 +137,18 @@ export class PrivacyCapabilityAuthority {
     if (!signature || typeof signature !== "string") {
       throw new Error("CAPABILITY_SIGNING_PROVIDER_INVALID_SIGNATURE_RESPONSE");
     }
-    return `${body}.${signature}`;
+    const token = `${body}.${signature}`;
+    // Signed bearer material remains authority-local. Consumers may carry only
+    // the opaque jti reference while Privacy Shield resolves and verifies the
+    // original token inside its own trust boundary.
+    mutatePrivacyState(this.store, state => {
+      state.set("capability_token", payload.jti, {
+        token,
+        issued_at: new Date(payload.iat * 1000).toISOString(),
+        expires_at: new Date(payload.exp * 1000).toISOString(),
+      });
+    });
+    return token;
   }
 
   parseAndVerify(token, { check_state = true, store = this.store } = {}) {
@@ -198,11 +209,37 @@ export class PrivacyCapabilityAuthority {
     return requireExpectedClaims(this.parseAndVerify(token), expected);
   }
 
+  tokenForReference(reference) {
+    const jti = String(reference ?? "");
+    if (!jti || jti !== jti.trim() || !jti.startsWith("psc_")) {
+      throw new Error("INVALID_CAPABILITY_ID");
+    }
+    const record = this.store.get("capability_token", jti);
+    if (!record?.token) throw new Error("CAPABILITY_REFERENCE_NOT_FOUND");
+    return { jti, token: record.token };
+  }
+
+  verifyReference(reference, expected = {}) {
+    const { jti, token } = this.tokenForReference(reference);
+    const claims = this.verify(token, expected);
+    if (claims.jti !== jti) throw new Error("CAPABILITY_REFERENCE_MISMATCH");
+    return claims;
+  }
+
+  consumeReference(reference, expected = {}) {
+    const { jti, token } = this.tokenForReference(reference);
+    const claims = this.consume(token, expected);
+    if (claims.jti !== jti) throw new Error("CAPABILITY_REFERENCE_MISMATCH");
+    return claims;
+  }
+
   revoke(tokenOrJti) {
     const value = String(tokenOrJti ?? "");
     const claims = value.includes(".") ? this.parseAndVerify(value, { check_state: false }) : null;
     const jti = claims?.jti ?? value;
-    if (!jti.startsWith("psc_")) throw new Error("INVALID_CAPABILITY_ID");
+    if (!jti || jti !== jti.trim() || !jti.startsWith("psc_")) {
+      throw new Error("INVALID_CAPABILITY_ID");
+    }
     mutatePrivacyState(this.store, state => {
       state.set("capability_revoked", jti, {
         revoked: true,
