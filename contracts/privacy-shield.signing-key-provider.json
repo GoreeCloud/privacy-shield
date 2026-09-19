@@ -92,6 +92,7 @@
     "rotation_retirement_revocation_exercises_required": true,
     "producer_identity_binding_evidence_required": true,
     "signing_audit_evidence_required": true,
-    "private_material_export_forbidden": true
+    "private_material_export_forbidden": true,
+    "production_acceptance_selection_decision_binding_required": true
   }
 }

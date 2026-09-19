@@ -30,6 +30,7 @@ def base_record() -> dict:
     return {
         "schema_version": 1,
         "contract_id": validator.ACCEPTANCE_CONTRACT_ID,
+        "selection_decision_id": "distributed-state-provider-production",
         "provider_id": "distributed-test-provider",
         "provider_implementation": "DistributedTestProvider",
         "provider_authority": "GoreeCloud/goreecloud-privacy-shield",
@@ -65,6 +66,12 @@ class StateProviderAcceptanceTests(unittest.TestCase):
     def test_complete_production_acceptance_record_passes(self) -> None:
         target = validator.validate_acceptance_record(Path("accepted.json"), base_record())
         self.assertEqual(target, ("distributed-test-provider", "production-test", "topology-a"))
+
+    def test_selection_decision_id_is_required(self) -> None:
+        record = base_record()
+        del record["selection_decision_id"]
+        with self.assertRaises(SystemExit):
+            validator.validate_acceptance_record(Path("missing-selection.json"), record)
 
     def test_built_in_file_provider_cannot_be_production_accepted(self) -> None:
         record = base_record()

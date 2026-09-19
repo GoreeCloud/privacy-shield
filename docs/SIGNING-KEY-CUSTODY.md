@@ -50,6 +50,7 @@ A structural provider declaration is necessary for source integration but is not
 `createPrivacyRuntime({ production: true, ... })` now requires all of the following for signing custody:
 
 - an injected production-eligible `capability_key_provider`;
+- a `capability_key_acceptance` record bound to the exact approved provider-selection decision through `selection_decision_id`;
 - a `capability_key_acceptance` record with `status: passed` and `production_approved: true`;
 - a non-expired `acceptance.valid_until` value;
 - an exact 40-character `runtime_revision` matching the acceptance record;

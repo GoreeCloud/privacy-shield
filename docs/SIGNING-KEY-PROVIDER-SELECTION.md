@@ -54,14 +54,14 @@ CI also rejects multiple active approved signing providers for the same environm
 
 ## Acceptance dependency
 
-A signing-key provider acceptance record under `acceptance/signing-key-providers/` is structurally invalid unless a matching active approved selection exists for the same:
+A signing-key provider acceptance record under `acceptance/signing-key-providers/` is structurally invalid unless it carries the exact `selection_decision_id` of a current active approved selection and that decision also matches the same:
 
 - provider ID;
 - GoreeCloud integration authority;
 - producer identity;
 - deployment environment.
 
-Selection therefore precedes acceptance, while acceptance remains independently exact-provider, exact-version, exact-source-revision, exact-deployment, evidence-backed, and freshness-bounded.
+An acceptance record cannot satisfy this dependency by matching any other approved provider decision with similar attributes. Selection therefore precedes acceptance, while acceptance remains independently exact-decision, exact-provider, exact-version, exact-source-revision, exact-deployment, evidence-backed, and freshness-bounded.
 
 ## Privacy boundary
 

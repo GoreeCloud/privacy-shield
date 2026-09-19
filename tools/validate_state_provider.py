@@ -86,6 +86,10 @@ def validate_acceptance_schema(schema: dict) -> None:
         fail("state-provider acceptance schema version drifted")
     if properties.get("contract_id", {}).get("const") != ACCEPTANCE_CONTRACT_ID:
         fail("state-provider acceptance contract id drifted")
+    if "selection_decision_id" not in schema.get("required", []):
+        fail("state-provider acceptance must require selection_decision_id")
+    if properties.get("selection_decision_id", {}).get("pattern") != "^[a-z0-9][a-z0-9-]*$":
+        fail("state-provider selection_decision_id pattern drifted")
 
     capability_properties = properties.get("capabilities", {}).get("properties", {})
     if set(capability_properties) != REQUIRED_CAPABILITIES:
@@ -136,6 +140,7 @@ def validate_acceptance_record(path: Path, record: dict) -> tuple[str, str, str]
     required = {
         "schema_version",
         "contract_id",
+        "selection_decision_id",
         "provider_id",
         "provider_implementation",
         "provider_authority",
@@ -159,6 +164,9 @@ def validate_acceptance_record(path: Path, record: dict) -> tuple[str, str, str]
     if record.get("contract_id") != ACCEPTANCE_CONTRACT_ID:
         fail(f"{path}: contract_id mismatch")
 
+    selection_decision_id = record.get("selection_decision_id")
+    if not isinstance(selection_decision_id, str) or not PROVIDER_ID.fullmatch(selection_decision_id):
+        fail(f"{path}: invalid selection_decision_id")
     provider_id = record.get("provider_id")
     implementation = record.get("provider_implementation")
     authority = record.get("provider_authority")
@@ -311,6 +319,7 @@ def main() -> None:
         "exact_provider_runtime_acceptance_required",
         "failure_and_recovery_exercises_required",
         "operational_backup_and_restore_acceptance_required",
+        "production_acceptance_selection_decision_binding_required",
     ):
         if boundary.get(required) is not True:
             fail(f"release boundary {required} must remain required")

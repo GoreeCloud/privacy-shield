@@ -80,6 +80,7 @@ function record(overrides = {}) {
   const base = {
     schema_version: 1,
     contract_id: PRIVACY_SIGNING_KEY_ACCEPTANCE_CONTRACT,
+    selection_decision_id: "provider-selection-test",
     provider_id: "accepted-kms",
     provider_implementation: "AcceptedProvider",
     provider_authority: "GoreeCloud/privacy-shield",
@@ -126,8 +127,10 @@ test("exact provider acceptance returns only minimized runtime acceptance metada
     "producer_identity",
     "provider_id",
     "provider_version",
+    "selection_decision_id",
     "valid_until",
   ]);
+  assert.equal(accepted.selection_decision_id, "provider-selection-test");
   assert.equal(accepted.provider_id, "accepted-kms");
   assert.equal(accepted.provider_version, "2026.09.1");
 });
@@ -233,5 +236,29 @@ test("production acceptance preserves privacy-safe evidence boundaries", () => {
       deployment_id: DEPLOYMENT,
     }),
     /SIGNING_KEY_ACCEPTANCE_PRIVACY_BOUNDARY:secret_material_in_acceptance_evidence/,
+  );
+});
+
+test("signing-key acceptance requires a canonical selection decision binding", () => {
+  const missing = record();
+  delete missing.selection_decision_id;
+  assert.throws(
+    () => requireSigningKeyProviderAcceptance(new AcceptedProvider(), {
+      record: missing,
+      runtime_revision: REVISION,
+      deployment_id: DEPLOYMENT,
+    }),
+    /SIGNING_KEY_ACCEPTANCE_SELECTION_DECISION_REQUIRED/,
+  );
+
+  const invalid = record();
+  invalid.selection_decision_id = "Provider Selection";
+  assert.throws(
+    () => requireSigningKeyProviderAcceptance(new AcceptedProvider(), {
+      record: invalid,
+      runtime_revision: REVISION,
+      deployment_id: DEPLOYMENT,
+    }),
+    /INVALID_SIGNING_KEY_ACCEPTANCE_SELECTION_DECISION/,
   );
 });

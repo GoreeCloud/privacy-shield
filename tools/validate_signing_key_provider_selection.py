@@ -393,20 +393,24 @@ def main() -> None:
     if ACCEPTANCE_DIR.exists():
         for path in sorted(ACCEPTANCE_DIR.glob("*.json")):
             acceptance = load_json(path, f"signing-key acceptance record {path}")
+            selection_decision_id = acceptance.get("selection_decision_id")
+            if not isinstance(selection_decision_id, str) or not SLUG.fullmatch(selection_decision_id):
+                fail(f"{path}: signing-key acceptance has invalid selection_decision_id")
             provider_id = acceptance.get("provider_id")
             authority = acceptance.get("provider_authority")
             deployment = acceptance.get("deployment")
             environment = deployment.get("environment") if isinstance(deployment, dict) else None
             producer = acceptance.get("producer_identity")
             match = any(
-                selected_provider == provider_id
+                decision_id == selection_decision_id
+                and selected_provider == provider_id
                 and selected_authority == authority
                 and environment in selected_environments
                 and selected_record["scope"]["producer_identity"] == producer
-                for _, selected_provider, selected_environments, selected_authority, selected_record in approved
+                for decision_id, selected_provider, selected_environments, selected_authority, selected_record in approved
             )
             if not match:
-                fail(f"{path}: signing-key acceptance lacks a matching active approved provider selection")
+                fail(f"{path}: signing-key acceptance is not bound to its exact active approved provider selection")
 
     complete_evaluations = sum(record["governance"]["status"] == "complete" for record in evaluations.values())
     print(

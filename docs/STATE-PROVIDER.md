@@ -80,7 +80,7 @@ A production-approved record is exact-revision and exact-topology bound. It must
 
 Acceptance evidence must exclude raw private payloads and secret material. Favorable acceptance is freshness-bounded through `valid_until`; stale acceptance fails closed. The built-in Memory and File providers are forbidden from receiving production acceptance records.
 
-`tools/validate_state_provider_selection.py` additionally rejects any acceptance record that lacks a matching active approved provider selection for provider ID, provider implementation, integration authority, and environment. This prevents a structurally valid acceptance artifact from silently introducing an ungoverned provider.
+`tools/validate_state_provider_selection.py` additionally requires every acceptance record to carry the exact `selection_decision_id` of the active approved provider selection and rejects records whose decision ID, provider ID, provider implementation, integration authority, or environment does not exactly match that selection. This prevents a structurally valid acceptance artifact from silently attaching itself to a different or merely similar provider decision.
 
 The existence of any source contract or qualification harness does not create an accepted provider. Until a separately governed complete/current candidate evaluation exists, an approved selection exists, and a matching record under `acceptance/state-providers/` passes the complete acceptance gate, Privacy Shield has zero source-recorded production state providers.
 

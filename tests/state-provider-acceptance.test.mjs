@@ -33,6 +33,7 @@ function record() {
   return {
     schema_version: 1,
     contract_id: PRIVACY_STATE_PROVIDER_ACCEPTANCE_CONTRACT,
+    selection_decision_id: "distributed-state-provider-production",
     provider_id: "distributed-test-provider",
     provider_implementation: "AcceptedStateProvider",
     provider_authority: "GoreeCloud/goreecloud-privacy-shield",
@@ -93,6 +94,7 @@ function requireAccepted(overrides = {}) {
 
 test("accepted state provider is bound to exact provider, source, environment, and topology", () => {
   const accepted = requireAccepted();
+  assert.equal(accepted.selection_decision_id, "distributed-state-provider-production");
   assert.equal(accepted.provider_id, "distributed-test-provider");
   assert.equal(accepted.provider_version, "1.0.0");
   assert.equal(accepted.environment, environment);
@@ -164,5 +166,21 @@ test("incomplete qualification or privacy evidence fails closed", () => {
   assert.throws(
     () => requireAccepted({ record: unsafe }),
     /STATE_PROVIDER_ACCEPTANCE_PRIVACY_BOUNDARY:secret_material_in_acceptance_evidence/,
+  );
+});
+
+test("state provider acceptance requires a canonical selection decision binding", () => {
+  const missing = record();
+  delete missing.selection_decision_id;
+  assert.throws(
+    () => requireAccepted({ record: missing }),
+    /STATE_PROVIDER_ACCEPTANCE_SELECTION_DECISION_REQUIRED/,
+  );
+
+  const invalid = record();
+  invalid.selection_decision_id = " Distributed-State ";
+  assert.throws(
+    () => requireAccepted({ record: invalid }),
+    /INVALID_STATE_PROVIDER_ACCEPTANCE_SELECTION_DECISION/,
   );
 });

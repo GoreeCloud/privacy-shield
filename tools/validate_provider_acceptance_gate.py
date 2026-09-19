@@ -116,13 +116,14 @@ def content_addressed_reference(value: Any, label: str, explicit_sha: Any = None
 def validate_state_acceptance(record: dict[str, Any], *, now: datetime | None = None, label: str = "state acceptance") -> None:
     now = (now or datetime.now(timezone.utc)).astimezone(timezone.utc)
     expected = {
-        "schema_version","contract_id","provider_id","provider_implementation","provider_authority",
+        "schema_version","contract_id","selection_decision_id","provider_id","provider_implementation","provider_authority",
         "exact_source_revision","source_tree_sha","provider_version","deployment","capabilities",
         "qualification","privacy","acceptance","evidence","limitations",
     }
     require(set(record) == expected, f"{label}: top-level fields drifted")
     require(record["schema_version"] == 1, f"{label}: schema_version drifted")
     require(record["contract_id"] == "goreecloud.privacy-shield.state-provider-acceptance.v1", f"{label}: contract_id drifted")
+    require(isinstance(record["selection_decision_id"], str) and SLUG.fullmatch(record["selection_decision_id"]) is not None, f"{label}: invalid selection_decision_id")
     require(isinstance(record["provider_id"], str) and SLUG.fullmatch(record["provider_id"]) is not None, f"{label}: invalid provider_id")
     require(isinstance(record["provider_implementation"], str) and record["provider_implementation"].strip(), f"{label}: provider_implementation required")
     require(isinstance(record["provider_authority"], str) and REPO.fullmatch(record["provider_authority"]) is not None, f"{label}: invalid provider_authority")
@@ -191,13 +192,14 @@ def validate_state_acceptance(record: dict[str, Any], *, now: datetime | None = 
 def validate_signing_acceptance(record: dict[str, Any], *, now: datetime | None = None, label: str = "signing acceptance") -> None:
     now = (now or datetime.now(timezone.utc)).astimezone(timezone.utc)
     expected = {
-        "schema_version","contract_id","provider_id","provider_implementation","provider_authority",
+        "schema_version","contract_id","selection_decision_id","provider_id","provider_implementation","provider_authority",
         "provider_version","exact_source_revision","deployment","producer_identity","algorithms",
         "qualification","privacy","acceptance","evidence","limitations",
     }
     require(set(record) == expected, f"{label}: top-level fields drifted")
     require(record["schema_version"] == 1, f"{label}: schema_version drifted")
     require(record["contract_id"] == "goreecloud.privacy-shield.signing-key-provider-acceptance.v1", f"{label}: contract_id drifted")
+    require(isinstance(record["selection_decision_id"], str) and SLUG.fullmatch(record["selection_decision_id"]) is not None, f"{label}: invalid selection_decision_id")
     require(isinstance(record["provider_id"], str) and SLUG.fullmatch(record["provider_id"]) is not None, f"{label}: invalid provider_id")
     require(isinstance(record["provider_implementation"], str) and record["provider_implementation"].strip(), f"{label}: provider_implementation required")
     require(isinstance(record["provider_authority"], str) and REPO.fullmatch(record["provider_authority"]) is not None, f"{label}: invalid provider_authority")
@@ -261,6 +263,8 @@ def validate_schema_boundaries() -> None:
     signing = load_json(SIGNING_SCHEMA, "signing acceptance schema")
     require(state.get("additionalProperties") is False, "state acceptance schema must remain closed")
     require(signing.get("additionalProperties") is False, "signing acceptance schema must remain closed")
+    require("selection_decision_id" in state.get("required", []), "state acceptance must bind selection_decision_id")
+    require("selection_decision_id" in signing.get("required", []), "signing acceptance must bind selection_decision_id")
     require(state.get("properties", {}).get("acceptance", {}).get("properties", {}).get("exact_revision_required", {}).get("const") is True, "state exact-revision requirement drifted")
     require(signing.get("properties", {}).get("acceptance", {}).get("properties", {}).get("exact_revision_required", {}).get("const") is True, "signing exact-revision requirement drifted")
 
