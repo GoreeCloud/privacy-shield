@@ -29,7 +29,9 @@
     },
     "restart_recovery": {
       "result": "pending",
-      "evidence_refs": []
+      "evidence_refs": [
+        "evidence+sha256:0ca034c0f7618b2684006f0b6dc47c8720de410b36da131f3405e30b1806ca30:github://GoreeCloud/goreecloud-privacy-shield/evidence/provider-evaluations/foundationdb-operational-security-candidate-20260919.md"
+      ]
     },
     "atomic_transactions": {
       "result": "pending",
@@ -63,19 +65,27 @@
     },
     "migration_rollback": {
       "result": "pending",
-      "evidence_refs": []
+      "evidence_refs": [
+        "evidence+sha256:0ca034c0f7618b2684006f0b6dc47c8720de410b36da131f3405e30b1806ca30:github://GoreeCloud/goreecloud-privacy-shield/evidence/provider-evaluations/foundationdb-operational-security-candidate-20260919.md"
+      ]
     },
     "access_control_isolation": {
       "result": "pending",
-      "evidence_refs": []
+      "evidence_refs": [
+        "evidence+sha256:0ca034c0f7618b2684006f0b6dc47c8720de410b36da131f3405e30b1806ca30:github://GoreeCloud/goreecloud-privacy-shield/evidence/provider-evaluations/foundationdb-operational-security-candidate-20260919.md"
+      ]
     },
     "privacy_safe_observability": {
       "result": "pending",
-      "evidence_refs": []
+      "evidence_refs": [
+        "evidence+sha256:0ca034c0f7618b2684006f0b6dc47c8720de410b36da131f3405e30b1806ca30:github://GoreeCloud/goreecloud-privacy-shield/evidence/provider-evaluations/foundationdb-operational-security-candidate-20260919.md"
+      ]
     },
     "operational_ownership": {
       "result": "pending",
-      "evidence_refs": []
+      "evidence_refs": [
+        "evidence+sha256:0ca034c0f7618b2684006f0b6dc47c8720de410b36da131f3405e30b1806ca30:github://GoreeCloud/goreecloud-privacy-shield/evidence/provider-evaluations/foundationdb-operational-security-candidate-20260919.md"
+      ]
     }
   },
   "governance": {
