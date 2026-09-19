@@ -7,6 +7,7 @@
   "required": [
     "schema_version",
     "contract_id",
+    "selection_decision_id",
     "provider_id",
     "provider_implementation",
     "provider_authority",
@@ -22,28 +23,66 @@
     "limitations"
   ],
   "properties": {
-    "schema_version": { "const": 1 },
-    "contract_id": { "const": "goreecloud.privacy-shield.signing-key-provider-acceptance.v1" },
-    "provider_id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
-    "provider_implementation": { "type": "string", "minLength": 1 },
-    "provider_authority": { "type": "string", "pattern": "^GoreeCloud/[A-Za-z0-9._-]+$" },
-    "provider_version": { "type": "string", "minLength": 1 },
-    "exact_source_revision": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+    "schema_version": {
+      "const": 1
+    },
+    "contract_id": {
+      "const": "goreecloud.privacy-shield.signing-key-provider-acceptance.v1"
+    },
+    "selection_decision_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]*$"
+    },
+    "provider_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]*$"
+    },
+    "provider_implementation": {
+      "type": "string",
+      "minLength": 1
+    },
+    "provider_authority": {
+      "type": "string",
+      "pattern": "^GoreeCloud/[A-Za-z0-9._-]+$"
+    },
+    "provider_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "exact_source_revision": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
     "deployment": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["environment", "deployment_id"],
+      "required": [
+        "environment",
+        "deployment_id"
+      ],
       "properties": {
-        "environment": { "type": "string", "minLength": 1 },
-        "deployment_id": { "type": "string", "minLength": 1 }
+        "environment": {
+          "type": "string",
+          "minLength": 1
+        },
+        "deployment_id": {
+          "type": "string",
+          "minLength": 1
+        }
       }
     },
-    "producer_identity": { "type": "string", "minLength": 1 },
+    "producer_identity": {
+      "type": "string",
+      "minLength": 1
+    },
     "algorithms": {
       "type": "array",
       "minItems": 1,
       "uniqueItems": true,
-      "items": { "type": "string", "minLength": 1 }
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
     },
     "qualification": {
       "type": "object",
@@ -64,19 +103,97 @@
         "exact_runtime_integration"
       ],
       "properties": {
-        "secure_key_generation": { "enum": ["pending", "passed", "failed"] },
-        "non_exportability": { "enum": ["pending", "passed", "failed"] },
-        "caller_authorization": { "enum": ["pending", "passed", "failed"] },
-        "producer_identity_binding": { "enum": ["pending", "passed", "failed"] },
-        "rotation": { "enum": ["pending", "passed", "failed"] },
-        "retirement": { "enum": ["pending", "passed", "failed"] },
-        "emergency_revocation": { "enum": ["pending", "passed", "failed"] },
-        "stale_untrusted_rejection": { "enum": ["pending", "passed", "failed"] },
-        "signing_audit": { "enum": ["pending", "passed", "failed"] },
-        "outage_and_degraded_behavior": { "enum": ["pending", "passed", "failed"] },
-        "recovery_and_continuity": { "enum": ["pending", "passed", "failed"] },
-        "access_control_review": { "enum": ["pending", "passed", "failed"] },
-        "exact_runtime_integration": { "enum": ["pending", "passed", "failed"] }
+        "secure_key_generation": {
+          "enum": [
+            "pending",
+            "passed",
+            "failed"
+          ]
+        },
+        "non_exportability": {
+          "enum": [
+            "pending",
+            "passed",
+            "failed"
+          ]
+        },
+        "caller_authorization": {
+          "enum": [
+            "pending",
+            "passed",
+            "failed"
+          ]
+        },
+        "producer_identity_binding": {
+          "enum": [
+            "pending",
+            "passed",
+            "failed"
+          ]
+        },
+        "rotation": {
+          "enum": [
+            "pending",
+            "passed",
+            "failed"
+          ]
+        },
+        "retirement": {
+          "enum": [
+            "pending",
+            "passed",
+            "failed"
+          ]
+        },
+        "emergency_revocation": {
+          "enum": [
+            "pending",
+            "passed",
+            "failed"
+          ]
+        },
+        "stale_untrusted_rejection": {
+          "enum": [
+            "pending",
+            "passed",
+            "failed"
+          ]
+        },
+        "signing_audit": {
+          "enum": [
+            "pending",
+            "passed",
+            "failed"
+          ]
+        },
+        "outage_and_degraded_behavior": {
+          "enum": [
+            "pending",
+            "passed",
+            "failed"
+          ]
+        },
+        "recovery_and_continuity": {
+          "enum": [
+            "pending",
+            "passed",
+            "failed"
+          ]
+        },
+        "access_control_review": {
+          "enum": [
+            "pending",
+            "passed",
+            "failed"
+          ]
+        },
+        "exact_runtime_integration": {
+          "enum": [
+            "pending",
+            "passed",
+            "failed"
+          ]
+        }
       }
     },
     "privacy": {
@@ -88,20 +205,45 @@
         "full_capability_tokens_in_acceptance_evidence"
       ],
       "properties": {
-        "raw_private_payloads_in_acceptance_evidence": { "const": false },
-        "secret_material_in_acceptance_evidence": { "const": false },
-        "full_capability_tokens_in_acceptance_evidence": { "const": false }
+        "raw_private_payloads_in_acceptance_evidence": {
+          "const": false
+        },
+        "secret_material_in_acceptance_evidence": {
+          "const": false
+        },
+        "full_capability_tokens_in_acceptance_evidence": {
+          "const": false
+        }
       }
     },
     "acceptance": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["status", "production_approved", "exact_revision_required", "valid_until"],
+      "required": [
+        "status",
+        "production_approved",
+        "exact_revision_required",
+        "valid_until"
+      ],
       "properties": {
-        "status": { "enum": ["pending", "passed", "failed", "revoked"] },
-        "production_approved": { "type": "boolean" },
-        "exact_revision_required": { "const": true },
-        "valid_until": { "type": "string", "format": "date-time" }
+        "status": {
+          "enum": [
+            "pending",
+            "passed",
+            "failed",
+            "revoked"
+          ]
+        },
+        "production_approved": {
+          "type": "boolean"
+        },
+        "exact_revision_required": {
+          "const": true
+        },
+        "valid_until": {
+          "type": "string",
+          "format": "date-time"
+        }
       }
     },
     "evidence": {
@@ -110,18 +252,41 @@
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["id", "category", "result", "reference"],
+        "required": [
+          "id",
+          "category",
+          "result",
+          "reference"
+        ],
         "properties": {
-          "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
-          "category": { "type": "string", "minLength": 1 },
-          "result": { "enum": ["passed", "failed", "informational"] },
-          "reference": { "type": "string", "minLength": 1 }
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9-]*$"
+          },
+          "category": {
+            "type": "string",
+            "minLength": 1
+          },
+          "result": {
+            "enum": [
+              "passed",
+              "failed",
+              "informational"
+            ]
+          },
+          "reference": {
+            "type": "string",
+            "minLength": 1
+          }
         }
       }
     },
     "limitations": {
       "type": "array",
-      "items": { "type": "string", "minLength": 1 }
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
     }
   }
 }
