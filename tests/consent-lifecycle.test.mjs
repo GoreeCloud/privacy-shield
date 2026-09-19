@@ -1,7 +1,10 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { ConsentAuthority } from "../src/consent-authority.mjs";
+import {
+  CONSENT_SCOPE_CONTRACT,
+  ConsentAuthority,
+} from "../src/consent-authority.mjs";
 import { MemoryPrivacyStateStore } from "../src/privacy-state-store.mjs";
 
 function authority() {
@@ -14,12 +17,25 @@ const base = Object.freeze({
   purpose: "message-delivery",
 });
 
+const boundedScope = Object.freeze({
+  data_categories: ["contact-address", "display-name"],
+  destinations: ["goreecloud-messenger"],
+  zones: ["local", "private-service"],
+  capabilities: ["deliver-message", "resolve-recipient"],
+  retention_seconds: 3600,
+  export: false,
+  ai: false,
+  background: true,
+  sharing: false,
+});
+
 test("purpose-bound grant remains effective only for its exact authority key", () => {
   const consent = authority();
   const record = consent.put(base);
 
   assert.equal(record.grant_type, "purpose_bound");
   assert.equal(record.decision, "granted");
+  assert.equal(record.scope.contract, CONSENT_SCOPE_CONTRACT);
   assert.equal(consent.isEffective(record), true);
   assert.equal(consent.get(base).consent_id, record.consent_id);
   assert.equal(consent.get({ ...base, purpose: "analytics" }), null);
@@ -195,3 +211,125 @@ test("authority tuple keying cannot collide on delimiter characters", () => {
   );
 });
 
+test("operation assessment authorizes only an equal or narrower permission scope", () => {
+  const consent = authority();
+  consent.put({ ...base, scope: boundedScope });
+
+  const result = consent.assessOperation({
+    ...base,
+    scope: {
+      data_categories: ["contact-address"],
+      destinations: ["goreecloud-messenger"],
+      zones: ["local"],
+      capabilities: ["deliver-message"],
+      retention_seconds: 600,
+      background: true,
+    },
+  });
+
+  assert.equal(result.authorized, true);
+  assert.equal(result.reason, "CONSENT_AUTHORIZED");
+  assert.deepEqual(result.drift, []);
+  assert.equal(result.scope_contract, CONSENT_SCOPE_CONTRACT);
+});
+
+test("data, destination, zone, and capability expansion fail closed as scope drift", () => {
+  for (const [field, value] of [
+    ["data_categories", ["contact-address", "phone-number"]],
+    ["destinations", ["goreecloud-messenger", "external-provider"]],
+    ["zones", ["local", "public-internet"]],
+    ["capabilities", ["deliver-message", "bulk-export"]],
+  ]) {
+    const consent = authority();
+    consent.put({ ...base, scope: boundedScope });
+    const result = consent.assessOperation({
+      ...base,
+      scope: { ...boundedScope, [field]: value },
+    });
+    assert.equal(result.authorized, false, field);
+    assert.equal(result.reason, "CONSENT_SCOPE_DRIFT", field);
+    assert.deepEqual(result.drift, [field], field);
+  }
+});
+
+test("retention expansion fails closed while shorter retention remains authorized", () => {
+  const consent = authority();
+  consent.put({ ...base, scope: boundedScope });
+
+  const longer = consent.assessOperation({
+    ...base,
+    scope: { ...boundedScope, retention_seconds: 7200 },
+  });
+  assert.equal(longer.authorized, false);
+  assert.deepEqual(longer.drift, ["retention_seconds"]);
+
+  const shorter = consent.assessOperation({
+    ...base,
+    scope: { ...boundedScope, retention_seconds: 60 },
+  });
+  assert.equal(shorter.authorized, true);
+});
+
+test("export, AI, background, and sharing expansion each require explicit granted authority", () => {
+  for (const field of ["export", "ai", "background", "sharing"]) {
+    const consent = authority();
+    const scope = { ...boundedScope, [field]: false };
+    consent.put({ ...base, scope });
+    const result = consent.assessOperation({
+      ...base,
+      scope: { ...scope, [field]: true },
+    });
+    assert.equal(result.authorized, false, field);
+    assert.equal(result.reason, "CONSENT_SCOPE_DRIFT", field);
+    assert.deepEqual(result.drift, [field], field);
+  }
+});
+
+test("a different purpose cannot inherit an otherwise compatible grant", () => {
+  const consent = authority();
+  consent.put({ ...base, scope: boundedScope });
+
+  const result = consent.assessOperation({
+    ...base,
+    purpose: "personalization",
+    scope: boundedScope,
+  });
+  assert.equal(result.authorized, false);
+  assert.equal(result.reason, "CONSENT_PURPOSE_DRIFT");
+  assert.deepEqual(result.drift, ["purpose"]);
+});
+
+test("operation assessment requires complete explicit scope evidence", () => {
+  const consent = authority();
+  consent.put({ ...base, scope: boundedScope });
+
+  assert.deepEqual(consent.assessOperation(base), {
+    authorized: false,
+    reason: "CONSENT_REQUEST_SCOPE_REQUIRED",
+    drift: ["scope"],
+  });
+
+  const malformed = consent.assessOperation({
+    ...base,
+    scope: { ...boundedScope, unexpected_permission: true },
+  });
+  assert.equal(malformed.authorized, false);
+  assert.equal(malformed.reason, "CONSENT_REQUEST_SCOPE_INVALID");
+  assert.deepEqual(malformed.drift, ["scope"]);
+});
+
+test("grant scope is closed, canonical, and cannot contain unsupported authority fields", () => {
+  const consent = authority();
+  assert.throws(
+    () => consent.put({ ...base, scope: { arbitrary_external_processing: true } }),
+    /unsupported field/,
+  );
+  assert.throws(
+    () => consent.put({ ...base, scope: { retention_seconds: -1 } }),
+    /non-negative safe integer/,
+  );
+  assert.throws(
+    () => consent.put({ ...base, scope: { data_categories: ["name", "name"] } }),
+    /must not contain duplicates/,
+  );
+});
