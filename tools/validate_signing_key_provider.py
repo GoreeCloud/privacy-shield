@@ -327,6 +327,7 @@ def main() -> None:
         "producer_identity_binding_evidence_required",
         "signing_audit_evidence_required",
         "private_material_export_forbidden",
+        "production_acceptance_selection_decision_binding_required",
     ):
         if boundary.get(required) is not True:
             fail(f"release boundary {required} must remain required")
