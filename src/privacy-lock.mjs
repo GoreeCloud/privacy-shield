@@ -318,7 +318,12 @@ export class PrivacyLockAuthority {
     const active = this.store
       .list("privacy_lock")
       .map(({ value }) => value)
-      .find(lock => lock.subject_id === subjectId && lockStatus(lock, nowMs) === "active");
+      .find(
+        lock =>
+          lock.subject_id === subjectId
+          && Date.parse(lock.created_at) <= nowMs
+          && lockStatus(lock, nowMs) === "active",
+      );
     return active ? structuredClone(active) : null;
   }
 
@@ -329,6 +334,9 @@ export class PrivacyLockAuthority {
     return mutatePrivacyState(this.store, store => {
       const record = store.get("privacy_lock", lockId);
       if (!record) throw new Error("PRIVACY_LOCK_NOT_FOUND");
+      if (Date.parse(releasedAt) < Date.parse(record.created_at)) {
+        throw new Error("PRIVACY_LOCK_RELEASE_BEFORE_CREATION");
+      }
       if (lockStatus(record, Date.parse(releasedAt)) !== "active") {
         throw new Error("PRIVACY_LOCK_NOT_ACTIVE");
       }
