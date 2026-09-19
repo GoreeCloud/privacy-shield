@@ -105,6 +105,52 @@ test("passed evidence must be bounded by current evidence references and expiry"
   );
 });
 
+test("timestamps and exact-bound strings fail closed when ambiguous or non-canonical", () => {
+  assert.throws(
+    () => buildRuntimeTrustAcceptanceMatrix([
+      entry({ source: stage("passed", "2026-09-12T04:00:00", "2026-09-13T04:00:00Z", ["evidence+sha256:source"]) }),
+    ], { now: NOW }),
+    /timezone-qualified/,
+  );
+  assert.throws(
+    () => buildRuntimeTrustAcceptanceMatrix([entry()], { now: "2026-09-12T04:45:00" }),
+    /timezone-qualified/,
+  );
+  assert.throws(
+    () => buildRuntimeTrustAcceptanceMatrix([
+      entry({ representative_target: " linux-production" }),
+    ], { now: NOW }),
+    /representative_target is invalid/,
+  );
+  assert.throws(
+    () => buildRuntimeTrustAcceptanceMatrix([
+      entry({ source: stage("passed", "2026-09-12T04:00:00Z", "2026-09-13T04:00:00Z", [" evidence+sha256:source"]) }),
+    ], { now: NOW }),
+    /evidence_references\[0\] is invalid/,
+  );
+});
+
+test("future failed evidence and hidden input fields are rejected", () => {
+  assert.throws(
+    () => buildRuntimeTrustAcceptanceMatrix([
+      entry({ runtime: stage("failed", "2026-09-12T05:00:00Z", null, ["evidence+sha256:failure"]) }),
+    ], { now: NOW }),
+    /cannot be in the future/,
+  );
+  const withHiddenEntryField = entry();
+  withHiddenEntryField.production_ready = true;
+  assert.throws(
+    () => buildRuntimeTrustAcceptanceMatrix([withHiddenEntryField], { now: NOW }),
+    /unsupported or missing fields/,
+  );
+  const withHiddenStageField = entry();
+  withHiddenStageField.source.accepted = true;
+  assert.throws(
+    () => buildRuntimeTrustAcceptanceMatrix([withHiddenStageField], { now: NOW }),
+    /unsupported or missing fields/,
+  );
+});
+
 test("duplicate capability rows are rejected rather than silently merged", () => {
   assert.throws(
     () => buildRuntimeTrustAcceptanceMatrix([entry(), entry()], { now: NOW }),
