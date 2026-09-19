@@ -38,6 +38,8 @@ Draft PR #73 requires the V1 state-provider capability profile: durability, rest
 
 Production acceptance requires exact-provider and exact-deployment concurrency, failure/recovery, backup/restore, topology, access-control, operational evidence, and a fresh production-approved acceptance record. No source-controlled provider currently carries production acceptance.
 
+The production runtime now consumes that record directly rather than trusting provider capability claims. Startup requires exact source revision and source-tree binding, the requested environment/topology, matching provider identity/version/implementation/authority metadata, complete passing qualification evidence, and a fresh production-approved state-provider acceptance record.
+
 ### 4. Production signing-key custody
 
 **State: Source custody boundary, exact acceptance gate, and provider-neutral operational qualification harness implemented in Draft development; real production provider and production acceptance pending.**
