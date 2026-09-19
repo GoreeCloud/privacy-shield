@@ -1,5 +1,5 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "platform": "privacy-shield",
   "producer_repository": "GoreeCloud/goreecloud-privacy-shield",
   "consumer_repository": "GoreeCloud/goreecloud-mesh",
@@ -21,6 +21,18 @@
     "required_scope": "mesh.evidence.write",
     "fresh_credential_provider_supported": true,
     "credential_requested_per_delivery": true,
+    "credential_attestation_required_for_fr012": true,
+    "caller_selected_max_credential_age_required": true,
+    "caller_selected_min_remaining_validity_required": true,
+    "returned_service_identity_must_match": true,
+    "returned_audience_must_match": true,
+    "returned_scopes_must_match_exactly": true,
+    "rotation_state_required": "current",
+    "revocation_state_required": "active",
+    "trust_authority": "goreecloud-identity",
+    "trust_status_required": "verified",
+    "mesh_acceptance_identity_binding_required": true,
+    "mesh_authority_transfer_must_remain_false": true,
     "credential_persisted_by_privacy_shield_client": false,
     "credential_in_evidence_allowed": false,
     "credential_in_receipt_allowed": false,
@@ -29,5 +41,5 @@
     "production_identity_issuance_accepted": false,
     "live_mesh_delivery_accepted": false
   },
-  "purpose": "Allows GoreeCloud Mesh to consume bounded Privacy Shield governance and status evidence while Privacy Shield remains authoritative for privacy controls, data minimization, retention expectations, privacy capability governance, and evidence validity."
+  "purpose": "Allows GoreeCloud Mesh to consume bounded Privacy Shield governance and status evidence while Privacy Shield remains authoritative for privacy controls, data minimization, retention expectations, privacy capability governance, and evidence validity. GoreeCloud Identity remains authoritative for service credentials; validated authenticated delivery cannot transfer or widen privacy authority."
 }
