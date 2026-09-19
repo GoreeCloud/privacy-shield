@@ -413,20 +413,24 @@ def main() -> None:
     if ACCEPTANCE_DIR.exists():
         for path in sorted(ACCEPTANCE_DIR.glob("*.json")):
             acceptance = load_json(path, f"state-provider acceptance record {path}")
+            selection_decision_id = acceptance.get("selection_decision_id")
+            if not isinstance(selection_decision_id, str) or not SLUG.fullmatch(selection_decision_id):
+                fail(f"{path}: state-provider acceptance has invalid selection_decision_id")
             provider_id = acceptance.get("provider_id")
             implementation = acceptance.get("provider_implementation")
             authority = acceptance.get("provider_authority")
             deployment = acceptance.get("deployment")
             environment = deployment.get("environment") if isinstance(deployment, dict) else None
             match = any(
-                selected_provider == provider_id
+                decision_id == selection_decision_id
+                and selected_provider == provider_id
                 and selected_implementation == implementation
                 and selected_record["integration_authority"] == authority
                 and environment in selected_environments
-                for _, selected_provider, selected_implementation, selected_environments, selected_record in approved
+                for decision_id, selected_provider, selected_implementation, selected_environments, selected_record in approved
             )
             if not match:
-                fail(f"{path}: state-provider acceptance lacks a matching active approved provider selection")
+                fail(f"{path}: state-provider acceptance is not bound to its exact active approved provider selection")
 
     complete_evaluations = sum(record["governance"]["status"] == "complete" for record in evaluations.values())
     print(
