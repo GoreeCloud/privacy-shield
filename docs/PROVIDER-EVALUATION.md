@@ -48,8 +48,13 @@ Evidence references should point to bounded authoritative evidence without copyi
 
 ## Current lifecycle boundary
 
-The repository currently contains no real state-provider candidate evaluation records and no real signing-key provider candidate evaluation records. Therefore it also contains no approved provider selections or production-approved provider acceptance records for these P0 capabilities.
+The repository currently contains two real but **draft and non-authorizing** candidate evaluation records:
 
-The presence of schemas, validators, directories, or this documentation does not select a database, distributed state service, KMS, HSM, cloud key service, Vault deployment, PKCS#11 device, topology, credential, key, or production deployment.
+- a self-hosted multi-host FoundationDB state-provider candidate, chosen for evaluation because the software is Apache-2.0 open source and has a distributed transactional architecture compatible with the Privacy Shield state contract in principle; and
+- an OVHcloud KMS HSM-backed asymmetric signing candidate, recorded only for evaluation of external key custody and subject to GoreeCloud's proprietary-service exception/necessity governance plus separate cost/order authorization.
 
-**Status: Development / provider-neutral source governance / non-production.**
+Both evaluations keep every criterion `pending`. Their matching evidence packages are only `captured`, have no review attestations, and cannot support resolved claims. Current GoreeCloud production infrastructure has one VPS, so the FoundationDB candidate cannot yet satisfy the intended multi-host failure-isolation topology. No KMS domain, key, adapter, subscription change, billable order, or production deployment was created by this evaluation work.
+
+There are still zero complete provider evaluations, zero approved provider selections, and zero production-approved provider acceptance records for these P0 capabilities. The presence of candidate records, schemas, validators, or captured evidence does not select a database, distributed state service, KMS, HSM, cloud key service, topology, credential, key, or production deployment.
+
+**Status: Development / candidate-evaluation evidence captured / non-production.**
