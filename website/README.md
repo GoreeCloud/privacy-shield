@@ -6,11 +6,11 @@ The public Privacy Center is `https://privacy.goreecloud.com`.
 
 ## Current presentation boundary
 
-The Privacy Center targets **Glaze UI 2.1.0 Stable** for its public presentation layer. Privacy content uses solid Surface planes; Soft Glaze is bounded to persistent navigation chrome under the administration/control-surface material budget. The current mapping preserves 48 px general interaction targets, a 56 px Touch Assistance floor, safe-area handling, reduced-motion and reduced-transparency behavior, increased-contrast and forced-colors fallbacks, performance and no-backdrop resilience, and large-text/narrow-screen reflow.
+The Privacy Center's active local source still uses **Glaze UI 2.1.0** for its public presentation layer, while **Glaze UI 1.6.0** is the current shared Stable consumer target and migration remains pending. Privacy content uses solid Surface planes; Soft Glaze is bounded to persistent navigation chrome under the administration/control-surface material budget. The current mapping preserves 48 px general interaction targets, a 56 px Touch Assistance floor, safe-area handling, reduced-motion and reduced-transparency behavior, increased-contrast and forced-colors fallbacks, performance and no-backdrop resilience, and large-text/narrow-screen reflow.
 
 These presentation changes do not create or upgrade Privacy Shield privacy authority, consent state, data-governance enforcement, evidence validity, or runtime acceptance. Glaze UI cannot create a privacy decision or turn a transport/visual state into privacy evidence.
 
-Current source-level adoption status is **Adoption Candidate**. See `GLAZE-UI-2.1-ADOPTION.md`. Historical 2.0 evidence is retained only in `GLAZE-UI-2.0-HISTORICAL.md`.
+Current source-level status is **Historical active-source baseline / migration required**. See `GLAZE-UI-2.1-ADOPTION.md`. Historical 2.0 evidence is retained only in `GLAZE-UI-2.0-HISTORICAL.md`.
 
 ## Current legacy Cloudflare Pages contract
 

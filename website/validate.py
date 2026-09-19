@@ -112,7 +112,8 @@ for needle in (
     'data-glaze-density="standard"',
     'data-glaze-performance="balanced"',
     "Glaze UI 2.1",
-    "Presented through Glaze UI 2.1 Stable",
+    "historical Glaze UI 2.1 source baseline",
+    "current Stable Glaze UI 1.6.0 remains pending",
 ):
     require(needle in html, f"required public content missing: {needle}")
 
@@ -129,7 +130,7 @@ for document in (html, not_found):
 
 require(
     html.index('/assets/glaze-ui-2.1.0.css') < html.index('/assets/site.css') < html.index('/assets/site-polish.css'),
-    "Glaze UI Stable subset and Privacy Shield product CSS must load in design-system/base/polish order",
+    "Retained Glaze UI 2.1 subset and Privacy Shield product CSS must load in design-system/base/polish order",
 )
 require(
     not_found.index('/assets/glaze-ui-2.1.0.css') < not_found.index('/assets/site.css') < not_found.index('/assets/site-polish.css'),
@@ -174,7 +175,7 @@ for needle in (
     "data-glaze-performance=minimal",
     "@supports not ((backdrop-filter:blur(1px))",
 ):
-    require(needle in glaze_css, f"Glaze UI 2.1 Stable subset missing contract marker: {needle}")
+    require(needle in glaze_css, f"retained Glaze UI 2.1 subset missing contract marker: {needle}")
 require(
     ".glass-card{background:var(--surface-strong);" in site_css,
     "Privacy Center content cards must remain solid product surfaces",
@@ -191,8 +192,8 @@ require(
 )
 
 for needle in (
-    "Status: **Adoption Candidate**",
-    "Target: **Glaze UI 2.1.0 Stable**",
+    "Status: **Historical active-source baseline / migration required**",
+    "Current shared Stable consumer target: **Glaze UI 1.6.0**",
     GLAZE_REVISION,
     "administration/control surface",
     "48 px floor",
@@ -205,13 +206,13 @@ for needle in (
 ):
     require(needle in adoption, f"Glaze UI 2.1 adoption record missing boundary: {needle}")
 for needle in (
-    "Glaze UI 2.1.0 Stable",
+    "active local source still uses **Glaze UI 2.1.0**",
     "Source, committed generated artifact, and deployed bytes",
     "does not itself authorize broader Privacy Shield claims",
 ):
     require(needle in readme, f"Privacy Center README missing 2.1 acceptance boundary: {needle}")
 for needle in (
-    "Validate Privacy Center Glaze UI 2.1 Stable",
+    "Validate Privacy Center historical Glaze UI 2.1 baseline",
     "persist-credentials: false",
     "Verify exact source revision",
     "python3 website/validate.py",
@@ -219,6 +220,6 @@ for needle in (
     require(needle in workflow, f"Privacy Center Glaze UI workflow missing invariant: {needle}")
 
 print(
-    "Privacy Shield public website validation passed with Glaze UI 2.1.0 Stable "
-    "source/build Adoption Candidate mapping and pre-build committed-dist freshness"
+    "Privacy Shield public website validation passed for the retained Glaze UI 2.1.0 "
+    "source/build baseline with current 1.6.0 migration pending and pre-build committed-dist freshness"
 )
