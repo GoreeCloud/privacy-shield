@@ -3,6 +3,17 @@ import {
   MemoryPrivacyStateStore,
   mutatePrivacyState,
 } from "./privacy-state-store.mjs";
+import {
+  createPrivacyReceipt as createPrivacyReceiptV2,
+  verifyPrivacyReceipt as verifyPrivacyReceiptV2,
+} from "./privacy-receipts.mjs";
+export {
+  PRIVACY_PREVIEW_CONTRACT,
+  PRIVACY_RECEIPT_CONTRACT,
+  PrivacyReceiptLedger,
+  buildPrivacyExplanation,
+  previewPrivacyDecision,
+} from "./privacy-receipts.mjs";
 
 function id(prefix) { return `${prefix}_${crypto.randomUUID()}`; }
 function canonical(value) {
@@ -11,7 +22,25 @@ function canonical(value) {
   return JSON.stringify(value);
 }
 function digest(value) { return crypto.createHash("sha256").update(canonical(value)).digest("hex"); }
-function sign(value, secret) { return crypto.createHmac("sha256", secret).update(canonical(value)).digest("base64url"); }
+
+/**
+ * Compatibility export for the historical privacy-evidence import path.
+ * Older source callers did not always copy request_id into the decision even
+ * though the recorded evidence still binds the request and decision IDs. The
+ * v2 receipt module remains strict; this adapter supplies only that already
+ * established request binding and does not widen any other receipt field.
+ */
+export function createPrivacyReceipt(input) {
+  if (!input?.request || !input?.decision) return createPrivacyReceiptV2(input);
+  const decision = input.decision.request_id === undefined
+    ? { ...input.decision, request_id: input.request.request_id }
+    : input.decision;
+  return createPrivacyReceiptV2({ ...input, decision });
+}
+
+export function verifyPrivacyReceipt(receipt, signing_secret) {
+  return verifyPrivacyReceiptV2(receipt, signing_secret);
+}
 
 export class PrivacyEvidenceLedger {
   constructor({ store = new MemoryPrivacyStateStore() } = {}) { this.store = store; }
@@ -61,18 +90,4 @@ export class PrivacyEvidenceLedger {
   }
 
   checkpoint() { const integrity=this.verifyIntegrity(); if(!integrity.valid) throw new Error(integrity.reason); return { checkpoint_id:id("pscp"), created_at:new Date().toISOString(), event_count:integrity.count, head_hash:integrity.head_hash }; }
-}
-
-export function createPrivacyReceipt({ request, decision, evidence, signing_secret = null }) {
-  const receipt={ receipt_id:id("psr"), schema_version:2, created_at:new Date().toISOString(), request_id:request.request_id, decision_id:decision.decision_id, evidence_id:evidence.evidence_id, evidence_hash:evidence.evidence_hash, requester:request.requester.id, resource:request.resource.id, purpose:request.purpose, operation:request.operation, outcome:decision.outcome, processing_zone:decision.processing_zone, destination:request.destination, retention:decision.retention, external_disclosure:Boolean(request.external_disclosure), policy_references:decision.policy_references, explanation:decision.reason_code };
-  if (signing_secret) receipt.signature={ algorithm:"HMAC-SHA256", value:sign(receipt,signing_secret) };
-  return receipt;
-}
-
-export function verifyPrivacyReceipt(receipt, signing_secret) {
-  if (!receipt?.signature?.value) return { valid:false, reason:"RECEIPT_SIGNATURE_MISSING" };
-  const unsigned=structuredClone(receipt); const supplied=unsigned.signature.value; delete unsigned.signature;
-  const expected=sign(unsigned,signing_secret);
-  const a=Buffer.from(expected), b=Buffer.from(supplied);
-  return a.length===b.length&&crypto.timingSafeEqual(a,b) ? { valid:true } : { valid:false, reason:"RECEIPT_SIGNATURE_INVALID" };
 }

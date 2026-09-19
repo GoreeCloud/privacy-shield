@@ -1,0 +1,156 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://goreecloud.dev/schemas/privacy-shield/privacy-receipt/v2",
+  "title": "Privacy Shield Privacy Receipt 2.0 Contract",
+  "type": "object",
+  "required": [
+    "receipt_id",
+    "contract",
+    "schema_version",
+    "created_at",
+    "authority",
+    "authorization_effect",
+    "request_id",
+    "decision_id",
+    "evidence",
+    "requester_id",
+    "data_category",
+    "purpose",
+    "operation",
+    "outcome",
+    "constraints",
+    "consent_basis",
+    "lifecycle_obligations",
+    "reason_codes",
+    "policy_references",
+    "expires_at",
+    "explanation"
+  ],
+  "properties": {
+    "receipt_id": { "type": "string", "pattern": "^psr_" },
+    "contract": { "const": "goreecloud.privacy-shield.privacy-receipt.v2" },
+    "schema_version": { "const": 2 },
+    "created_at": { "type": "string", "format": "date-time" },
+    "authority": { "const": "goreecloud.privacy-shield" },
+    "authorization_effect": { "const": false },
+    "request_id": { "type": "string", "minLength": 1 },
+    "decision_id": { "type": "string", "minLength": 1 },
+    "evidence": {
+      "type": "object",
+      "required": ["evidence_id", "evidence_hash", "recorded_at", "age_seconds"],
+      "properties": {
+        "evidence_id": { "type": "string", "minLength": 1 },
+        "evidence_hash": { "type": "string", "minLength": 1 },
+        "recorded_at": { "type": "string", "format": "date-time" },
+        "age_seconds": { "type": "integer", "minimum": 0 }
+      },
+      "additionalProperties": false
+    },
+    "requester_id": { "type": "string", "minLength": 1 },
+    "data_category": { "type": ["string", "null"] },
+    "purpose": { "type": "string", "minLength": 1 },
+    "operation": { "type": "string", "minLength": 1 },
+    "outcome": { "enum": ["ALLOW", "DENY", "ALLOW_WITH_CONSTRAINTS", "REQUIRE_USER_DECISION"] },
+    "constraints": {
+      "type": "object",
+      "required": ["processing_zone", "destination_classification", "retention", "obligations"],
+      "properties": {
+        "processing_zone": { "enum": ["local", "private_goreecloud", "trusted_service", "external"] },
+        "destination_classification": { "enum": ["local", "goreecloud_private", "trusted_service", "external"] },
+        "retention": { "$ref": "#/$defs/retention" },
+        "obligations": { "$ref": "#/$defs/stringArray" }
+      },
+      "additionalProperties": false
+    },
+    "consent_basis": {
+      "anyOf": [
+        { "type": "null" },
+        {
+          "type": "object",
+          "required": ["consent_id", "decision", "grant_type", "expires_at", "scope_contract"],
+          "properties": {
+            "consent_id": { "type": "string", "minLength": 1 },
+            "decision": { "type": ["string", "null"] },
+            "grant_type": { "type": ["string", "null"] },
+            "expires_at": { "type": ["string", "null"], "format": "date-time" },
+            "scope_contract": { "type": ["string", "null"] }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "lifecycle_obligations": { "$ref": "#/$defs/stringArray" },
+    "reason_codes": { "$ref": "#/$defs/stringArray" },
+    "policy_references": { "$ref": "#/$defs/stringArray" },
+    "expires_at": { "type": ["string", "null"], "format": "date-time" },
+    "explanation": { "$ref": "#/$defs/explanation" },
+    "signature": {
+      "type": "object",
+      "required": ["algorithm", "profile", "value"],
+      "properties": {
+        "algorithm": { "const": "HMAC-SHA256" },
+        "profile": { "const": "development-only" },
+        "value": { "type": "string", "minLength": 1 }
+      },
+      "additionalProperties": false
+    }
+  },
+  "$defs": {
+    "stringArray": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "uniqueItems": true
+    },
+    "retention": {
+      "type": "object",
+      "required": ["mode", "expires_at"],
+      "properties": {
+        "mode": { "type": "string", "minLength": 1 },
+        "expires_at": { "type": ["string", "null"], "format": "date-time" }
+      },
+      "additionalProperties": false
+    },
+    "explanation": {
+      "type": "object",
+      "required": [
+        "summary_code",
+        "message",
+        "outcome",
+        "reason_codes",
+        "purpose",
+        "processing_zone",
+        "destination_classification",
+        "retention",
+        "obligations",
+        "policy_references",
+        "evidence_reference",
+        "preview_only"
+      ],
+      "properties": {
+        "summary_code": { "type": "string", "minLength": 1 },
+        "message": { "type": "string", "minLength": 1 },
+        "outcome": { "enum": ["ALLOW", "DENY", "ALLOW_WITH_CONSTRAINTS", "REQUIRE_USER_DECISION"] },
+        "reason_codes": { "$ref": "#/$defs/stringArray" },
+        "purpose": { "type": "string", "minLength": 1 },
+        "processing_zone": { "enum": ["local", "private_goreecloud", "trusted_service", "external"] },
+        "destination_classification": { "enum": ["local", "goreecloud_private", "trusted_service", "external"] },
+        "retention": { "$ref": "#/$defs/retention" },
+        "obligations": { "$ref": "#/$defs/stringArray" },
+        "policy_references": { "$ref": "#/$defs/stringArray" },
+        "evidence_reference": {
+          "type": "object",
+          "required": ["evidence_id", "evidence_hash", "recorded_at"],
+          "properties": {
+            "evidence_id": { "type": "string", "minLength": 1 },
+            "evidence_hash": { "type": "string", "minLength": 1 },
+            "recorded_at": { "type": "string", "format": "date-time" }
+          },
+          "additionalProperties": false
+        },
+        "preview_only": { "const": false }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
