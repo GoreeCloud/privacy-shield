@@ -14,10 +14,10 @@
       "production"
     ]
   },
-  "evidence_ref": "evidence+sha256:0e9a6ba3a62e9b22eec42d343a6f59c10904c6adcaa44176c945464e0e55a446:github://GoreeCloud/goreecloud-privacy-shield/evidence/provider-evaluations/ovhcloud-kms-signing-lifecycle-audit-candidate-20260919.md",
+  "evidence_ref": "evidence+sha256:212607e3358fcf6a9140c3df1f7f7f130a8b6bf496648dcf1bd2e3e5e18dac46:github://GoreeCloud/goreecloud-privacy-shield/evidence/provider-evaluations/ovhcloud-kms-signing-lifecycle-audit-candidate-20260919.md",
   "artifact": {
     "digest_algorithm": "sha256",
-    "digest": "0e9a6ba3a62e9b22eec42d343a6f59c10904c6adcaa44176c945464e0e55a446",
+    "digest": "212607e3358fcf6a9140c3df1f7f7f130a8b6bf496648dcf1bd2e3e5e18dac46",
     "locator": "github://GoreeCloud/goreecloud-privacy-shield/evidence/provider-evaluations/ovhcloud-kms-signing-lifecycle-audit-candidate-20260919.md",
     "media_type": "text/markdown",
     "source_authority": "OVHcloud official Key Management Service documentation",
