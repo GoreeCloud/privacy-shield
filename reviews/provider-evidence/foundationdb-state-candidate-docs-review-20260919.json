@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "contract_id": "goreecloud.privacy-shield.provider-evidence-review.v1",
+  "review_id": "foundationdb-state-candidate-docs-review-20260919",
+  "evidence_id": "foundationdb-state-candidate-docs-20260919",
+  "evidence_ref": "evidence+sha256:48f47b24f596a1756c11a1150d49a77ade9d0a923be28ed105738c08a2c03be8:github://GoreeCloud/goreecloud-privacy-shield/evidence/provider-evaluations/foundationdb-state-candidate-20260919.md",
+  "provider_class": "state-provider",
+  "provider_id": "foundationdb-self-hosted-multihost",
+  "provider_name": "FoundationDB self-hosted multi-host cluster",
+  "provider_implementation": "FoundationDB self-hosted multi-host cluster",
+  "integration_authority": "GoreeCloud/goreecloud-privacy-shield",
+  "scope": {
+    "service": "privacy-shield",
+    "capability": "durable-authorization-state",
+    "authority_state": [
+      "consent",
+      "policy_versions_and_active_pointer",
+      "capability_revocation",
+      "single_use_capability_consumption",
+      "privacy_evidence_and_chain_head"
+    ],
+    "environments": [
+      "production"
+    ]
+  },
+  "supports": [
+    "durability",
+    "atomic_transactions",
+    "multi_writer_serializability",
+    "distributed_topology",
+    "fail_closed_conflict_behavior",
+    "backup_restore",
+    "evaluation-summary"
+  ],
+  "review": {
+    "decision": "accepted-for-evaluation",
+    "review_authority": "GoreeCloud owner decision under authoritative software licensing and open-source governance",
+    "review_authority_reference": "evidence+sha256:ee9cc15deb658a201b1769a52669eab442762245e061aae5cfcb96d289e6bd4e:github://GoreeCloud/goreecloud-privacy-shield/reviews/provider-evidence/goreecloud-owner-review-authority-20260919.md",
+    "review_evidence_reference": "evidence+sha256:8b48e1cb2cc4d6434d51c3ffff4edd2080f773a8857870b2e1844514d0d7e81a:github://GoreeCloud/goreecloud-privacy-shield/reviews/provider-evidence/foundationdb-state-candidate-docs-review-20260919.md",
+    "reviewed_at": "2026-09-19T22:50:00Z",
+    "valid_until": "2026-10-18T22:00:00Z"
+  },
+  "governance": {
+    "status": "active",
+    "authorizing": false,
+    "provider_selection_authorized": false,
+    "production_acceptance_authorized": false,
+    "review_authority_validated_by_schema": false
+  },
+  "privacy": {
+    "credentials_in_review": false,
+    "secret_material_in_review": false,
+    "raw_private_payloads_in_review": false,
+    "full_capability_tokens_in_review": false
+  },
+  "limitations": [
+    "Evidence acceptance is limited to use in the draft candidate evaluation and does not resolve any evaluation criterion.",
+    "Current GoreeCloud production topology remains one VPS and cannot qualify the required failure-isolated multi-host deployment.",
+    "No infrastructure purchase, provider selection, deployment, production acceptance, release, or Stable state is authorized."
+  ]
+}

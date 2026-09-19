@@ -78,6 +78,6 @@ The selection process should record capability and governance conclusions rather
 
 There are currently **zero approved signing-key provider selection records** in the repository.
 
-One **draft, non-authorizing** candidate evaluation now exists for OVHcloud KMS with HSM-backed asymmetric signing. Its evidence package is captured but unreviewed, all evaluation criteria remain pending, no KMS domain/key or adapter exists, and the managed service still requires a separate GoreeCloud proprietary-service exception/necessity review plus explicit cost/order authorization before it could be selected or deployed.
+One **draft, non-authorizing** candidate evaluation exists for OVHcloud KMS with HSM-backed asymmetric signing. Its two evidence packages are now reviewed with active `accepted-for-evaluation` attestations, but all evaluation criteria remain pending, producer-identity binding still has no evidence reference, no KMS domain/key or adapter exists, and the managed service still requires a separate GoreeCloud proprietary-service exception/necessity decision plus explicit cost/order authorization before it could be selected or deployed.
 
 No KMS, HSM, cloud key service, Vault deployment, PKCS#11 device, or other custody provider is selected, implemented, deployed, or production-accepted by this governance layer. A complete reviewed evaluation and explicit provider-selection decision must be recorded through the governing GoreeCloud process before provider-specific integration work is represented as authorized.

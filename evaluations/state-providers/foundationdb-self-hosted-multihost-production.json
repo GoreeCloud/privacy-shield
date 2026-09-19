@@ -103,7 +103,7 @@
   },
   "limitations": [
     "Candidate is not deployable as production on the currently documented single-VPS topology.",
-    "Captured vendor/upstream documentation has not yet received the separate governed evidence review required to resolve criteria.",
+    "Both FoundationDB evidence packages are governed-reviewed and accepted for evaluation; every criterion still requires an explicit candidate-evaluation decision, and deployment-dependent criteria remain unqualified.",
     "At least three genuinely failure-isolated hosts plus exact network, TLS, backup, restore, observability, and rollback qualification remain required.",
     "This draft evaluation is non-authorizing and is not a provider selection or production acceptance."
   ]

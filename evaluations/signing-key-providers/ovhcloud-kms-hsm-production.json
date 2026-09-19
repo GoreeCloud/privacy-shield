@@ -102,7 +102,7 @@
   "limitations": [
     "Candidate is a proprietary managed external service and requires a documented GoreeCloud exception/necessity review before long-term production selection.",
     "No KMS order, key creation, billing change, adapter implementation, or exact runtime qualification is authorized or performed.",
-    "Captured OVHcloud documentation has not yet received the separate governed evidence review required to resolve criteria.",
+    "Both OVHcloud KMS evidence packages are governed-reviewed and accepted for evaluation; every criterion remains pending, producer-identity binding has no evidence reference, and provider selection remains unauthorized.",
     "Digest-only signing semantics, key lifecycle, audit minimization, fail-closed stale-key behavior, continuity, and operational ownership remain open.",
     "This draft evaluation is non-authorizing and is not a provider selection or production acceptance."
   ]

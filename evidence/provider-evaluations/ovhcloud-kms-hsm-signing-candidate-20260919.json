@@ -33,10 +33,10 @@
     "evaluation-summary"
   ],
   "governance": {
-    "status": "captured",
+    "status": "reviewed",
     "authorizing": false,
     "production_acceptance_authorized": false,
-    "reviewed_at": null
+    "reviewed_at": "2026-09-19T22:50:00Z"
   },
   "privacy": {
     "credentials_in_package": false,
