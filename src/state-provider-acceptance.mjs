@@ -23,6 +23,7 @@ const REQUIRED_PRODUCTION_CAPABILITIES = Object.freeze([
 ]);
 
 const SHA40 = /^[0-9a-f]{40}$/;
+const SELECTION_ID = /^[a-z0-9][a-z0-9-]*$/;
 
 function requireObject(value, code) {
   if (!value || typeof value !== "object" || Array.isArray(value)) throw new Error(code);
@@ -88,6 +89,13 @@ export function requireStateProviderAcceptance(provider, {
   }
   if (acceptanceRecord.contract_id !== PRIVACY_STATE_PROVIDER_ACCEPTANCE_CONTRACT) {
     throw new Error("STATE_PROVIDER_ACCEPTANCE_CONTRACT_MISMATCH");
+  }
+  const selectionDecisionId = requireString(
+    acceptanceRecord.selection_decision_id,
+    "STATE_PROVIDER_ACCEPTANCE_SELECTION_DECISION_REQUIRED",
+  );
+  if (!SELECTION_ID.test(selectionDecisionId)) {
+    throw new Error("INVALID_STATE_PROVIDER_ACCEPTANCE_SELECTION_DECISION");
   }
 
   const acceptance = requireObject(
@@ -204,6 +212,7 @@ export function requireStateProviderAcceptance(provider, {
 
   return Object.freeze({
     contract_id: PRIVACY_STATE_PROVIDER_ACCEPTANCE_CONTRACT,
+    selection_decision_id: selectionDecisionId,
     provider_id: capabilities.provider_id,
     provider_version: capabilities.provider_version,
     provider_implementation: capabilities.provider_implementation,
