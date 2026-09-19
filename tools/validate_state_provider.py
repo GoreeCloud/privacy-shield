@@ -319,6 +319,7 @@ def main() -> None:
         "exact_provider_runtime_acceptance_required",
         "failure_and_recovery_exercises_required",
         "operational_backup_and_restore_acceptance_required",
+        "production_acceptance_selection_decision_binding_required",
     ):
         if boundary.get(required) is not True:
             fail(f"release boundary {required} must remain required")
