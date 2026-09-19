@@ -110,6 +110,7 @@ function stateAcceptance() {
   return {
     schema_version: 1,
     contract_id: PRIVACY_STATE_PROVIDER_ACCEPTANCE_CONTRACT,
+    selection_decision_id: "distributed-state-provider-production",
     provider_id: "distributed-test-provider",
     provider_implementation: "ContractTestProductionStore",
     provider_authority: "GoreeCloud/goreecloud-privacy-shield",
@@ -161,6 +162,7 @@ function signingAcceptance() {
   return {
     schema_version: 1,
     contract_id: PRIVACY_SIGNING_KEY_ACCEPTANCE_CONTRACT,
+    selection_decision_id: "test-signing-provider-production",
     provider_id: "test-kms",
     provider_implementation: "ContractTestProductionKeyProvider",
     provider_authority: "GoreeCloud/test",
@@ -368,10 +370,12 @@ test("production runtime requires state, signing provider, and fresh acceptance 
   });
   assert.equal(runtime.production, true);
   assert.equal(runtime.store, store);
+  assert.equal(runtime.state_acceptance.selection_decision_id, "distributed-state-provider-production");
   assert.equal(runtime.state_acceptance.provider_id, "distributed-test-provider");
   assert.equal(runtime.state_acceptance.provider_version, "1.0.0");
   assert.equal(runtime.state_acceptance.environment, stateEnvironment);
   assert.equal(runtime.state_acceptance.topology_id, stateTopologyId);
+  assert.equal(runtime.signing_acceptance.selection_decision_id, "test-signing-provider-production");
   assert.equal(runtime.signing_acceptance.provider_id, "test-kms");
   assert.equal(runtime.signing_acceptance.provider_version, "test-kms-v1");
   assert.equal(runtime.signing_acceptance.deployment_id, deploymentId);
