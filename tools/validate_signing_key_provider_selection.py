@@ -49,6 +49,11 @@ REQUIRED_SELECTION_PRIVACY = {
 REQUIRED_PRIVACY = REQUIRED_SELECTION_PRIVACY
 SLUG = re.compile(r"^[a-z0-9][a-z0-9-]*$")
 REPO = re.compile(r"^GoreeCloud/[A-Za-z0-9._-]+$")
+DECISION_REFERENCE_PATTERN = (
+    r"^evidence\+sha256:[0-9a-f]{64}:"
+    r"(?:github://|gdrive://|qualification-run:|artifact:)[A-Za-z0-9._+:/-]+$"
+)
+DECISION_REFERENCE = re.compile(DECISION_REFERENCE_PATTERN)
 
 
 def fail(message: str) -> None:
@@ -75,6 +80,15 @@ def parse_time(value: object, path: Path, field: str) -> datetime:
     if parsed.tzinfo is None:
         fail(f"{path}: {field} must include a timezone offset")
     return parsed.astimezone(timezone.utc)
+
+
+def validate_decision_reference(value: object, path: Path) -> str:
+    if not isinstance(value, str) or not DECISION_REFERENCE.fullmatch(value):
+        fail(f"{path}: decision_reference must be a credential-safe SHA-256 content-addressed governed reference")
+    digest = value[len("evidence+sha256:"):].split(":", 1)[0]
+    if digest == "0" * 64:
+        fail(f"{path}: decision_reference cannot use an all-zero digest")
+    return value
 
 
 def validate_contract(contract: dict) -> None:
@@ -147,6 +161,8 @@ def validate_schemas(evaluation_schema: dict, selection_schema: dict) -> None:
     governance = properties.get("governance", {}).get("properties", {})
     if governance.get("production_acceptance_authorized", {}).get("const") is not False:
         fail("provider selection must never authorize production acceptance")
+    if governance.get("decision_reference", {}).get("pattern") != DECISION_REFERENCE_PATTERN:
+        fail("signing-key decision_reference content-addressed pattern drifted")
 
 
 def validate_evaluation_record(path: Path, record: dict) -> dict:
@@ -285,10 +301,11 @@ def validate_selection_record(path: Path, record: dict, evaluations: dict[str, d
         fail(f"{path}: implementation_authorized must be boolean")
     if governance.get("production_acceptance_authorized") is not False:
         fail(f"{path}: provider selection cannot authorize production acceptance")
-    if not isinstance(governance.get("decision_reference"), str) or not governance["decision_reference"].strip():
-        fail(f"{path}: decision_reference must be non-empty")
+    validate_decision_reference(governance.get("decision_reference"), path)
     decided_at = parse_time(governance.get("decided_at"), path, "governance.decided_at")
     review_by = parse_time(governance.get("review_by"), path, "governance.review_by")
+    if decided_at > datetime.now(timezone.utc):
+        fail(f"{path}: governance.decided_at cannot be future-dated")
     if review_by <= decided_at:
         fail(f"{path}: review_by must be later than decided_at")
 
