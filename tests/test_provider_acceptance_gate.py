@@ -37,6 +37,7 @@ def state_record():
     return {
         "schema_version": 1,
         "contract_id": "goreecloud.privacy-shield.state-provider-acceptance.v1",
+        "selection_decision_id": "distributed-state-provider-production",
         "provider_id": "distributed-state",
         "provider_implementation": "ExampleDistributedStateProvider",
         "provider_authority": "GoreeCloud/goreecloud-privacy-shield",
@@ -66,6 +67,7 @@ def signing_record():
     return {
         "schema_version": 1,
         "contract_id": "goreecloud.privacy-shield.signing-key-provider-acceptance.v1",
+        "selection_decision_id": "production-signing-provider",
         "provider_id": "production-signing",
         "provider_implementation": "ExampleSigningProvider",
         "provider_authority": "GoreeCloud/goreecloud-privacy-shield",
@@ -85,6 +87,12 @@ def signing_record():
 class ProviderAcceptanceGateTests(unittest.TestCase):
     def test_complete_current_state_acceptance_passes(self) -> None:
         gate.validate_state_acceptance(state_record(), now=NOW)
+
+    def test_state_acceptance_requires_selection_decision_binding(self) -> None:
+        record = state_record()
+        del record["selection_decision_id"]
+        with self.assertRaises(SystemExit):
+            gate.validate_state_acceptance(record, now=NOW)
 
     def test_state_acceptance_cannot_pass_with_incomplete_qualification(self) -> None:
         record = state_record()
