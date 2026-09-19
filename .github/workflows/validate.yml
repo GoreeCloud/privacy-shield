@@ -23,12 +23,34 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - name: Validate repository documentation baseline
+        run: python3 tools/validate_repository_baseline.py
       - name: Validate configuration contract
         run: python3 tools/validate_config.py
       - name: Validate ruleset lifecycle contract
         run: python3 tools/validate_ruleset_lifecycle.py
       - name: Validate platform and adapter contracts
         run: python3 tools/validate_platform.py
+      - name: Validate production state-provider boundary
+        run: python3 tools/validate_state_provider.py
+      - name: Validate state-provider operational qualification boundary
+        run: python3 tools/validate_state_provider_qualification.py
+      - name: Validate provider evaluation evidence provenance
+        run: python3 tools/validate_provider_evaluation_evidence.py
+      - name: Validate provider evidence packages
+        run: python3 tools/validate_provider_evidence_packages.py
+      - name: Validate provider evidence review attestations
+        run: python3 tools/validate_provider_evidence_reviews.py
+      - name: Validate provider governance temporal integrity
+        run: python3 tools/validate_provider_governance_time.py
+      - name: Validate state-provider evaluation and selection governance
+        run: python3 tools/validate_state_provider_selection.py
+      - name: Validate production signing-key custody boundary
+        run: python3 tools/validate_signing_key_provider.py
+      - name: Validate signing-key provider evaluation and selection governance
+        run: python3 tools/validate_signing_key_provider_selection.py
+      - name: Validate signing-key operational qualification boundary
+        run: python3 tools/validate_signing_key_qualification.py
       - name: Validate evidence validity contract
         run: python3 tools/validate_evidence_validity.py
       - name: Run configuration and lifecycle tests
@@ -40,16 +62,49 @@ jobs:
           python3 -m json.tool config/privacy-shield.v2.json >/dev/null
           for contract in contracts/*.json; do python3 -m json.tool "$contract" >/dev/null; done
           for adapter in adapters/*.json; do python3 -m json.tool "$adapter" >/dev/null; done
-          for record in acceptance/*.json; do python3 -m json.tool "$record" >/dev/null; done
+          find evidence -type f -name '*.json' -print0 | while IFS= read -r -d '' record; do
+            python3 -m json.tool "$record" >/dev/null
+          done
+          find reviews -type f -name '*.json' -print0 | while IFS= read -r -d '' record; do
+            python3 -m json.tool "$record" >/dev/null
+          done
+          find evaluations -type f -name '*.json' -print0 | while IFS= read -r -d '' record; do
+            python3 -m json.tool "$record" >/dev/null
+          done
+          find acceptance -type f -name '*.json' -print0 | while IFS= read -r -d '' record; do
+            python3 -m json.tool "$record" >/dev/null
+          done
+          find decisions -type f -name '*.json' -print0 | while IFS= read -r -d '' record; do
+            python3 -m json.tool "$record" >/dev/null
+          done
       - name: Compile Python validation tools
         run: >-
           python3 -m py_compile
+          tools/validate_repository_baseline.py
           tools/validate_config.py
           tools/validate_ruleset_lifecycle.py
           tools/validate_platform.py
+          tools/validate_state_provider.py
+          tools/validate_state_provider_qualification.py
+          tools/validate_provider_evaluation_evidence.py
+          tools/validate_provider_evidence_packages.py
+          tools/validate_provider_evidence_reviews.py
+          tools/validate_provider_governance_time.py
+          tools/validate_state_provider_selection.py
+          tools/validate_signing_key_provider.py
+          tools/validate_signing_key_provider_selection.py
+          tools/validate_signing_key_qualification.py
           tools/validate_evidence_validity.py
+          tests/test_repository_baseline.py
           tests/test_config.py
           tests/test_ruleset_lifecycle.py
+          tests/test_state_provider_acceptance.py
+          tests/test_state_provider_selection.py
+          tests/test_signing_key_provider_selection.py
+          tests/test_provider_evaluation_evidence.py
+          tests/test_provider_evidence_packages.py
+          tests/test_provider_evidence_reviews.py
+          tests/test_provider_governance_time.py
           website/build.py
           website/validate.py
       - name: Build and validate public Privacy Shield website

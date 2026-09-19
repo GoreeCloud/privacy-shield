@@ -1,0 +1,129 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://goreecloud.com/schemas/privacy-shield.signing-key-provider-evaluation.schema.json",
+  "title": "GoreeCloud Privacy Shield Signing-Key Provider Candidate Evaluation",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "contract_id",
+    "evaluation_id",
+    "provider_id",
+    "provider_name",
+    "integration_authority",
+    "scope",
+    "criteria",
+    "governance",
+    "privacy",
+    "limitations"
+  ],
+  "properties": {
+    "schema_version": {"type": "integer", "const": 1},
+    "contract_id": {"type": "string", "const": "goreecloud.privacy-shield.signing-key-provider-evaluation.v1"},
+    "evaluation_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$"},
+    "provider_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$"},
+    "provider_name": {"type": "string", "minLength": 1, "maxLength": 200},
+    "integration_authority": {"type": "string", "pattern": "^GoreeCloud/[A-Za-z0-9._-]+$"},
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["service", "capability", "producer_identity", "environments"],
+      "properties": {
+        "service": {"type": "string", "const": "privacy-shield"},
+        "capability": {"type": "string", "const": "operation-bound-capability-signing"},
+        "producer_identity": {"type": "string", "const": "goreecloud-privacy-shield"},
+        "environments": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 20,
+          "uniqueItems": true,
+          "items": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$"}
+        }
+      }
+    },
+    "criteria": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "digest_only_signing",
+        "non_exportable_signing_material",
+        "opaque_key_references",
+        "stable_key_identifiers",
+        "rotation_retirement_revocation",
+        "producer_identity_binding",
+        "privacy_safe_audit",
+        "fail_closed_untrusted_state",
+        "outage_degraded_behavior",
+        "recovery_continuity",
+        "access_control_isolation",
+        "operational_ownership"
+      ],
+      "properties": {
+        "digest_only_signing": {"$ref": "#/$defs/criterion"},
+        "non_exportable_signing_material": {"$ref": "#/$defs/criterion"},
+        "opaque_key_references": {"$ref": "#/$defs/criterion"},
+        "stable_key_identifiers": {"$ref": "#/$defs/criterion"},
+        "rotation_retirement_revocation": {"$ref": "#/$defs/criterion"},
+        "producer_identity_binding": {"$ref": "#/$defs/criterion"},
+        "privacy_safe_audit": {"$ref": "#/$defs/criterion"},
+        "fail_closed_untrusted_state": {"$ref": "#/$defs/criterion"},
+        "outage_degraded_behavior": {"$ref": "#/$defs/criterion"},
+        "recovery_continuity": {"$ref": "#/$defs/criterion"},
+        "access_control_isolation": {"$ref": "#/$defs/criterion"},
+        "operational_ownership": {"$ref": "#/$defs/criterion"}
+      }
+    },
+    "governance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "authorizing", "production_acceptance_authorized", "evidence_reference", "evaluated_at", "valid_until"],
+      "properties": {
+        "status": {"type": "string", "enum": ["draft", "complete", "failed", "superseded"]},
+        "authorizing": {"const": false},
+        "production_acceptance_authorized": {"const": false},
+        "evidence_reference": {"$ref": "#/$defs/evidence_ref"},
+        "evaluated_at": {"type": "string", "format": "date-time"},
+        "valid_until": {"type": "string", "format": "date-time"}
+      }
+    },
+    "privacy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["secret_material_in_evaluation_record", "credentials_in_evaluation_record", "raw_private_payloads_in_evaluation_record", "full_capability_tokens_in_evaluation_record"],
+      "properties": {
+        "secret_material_in_evaluation_record": {"const": false},
+        "credentials_in_evaluation_record": {"const": false},
+        "raw_private_payloads_in_evaluation_record": {"const": false},
+        "full_capability_tokens_in_evaluation_record": {"const": false}
+      }
+    },
+    "limitations": {
+      "type": "array",
+      "maxItems": 30,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1, "maxLength": 500}
+    }
+  },
+  "$defs": {
+    "evidence_ref": {
+      "type": "string",
+      "minLength": 85,
+      "maxLength": 1200,
+      "pattern": "^evidence\\+sha256:[0-9a-f]{64}:(?:https://|github://|gdrive://|qualification-run:|artifact:)[^\\s]+$"
+    },
+    "criterion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["result", "evidence_refs"],
+      "properties": {
+        "result": {"type": "string", "enum": ["pending", "passed", "failed"]},
+        "evidence_refs": {
+          "type": "array",
+          "uniqueItems": true,
+          "maxItems": 20,
+          "items": {"$ref": "#/$defs/evidence_ref"}
+        }
+      }
+    }
+  }
+}

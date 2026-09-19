@@ -1,0 +1,84 @@
+{
+  "schema_version": 1,
+  "contract_id": "goreecloud.privacy-shield.state-provider.v1",
+  "purpose": "Fail-closed state-provider requirements for production Privacy Shield authority state.",
+  "required_methods": [
+    "get",
+    "set",
+    "delete",
+    "list",
+    "transaction",
+    "stateProviderCapabilities"
+  ],
+  "required_production_capabilities": {
+    "durable": true,
+    "restart_recovery": true,
+    "atomic_transactions": true,
+    "multi_writer_serializable": true,
+    "distributed": true,
+    "fail_closed_on_conflict": true
+  },
+  "authority_state": [
+    "consent",
+    "policy_versions_and_active_pointer",
+    "capability_revocation",
+    "single_use_capability_consumption",
+    "privacy_evidence_and_chain_head"
+  ],
+  "source_providers": {
+    "MemoryPrivacyStateStore": {
+      "production_eligible": false,
+      "scope": "development-and-tests-only"
+    },
+    "FilePrivacyStateStore": {
+      "production_eligible": false,
+      "scope": "single-host-durable-development-and-bounded-acceptance",
+      "restart_recovery": true,
+      "stale_writer_behavior": "fail-closed"
+    }
+  },
+  "release_boundary": {
+    "capability_declaration_is_production_acceptance": false,
+    "source_validation_is_provider_acceptance": false,
+    "provider_operational_qualification_contract": "contracts/privacy-shield.state-provider-qualification.json",
+    "provider_operational_qualification_is_candidate_evaluation": false,
+    "provider_operational_qualification_is_provider_selection": false,
+    "provider_operational_qualification_is_production_acceptance": false,
+    "provider_evaluation_required_before_selection": true,
+    "provider_evaluation_schema": "contracts/privacy-shield.state-provider-evaluation.schema.json",
+    "provider_evaluation_records": "evaluations/state-providers/*.json",
+    "provider_evaluation_evidence_content_addressed": true,
+    "provider_evaluation_evidence_reference_format": "evidence+sha256:<64-lowercase-hex>:<locator>",
+    "provider_evaluation_evidence_package_required": true,
+    "provider_evaluation_evidence_package_schema": "contracts/privacy-shield.provider-evidence-package.schema.json",
+    "provider_evaluation_evidence_package_records": "evidence/provider-evaluations/*.json",
+    "provider_evaluation_evidence_package_is_candidate_evaluation": false,
+    "provider_evaluation_evidence_package_is_provider_selection": false,
+    "provider_evaluation_evidence_package_is_production_acceptance": false,
+    "provider_evaluation_evidence_review_required": true,
+    "provider_evaluation_evidence_review_schema": "contracts/privacy-shield.provider-evidence-review.schema.json",
+    "provider_evaluation_evidence_review_records": "reviews/provider-evidence/*.json",
+    "provider_evaluation_evidence_review_is_candidate_evaluation": false,
+    "provider_evaluation_evidence_review_is_provider_selection": false,
+    "provider_evaluation_evidence_review_is_production_acceptance": false,
+    "provider_evaluation_evidence_review_authority_validated_by_schema": false,
+    "provider_evaluation_is_selection": false,
+    "provider_evaluation_is_production_acceptance": false,
+    "provider_selection_required": true,
+    "provider_selection_schema": "contracts/privacy-shield.state-provider-selection.schema.json",
+    "provider_selection_records": "decisions/state-providers/*.json",
+    "provider_selection_is_production_acceptance": false,
+    "production_acceptance_record_required": true,
+    "production_acceptance_schema": "contracts/privacy-shield.state-provider-acceptance.schema.json",
+    "production_acceptance_records": "acceptance/state-providers/*.json",
+    "exact_provider_runtime_acceptance_required": true,
+    "failure_and_recovery_exercises_required": true,
+    "operational_backup_and_restore_acceptance_required": true
+  },
+  "required_production_identity_metadata": [
+    "provider_id",
+    "provider_version",
+    "provider_implementation",
+    "provider_authority"
+  ]
+}

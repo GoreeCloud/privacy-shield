@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "contract_id": "goreecloud.privacy-shield.signing-key-qualification.v1",
+  "controller_contract_id": "goreecloud.privacy-shield.signing-key-qualification-controller.v1",
+  "purpose": "Provider-neutral, non-authorizing operational exercise and minimized evidence contract for Privacy Shield signing-key custody qualification.",
+  "authorizing": false,
+  "required_controller_methods": [
+    "qualificationCapabilities",
+    "attemptUnauthorizedSign",
+    "rotate",
+    "retire",
+    "revoke",
+    "setAvailability",
+    "recover",
+    "readAuditEvents",
+    "runtimeIntegrationProbe"
+  ],
+  "required_controller_capabilities": {
+    "controlled_environment": true,
+    "disruptive_operations_authorized": true,
+    "evidence_minimized": true,
+    "acceptance_authority": false
+  },
+  "automated_qualifications": [
+    "caller_authorization",
+    "producer_identity_binding",
+    "rotation",
+    "retirement",
+    "emergency_revocation",
+    "stale_untrusted_rejection",
+    "signing_audit",
+    "outage_and_degraded_behavior",
+    "recovery_and_continuity",
+    "exact_runtime_integration"
+  ],
+  "external_evidence_qualifications": [
+    "secure_key_generation",
+    "non_exportability",
+    "access_control_review"
+  ],
+  "result_states": [
+    "passed",
+    "failed",
+    "not_run",
+    "requires_external_evidence"
+  ],
+  "privacy": {
+    "raw_private_payloads_in_qualification_evidence": false,
+    "secret_material_in_qualification_evidence": false,
+    "full_capability_tokens_in_qualification_evidence": false,
+    "raw_capability_claims_in_qualification_evidence": false
+  },
+  "release_boundary": {
+    "qualification_run_is_production_acceptance": false,
+    "source_test_provider_is_production_evidence": false,
+    "external_evidence_still_required": true,
+    "fresh_exact_provider_acceptance_record_still_required": true,
+    "exact_source_revision_binding_required": true,
+    "exact_provider_version_binding_required": true,
+    "exact_deployment_binding_required": true
+  }
+}

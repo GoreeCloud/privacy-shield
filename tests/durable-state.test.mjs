@@ -110,6 +110,62 @@ test("primary and backup durable state files remain private", () => {
   assert.equal(fs.statSync(`${file}.bak`).mode & 0o777, 0o600);
 });
 
+test("file-backed state transaction commits all staged namespaces together", () => {
+  const file = temporaryStateFile();
+  const store = new FilePrivacyStateStore(file);
+  store.transaction(state => {
+    state.set("consent", "one", { allowed: true });
+    state.set("policy", "one", { version: 1 });
+    state.set("evidence_meta", "head", { hash: "abc" });
+  });
+
+  const restored = new FilePrivacyStateStore(file);
+  assert.deepEqual(restored.get("consent", "one"), { allowed: true });
+  assert.deepEqual(restored.get("policy", "one"), { version: 1 });
+  assert.deepEqual(restored.get("evidence_meta", "head"), { hash: "abc" });
+});
+
+test("file-backed state transaction rolls back completely when mutation fails", () => {
+  const file = temporaryStateFile();
+  const store = new FilePrivacyStateStore(file);
+  store.set("policy", "base", { version: 1 });
+  const before = fs.readFileSync(file, "utf8");
+
+  assert.throws(
+    () => store.transaction(state => {
+      state.set("policy", "candidate", { version: 2 });
+      state.set("evidence_meta", "head", { hash: "should-not-commit" });
+      throw new Error("simulated transaction failure");
+    }),
+    /simulated transaction failure/,
+  );
+
+  assert.equal(fs.readFileSync(file, "utf8"), before);
+  assert.deepEqual(store.get("policy", "base"), { version: 1 });
+  assert.equal(store.get("policy", "candidate"), null);
+  assert.equal(store.get("evidence_meta", "head"), null);
+});
+
+test("primary and backup recovery preserves only committed transactions", () => {
+  const file = temporaryStateFile();
+  const store = new FilePrivacyStateStore(file);
+  store.transaction(state => {
+    state.set("policy", "base", { version: 1 });
+    state.set("consent", "base", { allowed: true });
+  });
+  store.transaction(state => {
+    state.set("policy", "next", { version: 2 });
+    state.set("consent", "next", { allowed: false });
+  });
+
+  fs.writeFileSync(file, "{corrupted-primary", "utf8");
+  const recovered = new FilePrivacyStateStore(file);
+  assert.deepEqual(recovered.get("policy", "base"), { version: 1 });
+  assert.deepEqual(recovered.get("consent", "base"), { allowed: true });
+  assert.equal(recovered.get("policy", "next"), null);
+  assert.equal(recovered.get("consent", "next"), null);
+});
+
 test("a corrupted primary recovers only from the last validated atomic backup", () => {
   const file = temporaryStateFile();
   const store = new FilePrivacyStateStore(file);

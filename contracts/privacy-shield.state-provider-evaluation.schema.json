@@ -1,0 +1,143 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://goreecloud.com/schemas/privacy-shield.state-provider-evaluation.schema.json",
+  "title": "GoreeCloud Privacy Shield State Provider Candidate Evaluation",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "contract_id",
+    "evaluation_id",
+    "provider_id",
+    "provider_name",
+    "provider_implementation",
+    "integration_authority",
+    "scope",
+    "criteria",
+    "governance",
+    "privacy",
+    "limitations"
+  ],
+  "properties": {
+    "schema_version": {"type": "integer", "const": 1},
+    "contract_id": {"type": "string", "const": "goreecloud.privacy-shield.state-provider-evaluation.v1"},
+    "evaluation_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$"},
+    "provider_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$"},
+    "provider_name": {"type": "string", "minLength": 1, "maxLength": 200},
+    "provider_implementation": {"type": "string", "minLength": 1, "maxLength": 200},
+    "integration_authority": {"type": "string", "pattern": "^GoreeCloud/[A-Za-z0-9._-]+$"},
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["service", "capability", "authority_state", "environments"],
+      "properties": {
+        "service": {"type": "string", "const": "privacy-shield"},
+        "capability": {"type": "string", "const": "durable-authorization-state"},
+        "authority_state": {
+          "type": "array",
+          "uniqueItems": true,
+          "minItems": 5,
+          "maxItems": 5,
+          "items": {
+            "type": "string",
+            "enum": [
+              "consent",
+              "policy_versions_and_active_pointer",
+              "capability_revocation",
+              "single_use_capability_consumption",
+              "privacy_evidence_and_chain_head"
+            ]
+          }
+        },
+        "environments": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 20,
+          "uniqueItems": true,
+          "items": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$"}
+        }
+      }
+    },
+    "criteria": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "durability",
+        "restart_recovery",
+        "atomic_transactions",
+        "multi_writer_serializability",
+        "distributed_topology",
+        "fail_closed_conflict_behavior",
+        "backup_restore",
+        "migration_rollback",
+        "access_control_isolation",
+        "privacy_safe_observability",
+        "operational_ownership"
+      ],
+      "properties": {
+        "durability": {"$ref": "#/$defs/criterion"},
+        "restart_recovery": {"$ref": "#/$defs/criterion"},
+        "atomic_transactions": {"$ref": "#/$defs/criterion"},
+        "multi_writer_serializability": {"$ref": "#/$defs/criterion"},
+        "distributed_topology": {"$ref": "#/$defs/criterion"},
+        "fail_closed_conflict_behavior": {"$ref": "#/$defs/criterion"},
+        "backup_restore": {"$ref": "#/$defs/criterion"},
+        "migration_rollback": {"$ref": "#/$defs/criterion"},
+        "access_control_isolation": {"$ref": "#/$defs/criterion"},
+        "privacy_safe_observability": {"$ref": "#/$defs/criterion"},
+        "operational_ownership": {"$ref": "#/$defs/criterion"}
+      }
+    },
+    "governance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "authorizing", "production_acceptance_authorized", "evidence_reference", "evaluated_at", "valid_until"],
+      "properties": {
+        "status": {"type": "string", "enum": ["draft", "complete", "failed", "superseded"]},
+        "authorizing": {"const": false},
+        "production_acceptance_authorized": {"const": false},
+        "evidence_reference": {"$ref": "#/$defs/evidence_ref"},
+        "evaluated_at": {"type": "string", "format": "date-time"},
+        "valid_until": {"type": "string", "format": "date-time"}
+      }
+    },
+    "privacy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["credentials_in_evaluation_record", "raw_private_payloads_in_evaluation_record", "secret_material_in_evaluation_record"],
+      "properties": {
+        "credentials_in_evaluation_record": {"const": false},
+        "raw_private_payloads_in_evaluation_record": {"const": false},
+        "secret_material_in_evaluation_record": {"const": false}
+      }
+    },
+    "limitations": {
+      "type": "array",
+      "maxItems": 30,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1, "maxLength": 500}
+    }
+  },
+  "$defs": {
+    "evidence_ref": {
+      "type": "string",
+      "minLength": 85,
+      "maxLength": 1200,
+      "pattern": "^evidence\\+sha256:[0-9a-f]{64}:(?:https://|github://|gdrive://|qualification-run:|artifact:)[^\\s]+$"
+    },
+    "criterion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["result", "evidence_refs"],
+      "properties": {
+        "result": {"type": "string", "enum": ["pending", "passed", "failed"]},
+        "evidence_refs": {
+          "type": "array",
+          "uniqueItems": true,
+          "maxItems": 20,
+          "items": {"$ref": "#/$defs/evidence_ref"}
+        }
+      }
+    }
+  }
+}
