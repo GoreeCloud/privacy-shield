@@ -4,6 +4,7 @@
 
 **Lifecycle:** Development  
 **Component:** `goreecloud-privacy-shield`  
+**Canonical repository:** `GoreeCloud/privacy-shield`  
 **Canonical project record:** `Project Specification — Privacy Shield` in GoreeCloud Google Drive  
 **Implementation authority:** this repository for implementation-facing Privacy Shield contracts, schemas, source, validation, and synchronized local branding derivatives.
 
@@ -27,7 +28,7 @@ The repository contains:
 - restrictive policy intersection, scoped consent, purpose/zone/destination/retention evaluation, and operation-bound capability source mechanisms;
 - minimized privacy evidence and Privacy Receipt prototypes;
 - bounded single-host durable state for development/acceptance work;
-- Draft distributed state-provider, signing-key-provider, candidate-evaluation, evidence-package, review-attestation, provider-selection, operational-qualification, and exact-provider production-acceptance boundaries;
+- Draft distributed state-provider, signing-key-provider, candidate-evaluation, evidence-package, review-attestation, provider access-control assessment, provider-selection, operational-qualification, and exact-provider production-acceptance boundaries;
 - fail-closed validation and test suites.
 
 ## Production boundaries
@@ -56,9 +57,9 @@ Privacy Shield work must preserve:
 
 ## Design and identity
 
-Privacy Shield uses the approved Privacy Shield identity synchronized from `GoreeCloud/goreecloud-branding-assets`. The local consumer derivative is `branding/privacy-shield/privacy-shield-icon.svg`.
+Privacy Shield uses the approved Privacy Shield identity synchronized from `GoreeCloud/branding-assets`. The local consumer derivative is `branding/privacy-shield/privacy-shield-icon.svg`.
 
-All Privacy Shield interfaces must follow the current governed Glaze UI release applicable to the platform. The retained legacy Privacy Center source still carries historical Glaze UI 2.1.0 material and requires a separately validated migration to the current Glaze UI V1.3 / 1.3.0 target before that migration may be claimed complete.
+All Privacy Shield interfaces must follow the current governed Glaze UI release applicable to the platform. The retained legacy Privacy Center source still carries historical Glaze UI 2.1.0 material and requires a separately validated migration to the current Stable Glaze UI V1.6 / 1.6.0 target before that migration may be claimed complete.
 
 ## Detailed source records
 
