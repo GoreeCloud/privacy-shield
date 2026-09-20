@@ -187,8 +187,9 @@ def main() -> None:
             count += 1
 
     text = README.read_text(encoding="utf-8")
-    for marker in ("not a provider selection", "not", "non-authorizing", "no provider access-control assessment records"):
-        require(marker.lower() in text.lower(), f"assessment README missing boundary marker: {marker}")
+    normalized = text.lower().replace("**", "")
+    for marker in ("not a provider selection", "not production acceptance", "non-authorizing", "no provider access-control assessment records"):
+        require(marker in normalized, f"assessment README missing boundary marker: {marker}")
 
     print(
         "Privacy Shield provider access-control assessment boundary is consistent; "
