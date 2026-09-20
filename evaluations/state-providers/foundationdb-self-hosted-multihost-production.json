@@ -22,7 +22,7 @@
   },
   "criteria": {
     "durability": {
-      "result": "pending",
+      "result": "passed",
       "evidence_refs": [
         "evidence+sha256:48f47b24f596a1756c11a1150d49a77ade9d0a923be28ed105738c08a2c03be8:github://GoreeCloud/goreecloud-privacy-shield/evidence/provider-evaluations/foundationdb-state-candidate-20260919.md"
       ]
@@ -34,19 +34,19 @@
       ]
     },
     "atomic_transactions": {
-      "result": "pending",
+      "result": "passed",
       "evidence_refs": [
         "evidence+sha256:48f47b24f596a1756c11a1150d49a77ade9d0a923be28ed105738c08a2c03be8:github://GoreeCloud/goreecloud-privacy-shield/evidence/provider-evaluations/foundationdb-state-candidate-20260919.md"
       ]
     },
     "multi_writer_serializability": {
-      "result": "pending",
+      "result": "passed",
       "evidence_refs": [
         "evidence+sha256:48f47b24f596a1756c11a1150d49a77ade9d0a923be28ed105738c08a2c03be8:github://GoreeCloud/goreecloud-privacy-shield/evidence/provider-evaluations/foundationdb-state-candidate-20260919.md"
       ]
     },
     "distributed_topology": {
-      "result": "pending",
+      "result": "passed",
       "evidence_refs": [
         "evidence+sha256:48f47b24f596a1756c11a1150d49a77ade9d0a923be28ed105738c08a2c03be8:github://GoreeCloud/goreecloud-privacy-shield/evidence/provider-evaluations/foundationdb-state-candidate-20260919.md"
       ]
@@ -58,7 +58,7 @@
       ]
     },
     "backup_restore": {
-      "result": "pending",
+      "result": "passed",
       "evidence_refs": [
         "evidence+sha256:48f47b24f596a1756c11a1150d49a77ade9d0a923be28ed105738c08a2c03be8:github://GoreeCloud/goreecloud-privacy-shield/evidence/provider-evaluations/foundationdb-state-candidate-20260919.md"
       ]
@@ -70,7 +70,7 @@
       ]
     },
     "access_control_isolation": {
-      "result": "pending",
+      "result": "failed",
       "evidence_refs": [
         "evidence+sha256:0ca034c0f7618b2684006f0b6dc47c8720de410b36da131f3405e30b1806ca30:github://GoreeCloud/goreecloud-privacy-shield/evidence/provider-evaluations/foundationdb-operational-security-candidate-20260919.md"
       ]
@@ -89,11 +89,11 @@
     }
   },
   "governance": {
-    "status": "draft",
+    "status": "failed",
     "authorizing": false,
     "production_acceptance_authorized": false,
     "evidence_reference": "evidence+sha256:48f47b24f596a1756c11a1150d49a77ade9d0a923be28ed105738c08a2c03be8:github://GoreeCloud/goreecloud-privacy-shield/evidence/provider-evaluations/foundationdb-state-candidate-20260919.md",
-    "evaluated_at": "2026-09-19T22:10:00Z",
+    "evaluated_at": "2026-09-20T00:34:23Z",
     "valid_until": "2026-10-19T22:10:00Z"
   },
   "privacy": {
@@ -102,9 +102,9 @@
     "secret_material_in_evaluation_record": false
   },
   "limitations": [
-    "Candidate is not deployable as production on the currently documented single-VPS topology.",
-    "Both FoundationDB evidence packages are governed-reviewed and accepted for evaluation; every criterion still requires an explicit candidate-evaluation decision, and deployment-dependent criteria remain unqualified.",
-    "At least three genuinely failure-isolated hosts plus exact network, TLS, backup, restore, observability, and rollback qualification remain required.",
-    "This draft evaluation is non-authorizing and is not a provider selection or production acceptance."
+    "Current candidate evaluation is failed because FoundationDB does not provide production-grade user-level access-control isolation for this scope; upstream documentation states connected clients can read and write every key, while tenants remain experimental and are not accepted as a production boundary.",
+    "Provider capability evidence supports durability, atomic transactions, strict multi-writer serializability, distributed multi-host architecture, and backup/restore as candidate capabilities; deployment-dependent restart, conflict/failure behavior, migration/rollback, privacy-safe observability, and operational ownership remain pending.",
+    "Current GoreeCloud production topology has one VPS and cannot qualify the intended failure-isolated multi-host deployment; at least three genuinely failure-isolated hosts plus exact network, TLS, backup, restore, observability, and rollback qualification would still be required for any revised candidate.",
+    "This failed candidate evaluation is non-authorizing and does not select a provider, authorize infrastructure purchase or deployment, create production acceptance, or establish Privacy Shield production readiness."
   ]
 }
