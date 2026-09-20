@@ -3,7 +3,7 @@ component:
   type: service
   id: goreecloud-privacy-shield
   product_name: GoreeCloud Privacy Shield
-  repository: GoreeCloud/goreecloud-privacy-shield
+  repository: GoreeCloud/privacy-shield
 lifecycle: development
 version: '0.1'
 supported_platforms:

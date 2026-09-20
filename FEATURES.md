@@ -29,10 +29,11 @@ The active Privacy Shield 2.0 P0 development line adds source controls for:
 - content-addressed evaluation evidence;
 - governed provider evidence packages;
 - attributable provider evidence-review attestations;
+- provider-neutral, exact-provider/deployment access-control assessment records with fail-closed temporal and record-identity validation;
 - governed provider-selection records;
 - independent production acceptance records.
 
-These are Development/source controls unless the exact provider, deployment, runtime, evidence, and acceptance record establish a higher state. There are no source-controlled production-approved state-provider or signing-key-provider records at this documentation checkpoint.
+These are Development/source controls unless the exact provider, deployment, runtime, evidence, and acceptance record establish a higher state. There are no source-controlled production-approved state-provider or signing-key-provider records at this documentation checkpoint. There are also no provider access-control assessment records at this documentation checkpoint.
 
 ## Runtime acceptance status
 
@@ -53,7 +54,7 @@ Planned Privacy Shield 2.0 work includes, among other roadmap obligations:
 - Everkeep lifecycle enforcement integration;
 - Identity-authenticated Mesh delivery;
 - exact compiled Browser acceptance;
-- Privacy Center Glaze UI V1.3 migration/redesign;
+- Privacy Center Glaze UI V1.6 / 1.6.0 migration/redesign;
 - Privacy Shield 2.0 visual-identity refresh;
 - additional capability-scoped adapters.
 
