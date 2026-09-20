@@ -2,7 +2,7 @@
 
 This directory is reserved for governed external access-control and isolation assessment records for Privacy Shield production-provider candidates.
 
-An assessment is **not** a provider selection, deployment authorization, production acceptance, release decision, or Stable qualification. Every record must remain exact-provider, exact-version, exact-source-revision, exact-deployment-bound, freshness-bounded, privacy-minimized, and non-authorizing.
+An assessment is **not** a provider selection, deployment authorization, production acceptance, release decision, or Stable qualification. It is not production acceptance. Every record must remain exact-provider, exact-version, exact-source-revision, exact-deployment-bound, freshness-bounded, privacy-minimized, and non-authorizing.
 
 The assessment contract is `contracts/privacy-shield.provider-access-control-assessment.schema.json`.
 
