@@ -133,6 +133,7 @@ def validate_record(record: dict[str, Any], *, label: str, now: datetime | None 
     require(governance["production_acceptance_authorized"] is False, f"{label}: assessment cannot authorize production acceptance")
     assessed_at = parse_time(governance["assessed_at"], f"{label}.governance.assessed_at")
     valid_until = parse_time(governance["valid_until"], f"{label}.governance.valid_until")
+    require(assessed_at <= now, f"{label}: assessed_at cannot be future-dated")
     require(valid_until > assessed_at, f"{label}: valid_until must be after assessed_at")
 
     if status == "complete":
@@ -150,6 +151,17 @@ def validate_record(record: dict[str, Any], *, label: str, now: datetime | None 
     limitations = record["limitations"]
     require(isinstance(limitations, list) and len(limitations) == len(set(limitations)), f"{label}: limitations must be a unique list")
     require(all(isinstance(item, str) and item.strip() for item in limitations), f"{label}: limitations must contain non-empty strings")
+
+
+def validate_record_identity(record: dict[str, Any], *, path: Path, seen_ids: set[str]) -> None:
+    assessment_id = record.get("assessment_id")
+    require(
+        isinstance(assessment_id, str) and SLUG.fullmatch(assessment_id) is not None,
+        f"{path}: invalid assessment_id",
+    )
+    require(path.stem == assessment_id, f"{path}: filename must match assessment_id")
+    require(assessment_id not in seen_ids, f"{path}: duplicate assessment_id: {assessment_id}")
+    seen_ids.add(assessment_id)
 
 
 def validate_schema() -> None:
@@ -181,9 +193,12 @@ def main() -> None:
     validate_qualification_binding(SIGNING_QUALIFICATION, "signing qualification contract")
 
     count = 0
+    seen_ids: set[str] = set()
     if ASSESSMENT_DIR.exists():
         for path in sorted(ASSESSMENT_DIR.glob("*.json")):
-            validate_record(load_json(path, str(path)), label=str(path))
+            record = load_json(path, str(path))
+            validate_record_identity(record, path=path, seen_ids=seen_ids)
+            validate_record(record, label=str(path))
             count += 1
 
     text = README.read_text(encoding="utf-8")
