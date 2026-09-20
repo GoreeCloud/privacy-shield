@@ -22,7 +22,7 @@ RECORD_PATH = "reviews/provider-access-control/*.json"
 SHA40 = re.compile(r"^[0-9a-f]{40}$")
 SLUG = re.compile(r"^[a-z0-9][a-z0-9-]*$")
 REPO = re.compile(r"^GoreeCloud/[A-Za-z0-9._-]+$")
-EVIDENCE = re.compile(r"^evidence\\+sha256:[0-9a-f]{64}:(?:https://|github://|gdrive://|qualification-run:|artifact:)\\S+$")
+EVIDENCE = re.compile(r"^evidence\+sha256:[0-9a-f]{64}:(?:https://|github://|gdrive://|qualification-run:|artifact:)\S+$")
 CONTROLS = {
     "boundary_exclusivity",
     "workload_identity",
@@ -66,7 +66,7 @@ def load_json(path: Path, label: str) -> dict[str, Any]:
 
 def parse_time(value: Any, label: str) -> datetime:
     require(isinstance(value, str) and value == value.strip(), f"{label} must be canonical text")
-    require(bool(re.search(r"(?:Z|[+-]\\d{2}:\\d{2})$", value)), f"{label} must be timezone-qualified")
+    require(bool(re.search(r"(?:Z|[+-]\d{2}:\d{2})$", value)), f"{label} must be timezone-qualified")
     try:
         parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
     except ValueError as exc:
