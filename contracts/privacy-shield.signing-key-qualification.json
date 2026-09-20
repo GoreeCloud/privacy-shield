@@ -57,6 +57,11 @@
     "fresh_exact_provider_acceptance_record_still_required": true,
     "exact_source_revision_binding_required": true,
     "exact_provider_version_binding_required": true,
-    "exact_deployment_binding_required": true
+    "exact_deployment_binding_required": true,
+    "external_access_control_assessment_schema": "contracts/privacy-shield.provider-access-control-assessment.schema.json",
+    "external_access_control_assessment_records": "reviews/provider-access-control/*.json",
+    "external_access_control_assessment_is_provider_selection": false,
+    "external_access_control_assessment_is_production_acceptance": false,
+    "external_access_control_assessment_exact_provider_deployment_bound": true
   }
 }
