@@ -15,13 +15,13 @@
   },
   "criteria": {
     "digest_only_signing": {
-      "result": "pending",
+      "result": "passed",
       "evidence_refs": [
         "evidence+sha256:212607e3358fcf6a9140c3df1f7f7f130a8b6bf496648dcf1bd2e3e5e18dac46:github://GoreeCloud/goreecloud-privacy-shield/evidence/provider-evaluations/ovhcloud-kms-signing-lifecycle-audit-candidate-20260919.md"
       ]
     },
     "non_exportable_signing_material": {
-      "result": "pending",
+      "result": "passed",
       "evidence_refs": [
         "evidence+sha256:45593ed53b2f5bb2dac7bb24d912cdf234c8484430cf58beceadf1e11709ad68:github://GoreeCloud/goreecloud-privacy-shield/evidence/provider-evaluations/ovhcloud-kms-hsm-signing-candidate-20260919.md"
       ]
@@ -90,7 +90,7 @@
     "authorizing": false,
     "production_acceptance_authorized": false,
     "evidence_reference": "evidence+sha256:45593ed53b2f5bb2dac7bb24d912cdf234c8484430cf58beceadf1e11709ad68:github://GoreeCloud/goreecloud-privacy-shield/evidence/provider-evaluations/ovhcloud-kms-hsm-signing-candidate-20260919.md",
-    "evaluated_at": "2026-09-19T22:10:00Z",
+    "evaluated_at": "2026-09-20T00:34:23Z",
     "valid_until": "2026-10-19T22:10:00Z"
   },
   "privacy": {
@@ -100,10 +100,9 @@
     "full_capability_tokens_in_evaluation_record": false
   },
   "limitations": [
-    "Candidate is a proprietary managed external service and requires a documented GoreeCloud exception/necessity review before long-term production selection.",
-    "No KMS order, key creation, billing change, adapter implementation, or exact runtime qualification is authorized or performed.",
-    "Both OVHcloud KMS evidence packages are governed-reviewed and accepted for evaluation; every criterion remains pending, producer-identity binding has no evidence reference, and provider selection remains unauthorized.",
-    "Digest-only signing semantics, key lifecycle, audit minimization, fail-closed stale-key behavior, continuity, and operational ownership remain open.",
-    "This draft evaluation is non-authorizing and is not a provider selection or production acceptance."
+    "Reviewed provider documentation supports digest-only signing through the isdigest request shape and HSM-backed non-exportable signing material as candidate capabilities.",
+    "Opaque/stable key-reference semantics, lifecycle integration, producer-identity binding, privacy-safe audit acceptance, fail-closed stale/untrusted-key behavior, outage/degraded operation, recovery continuity, exact access-control isolation, and operational ownership remain pending until GoreeCloud-specific implementation or deployment evidence exists.",
+    "The candidate is a proprietary managed external service and still requires a documented GoreeCloud exception/necessity decision plus separate explicit cost/order authorization before any billable action, provider selection, KMS domain/key creation, or deployment.",
+    "This draft evaluation remains non-authorizing and does not establish provider selection, production acceptance, release, Stable qualification, or Privacy Shield production readiness."
   ]
 }
