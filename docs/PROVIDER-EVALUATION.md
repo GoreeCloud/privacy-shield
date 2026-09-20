@@ -30,6 +30,14 @@ The required criteria are digest-only signing, non-exportable signing material, 
 
 Every resolved criterion requires at least one evidence reference. A `complete` evaluation requires every criterion to be `passed` and a future `valid_until`. Evaluation records must keep both `authorizing: false` and `production_acceptance_authorized: false`.
 
+## External access-control assessment
+
+Provider candidates whose access-control or isolation guarantees depend on deployment architecture, network/service boundaries, workload identity, IAM policy, or other controls outside the provider's intrinsic data model must use the dedicated external assessment contract at `contracts/privacy-shield.provider-access-control-assessment.schema.json`. Governed records belong under `reviews/provider-access-control/*.json`.
+
+A complete assessment must bind the exact provider identity and version, Privacy Shield source revision and tree, target deployment boundary, allowed runtime identity, and the absence of direct end-user provider access. It must carry content-addressed evidence for boundary exclusivity, workload identity, least privilege, credential lifecycle, direct-bypass prevention, fail-closed unauthorized access, administrative governance, privacy-safe audit, and production-grade controls.
+
+The assessment is evidence governance only: `authorizing=false` and `production_acceptance_authorized=false` are mandatory. It may support a later candidate-evaluation criterion decision or production-acceptance evidence package, but it is not provider selection, deployment authorization, production acceptance, release, or Stable qualification. No assessment records currently exist.
+
 ## Selection binding
 
 Each state-provider or signing-key provider selection must carry `evaluation_record_id` and reference an existing evaluation dossier of the same provider type.
@@ -48,7 +56,7 @@ Evidence references should point to bounded authoritative evidence without copyi
 
 ## Current lifecycle boundary
 
-The repository currently contains two real but **draft and non-authorizing** candidate evaluation records:
+The repository currently contains two real, non-authorizing candidate evaluation records:
 
 - a self-hosted multi-host FoundationDB state-provider candidate, chosen for evaluation because the software is Apache-2.0 open source and has a distributed transactional architecture compatible with the Privacy Shield state contract in principle; and
 - an OVHcloud KMS HSM-backed asymmetric signing candidate, recorded only for evaluation of external key custody and subject to GoreeCloud's proprietary-service exception/necessity governance plus separate cost/order authorization.
