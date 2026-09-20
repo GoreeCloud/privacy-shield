@@ -114,6 +114,29 @@ class ProviderAccessControlAssessmentTests(unittest.TestCase):
         with self.assertRaises(SystemExit):
             validator.validate_record(value, label="test", now=NOW)
 
+    def test_future_assessed_at_fails_closed(self) -> None:
+        value = record()
+        value["governance"]["assessed_at"] = "2026-09-19T21:01:00Z"
+        with self.assertRaises(SystemExit):
+            validator.validate_record(value, label="test", now=NOW)
+
+    def test_assessment_filename_must_match_identity(self) -> None:
+        value = record()
+        with self.assertRaises(SystemExit):
+            validator.validate_record_identity(
+                value,
+                path=Path("different-assessment-id.json"),
+                seen_ids=set(),
+            )
+
+    def test_duplicate_assessment_identity_fails_closed(self) -> None:
+        value = record()
+        path = Path(f"{value['assessment_id']}.json")
+        seen_ids: set[str] = set()
+        validator.validate_record_identity(value, path=path, seen_ids=seen_ids)
+        with self.assertRaises(SystemExit):
+            validator.validate_record_identity(value, path=path, seen_ids=seen_ids)
+
 
 if __name__ == "__main__":
     unittest.main()
