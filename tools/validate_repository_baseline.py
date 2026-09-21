@@ -23,8 +23,11 @@ REQUIRED_ROOT_FILES = (
 
 # Privacy Shield demonstrably uses pull requests for material changes, so the
 # repository PR template is an applicable conditional control.
+VALIDATION_WORKFLOW = ".github/workflows/validate.yml"
+
 REQUIRED_REPOSITORY_CONTROLS = (
     ".github/PULL_REQUEST_TEMPLATE.md",
+    VALIDATION_WORKFLOW,
 )
 
 MINIMUM_MEANINGFUL_CHARACTERS = 20
@@ -55,6 +58,18 @@ def validate_repository_baseline(root: Path = ROOT) -> list[str]:
             continue
 
         validated.append(relative)
+
+    workflow_path = root / VALIDATION_WORKFLOW
+    if workflow_path.is_file():
+        workflow = workflow_path.read_text(encoding="utf-8")
+        for token in (
+            "persist-credentials: false",
+            "Verify exact Privacy Shield revision",
+            "EXPECTED_SHA: ${{ github.event.pull_request.head.sha || github.sha }}",
+            'run: test "$(git rev-parse HEAD)" = "$EXPECTED_SHA"',
+        ):
+            if token not in workflow:
+                problems.append(f"validation workflow missing exact-revision control: {token}")
 
     if problems:
         raise SystemExit("Privacy Shield repository baseline validation failed: " + "; ".join(problems))
