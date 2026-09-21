@@ -20,7 +20,16 @@ class RepositoryBaselineTests(unittest.TestCase):
         for relative in (*validator.REQUIRED_ROOT_FILES, *validator.REQUIRED_REPOSITORY_CONTROLS):
             path = root / relative
             path.parent.mkdir(parents=True, exist_ok=True)
-            path.write_text(f"meaningful repository control for {relative}\n", encoding="utf-8")
+            if relative == validator.VALIDATION_WORKFLOW:
+                path.write_text(
+                    "persist-credentials: false\n"
+                    "Verify exact Privacy Shield revision\n"
+                    "EXPECTED_SHA: ${{ github.event.pull_request.head.sha || github.sha }}\n"
+                    'run: test "$(git rev-parse HEAD)" = "$EXPECTED_SHA"\n',
+                    encoding="utf-8",
+                )
+            else:
+                path.write_text(f"meaningful repository control for {relative}\n", encoding="utf-8")
 
     def test_required_root_set_matches_governed_fourteen_file_baseline(self) -> None:
         self.assertEqual(len(validator.REQUIRED_ROOT_FILES), 14)
@@ -32,7 +41,7 @@ class RepositoryBaselineTests(unittest.TestCase):
             root = Path(directory)
             self.populate(root)
             validated = validator.validate_repository_baseline(root)
-            self.assertEqual(len(validated), 15)
+            self.assertEqual(len(validated), 16)
 
     def test_missing_mandatory_file_fails(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
@@ -47,6 +56,16 @@ class RepositoryBaselineTests(unittest.TestCase):
             root = Path(directory)
             self.populate(root)
             (root / "FEATURES.md").write_text("TBD\n", encoding="utf-8")
+            with self.assertRaises(SystemExit):
+                validator.validate_repository_baseline(root)
+
+    def test_validation_workflow_requires_exact_revision_readback(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            self.populate(root)
+            (root / validator.VALIDATION_WORKFLOW).write_text(
+                "persist-credentials: false\n", encoding="utf-8"
+            )
             with self.assertRaises(SystemExit):
                 validator.validate_repository_baseline(root)
 
