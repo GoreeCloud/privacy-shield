@@ -31,23 +31,45 @@ class RepositoryBaselineTests(unittest.TestCase):
             else:
                 path.write_text(f"meaningful repository control for {relative}\n", encoding="utf-8")
 
-    def test_required_root_set_matches_governed_fourteen_file_baseline(self) -> None:
-        self.assertEqual(len(validator.REQUIRED_ROOT_FILES), 14)
+    def test_required_root_set_matches_governed_sixteen_file_baseline(self) -> None:
+        self.assertEqual(len(validator.REQUIRED_ROOT_FILES), 16)
+        self.assertIn("IMPLEMENTED-FEATURES.md", validator.REQUIRED_ROOT_FILES)
+        self.assertIn("PLANNED-FEATURES.md", validator.REQUIRED_ROOT_FILES)
+        self.assertIn("CHANGELOGS.md", validator.REQUIRED_ROOT_FILES)
         self.assertIn("PRIVACY POLICY.md", validator.REQUIRED_ROOT_FILES)
         self.assertIn("NOTES.md", validator.REQUIRED_ROOT_FILES)
+        self.assertNotIn("FEATURE-ROADMAP.md", validator.REQUIRED_ROOT_FILES)
 
     def test_complete_baseline_passes(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             self.populate(root)
             validated = validator.validate_repository_baseline(root)
-            self.assertEqual(len(validated), 16)
+            self.assertEqual(len(validated), 18)
 
     def test_missing_mandatory_file_fails(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             self.populate(root)
             (root / "SECURITY.md").unlink()
+            with self.assertRaises(SystemExit):
+                validator.validate_repository_baseline(root)
+
+    def test_missing_feature_governance_file_fails(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            self.populate(root)
+            (root / "IMPLEMENTED-FEATURES.md").unlink()
+            with self.assertRaises(SystemExit):
+                validator.validate_repository_baseline(root)
+
+    def test_retired_feature_roadmap_fails(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            self.populate(root)
+            (root / "FEATURE-ROADMAP.md").write_text(
+                "retired roadmap must not return to the repository\n", encoding="utf-8"
+            )
             with self.assertRaises(SystemExit):
                 validator.validate_repository_baseline(root)
 

@@ -30,11 +30,11 @@ Confirm applicable impacts on:
 - evidence/status privacy;
 - credentials, key material, or secret-bearing data;
 - runtime/provider trust boundaries;
-- Wardveil, Everkeep, Identity, Mesh, DNS, Network, and Browser authority separation.
+- Wardveil, Everkeep, Identity, Mesh, Policy, Observability, DNS, Network, and Browser authority separation.
 
 ## Documentation and records
 
-List affected repository documentation and canonical GoreeCloud records. Update synchronized roadmap/user-manual/changelog records when the change materially affects them.
+List affected repository documentation and canonical GoreeCloud records. Update `IMPLEMENTED-FEATURES.md`, `PLANNED-FEATURES.md`, and `CHANGELOGS.md` when feature state or meaningful implementation history changes. Keep actionable unfinished work in GoreeCloud Tasks Management. Do not recreate or synchronize retired Google Drive feature-roadmap/changelog mirrors.
 
 ## Rollback and recovery
 

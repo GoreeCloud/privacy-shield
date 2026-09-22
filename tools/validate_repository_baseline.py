@@ -8,7 +8,9 @@ REQUIRED_ROOT_FILES = (
     "README.md",
     "SPECIFICATIONS.md",
     "FEATURES.md",
-    "FEATURE-ROADMAP.md",
+    "IMPLEMENTED-FEATURES.md",
+    "PLANNED-FEATURES.md",
+    "CHANGELOGS.md",
     "BENEFITS.md",
     "COMPETITIVE-OBJECTIVES.md",
     "BRANDING.md",
@@ -19,6 +21,10 @@ REQUIRED_ROOT_FILES = (
     ".gitignore",
     ".editorconfig",
     "goreecloud.platform.yaml",
+)
+
+RETIRED_ROOT_FILES = (
+    "FEATURE-ROADMAP.md",
 )
 
 # Privacy Shield demonstrably uses pull requests for material changes, so the
@@ -59,6 +65,10 @@ def validate_repository_baseline(root: Path = ROOT) -> list[str]:
 
         validated.append(relative)
 
+    for relative in RETIRED_ROOT_FILES:
+        if (root / relative).exists():
+            problems.append(f"retired repository control must not exist: {relative}")
+
     workflow_path = root / VALIDATION_WORKFLOW
     if workflow_path.is_file():
         workflow = workflow_path.read_text(encoding="utf-8")
@@ -83,6 +93,7 @@ def main() -> None:
         "Privacy Shield repository documentation baseline passed: "
         f"mandatory_root={len(REQUIRED_ROOT_FILES)}, "
         f"conditional_controls={len(REQUIRED_REPOSITORY_CONTROLS)}, "
+        f"retired_root={len(RETIRED_ROOT_FILES)}, "
         f"validated={len(validated)}."
     )
 

@@ -1,0 +1,41 @@
+# GoreeCloud Privacy Shield — Planned Features
+
+**Status:** Authoritative repository planned-feature record  
+**As of:** 2026-09-22  
+**Canonical repository:** `GoreeCloud/privacy-shield`  
+**Lifecycle:** Development
+
+## Purpose
+
+This file records planned, incomplete, migration-required, blocked, and acceptance-gated Privacy Shield work. It preserves the meaningful obligations from the retired repository `FEATURE-ROADMAP.md` and the former Drive-side Privacy Shield feature-roadmap records without retaining Google Drive as a feature authority.
+
+Actionable implementation work remains governed through GoreeCloud Tasks Management and repository issues/PRs as applicable. A planned feature is not implemented merely because it appears here.
+
+## Planned and incomplete work
+
+| ID | Planned feature / obligation | Priority | Current state |
+| --- | --- | --- | --- |
+| PF-001 | Complete Privacy Shield 2.0 transactional production authority state with durable atomic transactions, distributed/multi-writer semantics, fail-closed conflict behavior, restart recovery, migration/rollback, accepted provider selection, deployment qualification, backup/restore, and production evidence. | P0 | Provider-neutral source governance exists. FoundationDB remains a failed candidate because access-control isolation is not accepted; the intended multi-host topology is not currently qualified. |
+| PF-002 | Complete production signing-key custody with opaque stable references, non-exportable key material, digest-only signing, exact provider/version/producer binding, rotation/retirement/revocation, privacy-safe auditing, outage/recovery handling, accepted provider selection, and production qualification. | P0 | Provider-neutral source governance exists. OVHcloud KMS HSM remains a non-authorizing candidate; proprietary-service exception/necessity and separate cost/order authorization remain required before billable action or selection. |
+| PF-003 | Complete production GoreeCloud Identity issuance/JWKS/key custody, authenticated requester resolution, approved transport, capability-reference verification/consumption, replay/revocation/expiry enforcement, and Search required-mode adoption without collapsing service identity, requester identity, and Privacy Shield authorization. | P0 | Source boundaries are implemented; deployed Identity/transport/runtime/production acceptance is not established. |
+| PF-004 | Complete real-user/runtime adoption of Consent Lifecycle 2.0, purpose/permission drift detection, Privacy Receipts 2.0, decision preview, and Privacy Lock using accepted production state/signing providers. | P0 | Source foundations are implemented; participating runtimes, durable providers, deployment, production acceptance, release, and Stable qualification remain open. |
+| PF-005 | Complete Everkeep-backed backup, restore, export, portability, lifecycle execution evidence, clean recovery, and production acceptance for Privacy Shield-owned durable state. | P0 | Source lifecycle handoff exists; deployed Everkeep execution and recovery evidence remain open. |
+| PF-006 | Complete live GoreeCloud Identity-authenticated Mesh delivery and Platform Registry publication with deployed credential issuance/revocation, verified producer/receipt binding, live routing, evidence refresh, target-environment validation, and production acceptance. | P0 | Source delivery/credential boundaries are implemented; live runtime acceptance remains migration-required. |
+| PF-007 | Produce and independently review real compiled GoreeCloud Browser acceptance evidence bound to exact Browser source/tree, artifact digest, package/runtime identity, representative platform/engine, observation freshness, and all required privacy behavior dimensions. | P0 | Contract/evaluator source exists; no real Browser runtime acceptance record is established. |
+| PF-008 | Migrate Privacy Center from historical/pre-reset Glaze UI 2.1.0 source to current Stable Glaze UI 1.6.0 and complete exact-revision consumer acceptance, rendered/accessibility/resilience review, representative-target performance, rollback, deterministic build, deployed-byte verification, DNS/HTTPS verification, publication readback, release, and production evidence. | P0 | Current manifest truthfully records 2.1.0 source as migration-required against Stable 1.6.0. |
+| PF-009 | Reconcile Privacy Shield 2.0 icon, logo, lockups, compact derivatives, accessible visual presentations, and promotion against the current Stable Glaze UI 1.6.0 authority. | P1 | Planned. Existing approved identity remains current until a reviewed replacement is accepted. |
+| PF-010 | Continue adapter-by-adapter Privacy Shield expansion across DNS, Network, applications, AI/context, messaging, search, storage/files, health-related applications, and other services with exact capability/runtime evidence and independent production acceptance. | P1 | Monitor and Notify declarations are source-integrated; remaining adapters and runtime acceptance remain incremental. |
+| PF-011 | Adopt and accept GoreeCloud Policy integration at a bounded Privacy Shield boundary, including exact Policy contract provenance, shared decision/distribution semantics where architecturally applicable, freshness/expiry, enforcement-coordination boundaries, obligations handling, target-environment evidence, and production acceptance without transferring Privacy Shield privacy authority. | P0 | Current Platform Contract state is `applicable-blocked`; no accepted Privacy Shield-specific Policy integration exists on authoritative main. |
+| PF-012 | Adopt and accept GoreeCloud Observability integration using privacy-minimized operational evidence, exact provenance, producer identity, freshness/completeness, retention/deletion behavior, diagnostics/alerting, recovery, target-environment validation, and production acceptance. | P0 | Current Platform Contract state is `applicable-blocked`; no accepted Privacy Shield-specific Observability integration exists on authoritative main. |
+| PF-013 | Complete current-contract Manager and Wardveil Security runtime acceptance while preserving privacy minimization and each system's authority. | P1 | Source/status presentation boundaries exist; current runtime and production acceptance remain incomplete. |
+| PF-014 | Protect authoritative `main` with repository-appropriate reviewed-pull-request integration, required validation checks, force-push/deletion protection, and independently verified limited bypass behavior. | P0 | Live GitHub readback on 2026-09-22 reports `main` as unprotected with no enforced required checks. |
+| PF-015 | Complete Privacy Shield target-environment runtime, failure-mode, monitoring/alerting, recovery, rollback, deployment, provider, release, production, and Stable qualification on exact accepted revisions/artifacts. | P0 | Privacy Shield remains Development/nonconformant. Source validation and green CI do not establish production or Stable state. |
+| PF-016 | Complete separately governed GoreeCloud Sync privacy-authorization and synchronization-governance integration where architecturally applicable. | P1 | Open. Sync remains separately governed and is not a tenth Integral Platform System. |
+
+## Governance controls migrated from the legacy roadmap
+
+Feature state changes require authoritative evidence. Actionable unfinished work must remain represented in GoreeCloud Tasks Management when required. Repository feature records, implementation evidence, issues/PRs, and lifecycle records must remain reconciled; Google Drive roadmap copies are no longer an authoritative synchronization target.
+
+## Maintenance rule
+
+Update this file in the same governed repository workflow whenever planned scope, priority, dependency, blocker, lifecycle disposition, or implementation state materially changes. When a planned capability gains source implementation, record that implemented truth in `IMPLEMENTED-FEATURES.md` while retaining any unresolved runtime/production obligations here rather than falsely marking the whole capability complete.
