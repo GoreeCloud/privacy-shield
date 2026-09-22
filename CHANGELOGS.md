@@ -12,12 +12,13 @@ Google Drive roadmap/changelog copies are not authoritative under the GoreeCloud
 
 ## 2026-09-22
 
-### Repository feature/changelog governance migration
+### Repository feature/changelog governance migration — PR #133
 
 - Replaced the retired repository `FEATURE-ROADMAP.md` control with authoritative `IMPLEMENTED-FEATURES.md`, `PLANNED-FEATURES.md`, and `CHANGELOGS.md` records.
 - Split verified source capabilities from incomplete/runtime/production obligations while preserving the meaningful Privacy Shield roadmap scope.
 - Updated repository-baseline validation so the three Git-native records are mandatory and the retired roadmap fails closed if reintroduced.
-- Removed Google Drive roadmap synchronization as an ongoing repository obligation; former Drive roadmap records remain migration evidence only until governed cleanup is verified.
+- Removed Google Drive roadmap synchronization as an ongoing repository obligation; former Drive roadmap records are migration evidence only pending governed cleanup after authoritative destination verification.
+- Exact candidate `412b377ec13bf4b0b72c7ed3b78c75dae1a30703` passed Privacy Shield Validation run #506 / Actions run `35789353021` and was squash-merged as `eab600359430791e5e52fd8125e2e181f5e5f9d1`.
 - This governance migration does not change Privacy Shield runtime behavior, provider selection, production acceptance, release status, or Stable qualification.
 
 ## 2026-09-21
@@ -25,7 +26,7 @@ Google Drive roadmap/changelog copies are not authoritative under the GoreeCloud
 ### Exact-revision repository stabilization — PR #132
 
 - Hardened Privacy Shield validation with explicit post-checkout exact-revision readback and repository-baseline regression coverage.
-- Exact candidate `63c1554fb84fd8b079141651ba863539511662bd` passed Privacy Shield Validation before squash merge as authoritative main `051fd663e231e3d41508dd810cec5288c38ad410`; post-merge validation also succeeded.
+- Exact candidate `63c1554fb84fd8b079141651ba863539511662bd` passed Privacy Shield Validation before squash merge as `051fd663e231e3d41508dd810cec5288c38ad410`; post-merge validation also succeeded.
 - Provider selection, deployment, runtime acceptance, production acceptance, release, and Stable status remained unchanged.
 
 ### Canonical repository and current-authority reconciliation — PR #131
