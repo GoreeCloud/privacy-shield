@@ -41,6 +41,7 @@ const SENSITIVE_ATTRIBUTE_TOKENS = [
   'payload',
   'message',
   'query',
+  'body',
   'email',
   'phone',
   'address',
