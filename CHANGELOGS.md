@@ -12,6 +12,14 @@ Google Drive roadmap/changelog copies are not authoritative under the GoreeCloud
 
 ## 2026-09-22
 
+### GoreeCloud Observability v1 bounded source adoption — issue #135
+
+- Added a pure Privacy Shield operational-signal constructor pinned to authoritative GoreeCloud Observability revision `a7f6a65f442d3e517baddbe7b6ce7c250d142c8c` and contract `https://goreecloud.com/contracts/observability/operational-signal/v1`.
+- Preserved the complete Observability nine-state vocabulary and contract TTL bounds while allowing explicit unknown/unavailable/stale/partially-observed evidence rather than manufacturing healthy state.
+- Added recursive privacy minimization that rejects obvious credentials, secrets, content/payload/message/query fields, direct contact fields, IP-address fields, and direct user identifiers from signal attributes.
+- Reconciled Platform Contract 0.4 Observability state from `applicable-blocked` to `applicable-migration-required` for source adoption only.
+- No network publication, producer credential, telemetry retention, alerting/SLO authority, target-environment monitoring coverage, production acceptance, release, or Stable qualification is established by this source change.
+
 ### Repository feature/changelog governance migration — PR #133
 
 - Replaced the retired repository `FEATURE-ROADMAP.md` control with authoritative `IMPLEMENTED-FEATURES.md`, `PLANNED-FEATURES.md`, and `CHANGELOGS.md` records.
