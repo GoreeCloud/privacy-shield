@@ -76,12 +76,13 @@ platform_systems:
     - src/platform-registry-delivery.mjs
     notes: Privacy Shield implements source-validated fresh credential-provider boundaries for Mesh evidence and Platform Registry publication using narrowly scoped GoreeCloud Identity credentials. Deployed issuance, JWKS/key custody, rotation/revocation operations, live acceptance, and current-contract validation remain pending.
   policy:
-    result: applicable-blocked
+    result: applicable-migration-required
     version: null
     evidence:
-    - docs/PLATFORM-ADOPTION.md
-    - README.md
-    notes: Privacy Shield owns privacy-domain authorization and data-use rules within its authority, but GoreeCloud Policy is a separate Integral Platform System. No accepted GoreeCloud Policy runtime contract, shared decision exchange, distribution, enforcement-coordination integration, or component-specific acceptance is established for Privacy Shield.
+    - src/platform-policy-contract.mjs
+    - tests/platform-policy-contract.test.mjs
+    - docs/integrations/policy.md
+    notes: Privacy Shield now has source-level request construction and decision-evidence validation for the authoritative GoreeCloud Policy v1 contracts pinned to Policy revision 46071886da37a6566b69cc923005eef64cce2bcc. A valid Policy decision does not become Privacy Shield consent, capability, or execution authority. No live caller identity, authenticated decision exchange, policy distribution, freshness/expiry acceptance, obligations handling, enforcement coordination, target-environment evidence, or production acceptance is established.
   observability:
     result: applicable-migration-required
     version: null
@@ -169,6 +170,9 @@ conformance:
   - src/privacy-state-store.mjs
   - src/mesh-delivery.mjs
   - src/platform-registry-delivery.mjs
+  - src/platform-policy-contract.mjs
+  - tests/platform-policy-contract.test.mjs
+  - docs/integrations/policy.md
   - src/observability-signal.mjs
   - tests/observability-signal.test.mjs
   - docs/integrations/observability.md
@@ -186,6 +190,6 @@ conformance:
   - Scoped Identity credential boundaries and Mesh/Platform Registry clients are source-validated, but live GoreeCloud Identity issuance, deployed JWKS trust, credential rotation/revocation, live Mesh publication, and end-to-end acceptance remain pending.
   - Everkeep production backup, restore, export, portability, and recovery acceptance remain pending.
   - Runtime-specific Browser, DNS, Network, application, and other Privacy Shield adapters retain independent acceptance gates.
-  - GoreeCloud Policy integration remains blocked pending an accepted platform Policy runtime contract plus Privacy Shield-specific policy decision, distribution, enforcement-coordination, and evidence acceptance.
+  - GoreeCloud Policy v1 source contracts are adopted, but live caller identity, authenticated decision exchange, distribution, freshness/expiry, obligations handling, enforcement coordination, target-environment evidence, and production acceptance remain outstanding.
   - GoreeCloud Observability v1 source contract is adopted for privacy-minimized signal construction, but live producer identity, authenticated publication/collection, freshness/completeness, retention/deletion, diagnostics/alerting, target-environment evidence, and production acceptance remain outstanding.
   - Target-environment runtime, failure-mode, recovery, publication, and explicit production acceptance remain pending.
