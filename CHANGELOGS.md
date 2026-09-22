@@ -12,12 +12,23 @@ Google Drive roadmap/changelog copies are not authoritative under the GoreeCloud
 
 ## 2026-09-22
 
-### GoreeCloud Observability v1 bounded source adoption — issue #135
+### GoreeCloud Policy v1 bounded source adoption — issue #137
+
+- Added a pure Privacy Shield Policy v1 request constructor and decision-evidence validator pinned to authoritative GoreeCloud Policy revision `46071886da37a6566b69cc923005eef64cce2bcc`.
+- Preserved the exact six-value Policy decision vocabulary and exact request/decision field sets, with optional binding of returned decision provenance to the expected request.
+- Added recursive minimization that rejects obvious credentials/secrets and raw private-content context keys.
+- Kept a valid Policy `allow` explicitly non-authorizing for Privacy Shield: the adapter exposes no consent, execution, obligations-execution, or Privacy Shield state-mutation function.
+- Reconciled Platform Contract 0.4 Policy state from `applicable-blocked` to `applicable-migration-required` for source adoption only.
+- No Policy caller credential, live decision exchange, policy distribution, freshness/expiry acceptance, obligations execution, enforcement coordination, target-environment evidence, production acceptance, release, or Stable qualification is established by this source change.
+
+### GoreeCloud Observability v1 bounded source adoption — PR #136 / issue #135
 
 - Added a pure Privacy Shield operational-signal constructor pinned to authoritative GoreeCloud Observability revision `a7f6a65f442d3e517baddbe7b6ce7c250d142c8c` and contract `https://goreecloud.com/contracts/observability/operational-signal/v1`.
 - Preserved the complete Observability nine-state vocabulary and contract TTL bounds while allowing explicit unknown/unavailable/stale/partially-observed evidence rather than manufacturing healthy state.
-- Added recursive privacy minimization that rejects obvious credentials, secrets, content/payload/message/query fields, direct contact fields, IP-address fields, and direct user identifiers from signal attributes.
+- Added recursive privacy minimization that rejects obvious credentials, secrets, content/payload/message/query/body fields, direct contact fields, IP-address fields, and direct user identifiers from signal attributes.
 - Reconciled Platform Contract 0.4 Observability state from `applicable-blocked` to `applicable-migration-required` for source adoption only.
+- First exact-head validation caught a missing `request_body` minimization case; source was hardened and all exact-head gates rerun successfully before merge.
+- Squash-merged as signed commit `588dfb0f3a6671028dfc8bb032f94501dab3d101`; post-merge Privacy Shield Validation and Platform Contract runs succeeded.
 - No network publication, producer credential, telemetry retention, alerting/SLO authority, target-environment monitoring coverage, production acceptance, release, or Stable qualification is established by this source change.
 
 ### Repository feature/changelog governance migration — PR #133
