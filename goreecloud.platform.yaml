@@ -83,12 +83,13 @@ platform_systems:
     - README.md
     notes: Privacy Shield owns privacy-domain authorization and data-use rules within its authority, but GoreeCloud Policy is a separate Integral Platform System. No accepted GoreeCloud Policy runtime contract, shared decision exchange, distribution, enforcement-coordination integration, or component-specific acceptance is established for Privacy Shield.
   observability:
-    result: applicable-blocked
+    result: applicable-migration-required
     version: null
     evidence:
-    - docs/PLATFORM-ADOPTION.md
-    - README.md
-    notes: Privacy Shield has privacy-safe evidence and status boundaries, but GoreeCloud Observability remains a separate Integral Platform System. No accepted Observability runtime integration, telemetry/health contract, freshness/completeness acceptance, or component-specific production evidence is established for Privacy Shield.
+    - src/observability-signal.mjs
+    - tests/observability-signal.test.mjs
+    - docs/integrations/observability.md
+    notes: Privacy Shield now has a source-level privacy-minimized constructor for the authoritative GoreeCloud Observability v1 operational-signal contract pinned to Observability revision a7f6a65f442d3e517baddbe7b6ce7c250d142c8c. No live authenticated publication, collection, freshness/completeness acceptance, retention/deletion acceptance, diagnostics/alerting, target-environment evidence, or production acceptance is established.
 
 health:
   health_endpoint: null
@@ -168,6 +169,9 @@ conformance:
   - src/privacy-state-store.mjs
   - src/mesh-delivery.mjs
   - src/platform-registry-delivery.mjs
+  - src/observability-signal.mjs
+  - tests/observability-signal.test.mjs
+  - docs/integrations/observability.md
   - tests/durable-state.test.mjs
   - tests/privacy-runtime.test.mjs
   - tests/mesh-credential-boundary.test.mjs
@@ -176,12 +180,12 @@ conformance:
   blockers:
   - GoreeCloud Privacy Shield remains in Development and its platform authorization core is not production accepted.
   - Privacy Center requires migration and exact-revision acceptance against the current Stable Glaze UI 1.6.0 baseline.
-  - GoreeCloud Sync privacy-authorization and synchronization-governance integration remains unaccepted; Sync remains separately governed and is not an eighth Integral Platform System.
+  - GoreeCloud Sync privacy-authorization and synchronization-governance integration remains unaccepted; Sync remains separately governed and is not a tenth Integral Platform System.
   - Single-host durable consent, policy, capability replay or revocation, and privacy evidence state are implemented and source-tested, but production/distributed durability and accepted Everkeep-backed recovery remain open.
   - Production signing-key custody and rotation operations remain pending.
   - Scoped Identity credential boundaries and Mesh/Platform Registry clients are source-validated, but live GoreeCloud Identity issuance, deployed JWKS trust, credential rotation/revocation, live Mesh publication, and end-to-end acceptance remain pending.
   - Everkeep production backup, restore, export, portability, and recovery acceptance remain pending.
   - Runtime-specific Browser, DNS, Network, application, and other Privacy Shield adapters retain independent acceptance gates.
   - GoreeCloud Policy integration remains blocked pending an accepted platform Policy runtime contract plus Privacy Shield-specific policy decision, distribution, enforcement-coordination, and evidence acceptance.
-  - GoreeCloud Observability integration remains blocked pending an accepted platform Observability runtime contract plus Privacy Shield-specific health, telemetry, freshness, completeness, diagnostics, and operational-evidence acceptance.
+  - GoreeCloud Observability v1 source contract is adopted for privacy-minimized signal construction, but live producer identity, authenticated publication/collection, freshness/completeness, retention/deletion, diagnostics/alerting, target-environment evidence, and production acceptance remain outstanding.
   - Target-environment runtime, failure-mode, recovery, publication, and explicit production acceptance remain pending.
