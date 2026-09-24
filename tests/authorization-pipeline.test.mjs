@@ -1,7 +1,7 @@
 import crypto from "node:crypto";
 import assert from "node:assert/strict";
 import test from "node:test";
-import { PrivacyDecisionPoint, PrivacyDecision } from "../src/privacy-decision-point.mjs";
+import { PrivacyDecisionPoint, PrivacyDecision, validateRequest } from "../src/privacy-decision-point.mjs";
 import { ConsentAuthority } from "../src/consent-authority.mjs";
 import { PrivacyCapabilityAuthority } from "../src/capability-token.mjs";
 import { PrivacyEvidenceLedger } from "../src/privacy-evidence.mjs";
@@ -47,6 +47,22 @@ function fixture({ capabilityAuthority } = {}) {
   };
   return { request, decisionPoint, enforcementPoint, evidenceLedger, consentAuthority, consent, capabilityAuthority };
 }
+
+
+test("processing-zone validation rejects inherited object property names and non-string values", () => {
+  const { request } = fixture();
+  for (const validZone of ["local", "private_goreecloud", "trusted_service", "external"]) {
+    assert.doesNotThrow(() => validateRequest({ ...request, processing_zone: validZone }));
+  }
+
+  for (const invalidZone of ["constructor", "toString", "__proto__", "valueOf", "", "local ", 0, null, {}]) {
+    assert.throws(
+      () => validateRequest({ ...request, processing_zone: invalidZone }),
+      /Unknown Privacy Shield processing zone|missing processing_zone/,
+      `expected fail-closed rejection of ${String(invalidZone)}`,
+    );
+  }
+});
 
 test("raw decision point does not invent an executable capability reference", () => {
   const { request, decisionPoint } = fixture();

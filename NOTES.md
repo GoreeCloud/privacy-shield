@@ -17,7 +17,7 @@ These controls do not select or deploy a real distributed database, KMS, HSM, cl
 - Canonical project specification: `Project Specification — Privacy Shield` in `GoreeCloud/Projects`.
 - Canonical Privacy Shield policy: `Policy — Privacy Shield`.
 - Canonical central user manual: `GoreeCloud/User Manuals/User Manual — Privacy Shield`.
-- Repository feature roadmap: `FEATURE-ROADMAP.md`, synchronized with `GoreeCloud/Feature Roadmap/Privacy Shield/FEATURE-ROADMAP.docx`.
+- Repository feature authority: `IMPLEMENTED-FEATURES.md` records implemented capabilities and verification state; `PLANNED-FEATURES.md` records planned, deferred, or otherwise not-yet-implemented work. `FEATURE-ROADMAP.md` is retired and must not be recreated.
 - Implementation acceptance detail: `docs/ACCEPTANCE-STATUS.md`.
 
 ## Public website source
@@ -39,3 +39,7 @@ Do not commit credentials, bearer tokens, private keys, signing secrets, recover
 ## Maintenance
 
 These notes are not a substitute for changelogs, specifications, policies, or acceptance records. Update them when repository-level development/operational context materially changes.
+## September 23, 2026 — Processing-zone request validation hardening candidate
+
+A bounded Development candidate tightens the Privacy Decision Point processing-zone validator to accept only own, exact string keys of the approved zone vocabulary. The previous `in` membership test also accepted inherited JavaScript object-property names such as `constructor` and `toString`. The candidate includes positive coverage for all four approved zones and negative coverage for inherited names, whitespace variants, non-string values and missing input. The fix is source-level input validation only: it does not enable production privacy enforcement, select or accept a provider, grant a capability, modify an existing production policy, or qualify runtime/Stable coverage. Integrate only after exact-head CI, independent review and post-merge readback.
+
