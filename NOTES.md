@@ -17,7 +17,7 @@ These controls do not select or deploy a real distributed database, KMS, HSM, cl
 - Canonical project specification: `Project Specification — Privacy Shield` in `GoreeCloud/Projects`.
 - Canonical Privacy Shield policy: `Policy — Privacy Shield`.
 - Canonical central user manual: `GoreeCloud/User Manuals/User Manual — Privacy Shield`.
-- Repository feature roadmap: `FEATURE-ROADMAP.md`, synchronized with `GoreeCloud/Feature Roadmap/Privacy Shield/FEATURE-ROADMAP.docx`.
+- Repository feature authority: `IMPLEMENTED-FEATURES.md` records implemented capabilities and verification state; `PLANNED-FEATURES.md` records planned, deferred, or otherwise not-yet-implemented work. `FEATURE-ROADMAP.md` is retired and must not be recreated.
 - Implementation acceptance detail: `docs/ACCEPTANCE-STATUS.md`.
 
 ## Public website source
