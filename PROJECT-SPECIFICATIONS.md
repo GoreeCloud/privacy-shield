@@ -2,7 +2,7 @@
 
 **Repository:** `GoreeCloud/privacy-shield`  
 **Project type:** First-party platform privacy, consent, minimization, transparency, lifecycle, and data-use authorization system  
-**Lifecycle:** Development  
+**Repository lifecycle declaration (legacy Contract 0.4):** `development`; canonical Contract 2.0 lifecycle reclassification remains pending and must be evidence-backed  
 **Version:** `0.1` repository/platform-contract identity  
 **License:** Mozilla Public License 2.0 (MPL-2.0); default secondary-license compatibility retained  
 **User-facing surface:** Privacy Center  
