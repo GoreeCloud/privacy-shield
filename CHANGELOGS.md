@@ -10,6 +10,18 @@ This file records meaningful Privacy Shield implementation, governance, compatib
 
 Google Drive roadmap/changelog copies are not authoritative under the GoreeCloud Repository Feature Tracking and Changelog Governance standard.
 
+## 2026-09-25
+
+### Privacy Center Glaze UI V1.6 authority reconciliation
+
+- Reconciled Privacy Shield's platform manifest with the current one-retained-website authority in `GoreeCloud/static-websites`.
+- Recorded `https://www.goreecloud.com/privacy/` / `sites/main/privacy/index.html` as the canonical Privacy Center source and GLAZE UI V1.6 / `1.6.0` as its current source target.
+- Bound the reconciliation to current static-website main `d708ae383ae1f7abee649ead32fc1342320eaaf9`, merged from PR #128 exact candidate `3bd8c1671b271949a6bc69e082c7223703b20f76`, whose repository validation, main-site validation, and production-deployment verification runs `35954891536`, `35954891637`, and `35954891626` succeeded.
+- Reclassified the repository-local `website/` Glaze UI 2.1.0 source as legacy/transitional deployment material rather than current Privacy Center source authority.
+- Updated PF-008 from an unperformed source-migration claim to the actual remaining work: exact-current human/rendered/accessibility/performance/resilience/rollback consumer acceptance plus governed legacy deployment retirement/cutover.
+- Added a local cross-repository evidence record at `docs/integrations/privacy-center-static-site.md`.
+- No website presentation evidence grants consent, privacy execution authority, Privacy Shield runtime production acceptance, release approval, or Stable qualification.
+
 ## 2026-09-22
 
 ### GoreeCloud Policy v1 bounded source adoption — issue #137
