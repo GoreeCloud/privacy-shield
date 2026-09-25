@@ -201,7 +201,7 @@ This preserves the broader rule that authority vocabulary must come from current
 
 ## Current Platform Contract boundary
 
-The repository uses Platform Contract 0.4 and evaluates exactly nine Integral Platform Systems.
+The repository currently uses Platform Contract 0.4 and evaluates exactly nine Integral Platform Systems. Canonical Platform Contract 2.0 now governs new migrations; Privacy Shield must migrate explicitly from current evidence rather than silently translating the 0.4 lifecycle.
 
 Current source includes bounded adoption/integration evidence for several systems while remaining fail-closed where runtime acceptance is absent.
 
