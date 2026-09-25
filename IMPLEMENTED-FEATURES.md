@@ -1,7 +1,7 @@
 # GoreeCloud Privacy Shield — Implemented Features
 
 **Status:** Authoritative repository feature record  
-**As of:** 2026-09-22  
+**As of:** 2026-09-25  
 **Canonical repository:** `GoreeCloud/privacy-shield`  
 **Lifecycle:** Development
 
@@ -30,6 +30,7 @@ Google Drive feature-roadmap copies are retired as feature authority under the G
 | IF-013 | Exact-revision repository validation and governed documentation/feature-history baseline for material source changes. | `tools/validate_repository_baseline.py`, `tests/test_repository_baseline.py`, `.github/workflows/validate.yml`; PR #132 established exact-revision stabilization controls and PR #133 migrated feature/changelog authority to the Git-native records. Live branch protection is not established by source validation. |
 | IF-014 | Privacy-minimized GoreeCloud Observability v1 operational-signal construction with exact state vocabulary, TTL bounds, collection-gap preservation, and recursive rejection of obvious secret-bearing/privacy-sensitive telemetry attributes. | Source integrated through PR #136 using `src/observability-signal.mjs`, `tests/observability-signal.test.mjs`, and `docs/integrations/observability.md`. No live publication, producer authentication, telemetry retention, alerting, target-environment coverage, or production acceptance is established. |
 | IF-015 | Bounded GoreeCloud Policy v1 evaluation-request construction and decision-evidence validation with exact decision vocabulary, provenance binding, privacy-minimized context, and no conversion of Policy `allow` into Privacy Shield consent or execution authority. | `src/platform-policy-contract.mjs`, `tests/platform-policy-contract.test.mjs`, and `docs/integrations/policy.md`. No live Policy caller identity, transport, distribution, obligations execution, enforcement coordination, target-environment evidence, or production acceptance is established. |
+| IF-016 | Canonical public Privacy Center source adoption of GLAZE UI V1.6 / 1.6.0 in the single retained GoreeCloud website. | `docs/integrations/privacy-center-static-site.md` binds the current canonical route to `GoreeCloud/static-websites/sites/main/privacy/index.html`, which declares 1.6.0. Static-websites PR #128 exact candidate `3bd8c1671b271949a6bc69e082c7223703b20f76` passed repository, main-site, and production-deployment verification before merge as current main `d708ae383ae1f7abee649ead32fc1342320eaaf9`. Current exact-revision downstream human/consumer acceptance, legacy 2.1.0 deployment retirement, and Privacy Shield runtime/production acceptance remain open. |
 
 ## Authority boundary
 
