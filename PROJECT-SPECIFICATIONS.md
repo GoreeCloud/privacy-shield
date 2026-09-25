@@ -355,7 +355,7 @@ Privacy evidence must not expose reusable secrets, credentials, private keys, or
 
 ## 19. Integral Platform Systems
 
-Privacy Shield must evaluate exactly the nine Integral Platform Systems under Platform Contract 0.4:
+Privacy Shield must evaluate exactly the nine Integral Platform Systems. The repository currently retains Contract 0.4 semantics pending an explicit evidence-backed migration to canonical Platform Contract 2.0; lifecycle values must not be mechanically translated:
 
 - GoreeCloud Manager;
 - Privacy Shield;
