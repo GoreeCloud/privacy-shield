@@ -10,6 +10,11 @@ This file records meaningful Privacy Shield implementation, governance, compatib
 
 Google Drive roadmap/changelog copies are not authoritative under the GoreeCloud Repository Feature Tracking and Changelog Governance standard.
 
+## 2026-09-25 — Development consent-expiry hardening
+
+- Deny consent with a present malformed or non-string expiry before a Privacy Decision Point can return ALLOW. Invalid, empty, and unparseable values use the existing CONSENT_EXPIRED denial path; absent optional expiry retains its existing behavior.
+- Added regression tests for malformed expiry values, expired consent, valid future consent, and omitted expiry. This is source-level hardening; production providers, human security review, integration, runtime acceptance, and release qualification remain separately gated.
+
 ## 2026-09-22
 
 ### GoreeCloud Policy v1 bounded source adoption — issue #137

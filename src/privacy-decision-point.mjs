@@ -46,7 +46,10 @@ export class PrivacyDecisionPoint {
     const policy=this.currentPolicyEngine().evaluate(request); if(policy.effect==="DENY")return deny(request,policy.reason_code,policy.policy_references); if(policy.effect==="REQUIRE_USER_DECISION")return requiresUserDecision(request,policy.reason_code,policy.policy_references); const policyViolation=policyConstraintViolation(policy,request); if(policyViolation)return deny(request,policyViolation,policy.policy_references);
     const consent=this.resolveConsent(request); if(!consent)return requiresUserDecision(request,"CONSENT_REQUIRED",["core.consent",...policy.policy_references]);
     if(this.consentAuthority ? !this.consentAuthority.isEffective(consent) : consent.revoked===true)return deny(request,consent.revoked?"CONSENT_REVOKED":"CONSENT_EXPIRED",["core.consent",...policy.policy_references]);
-    if(consent.expires_at&&Date.parse(consent.expires_at)<=Date.now())return deny(request,"CONSENT_EXPIRED",["core.consent",...policy.policy_references]);
+    if(consent.expires_at!==undefined&&consent.expires_at!==null){
+      const expiry=typeof consent.expires_at==="string"?Date.parse(consent.expires_at):NaN;
+      if(!Number.isFinite(expiry)||expiry<=Date.now())return deny(request,"CONSENT_EXPIRED",["core.consent",...policy.policy_references]);
+    }
     if(consent.purpose&&consent.purpose!==request.purpose)return deny(request,"CONSENT_PURPOSE_MISMATCH",["core.purpose-limitation",...policy.policy_references]);
     if(consent.processing_zones&&!consent.processing_zones.includes(request.processing_zone))return deny(request,"CONSENT_ZONE_MISMATCH",["core.processing-zone",...policy.policy_references]);
     if(consent.destinations&&!consent.destinations.includes(request.destination))return deny(request,"CONSENT_DESTINATION_MISMATCH",["core.destination-limitation",...policy.policy_references]);
