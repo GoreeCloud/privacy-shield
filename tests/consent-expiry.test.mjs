@@ -20,7 +20,20 @@ function evaluate(expires_at) {
 }
 
 test('malformed consent expiry never authorizes a request', () => {
-  for (const expiry of ['invalid', '', ' ', '999999-01-01T00:00:00Z', 0, false, true, [], {}, ['2099-01-01']]) {
+  for (const expiry of [
+    'invalid',
+    '',
+    ' ',
+    ' 2099-01-01T00:00:00Z',
+    '2099-01-01T00:00:00',
+    '999999-01-01T00:00:00Z',
+    0,
+    false,
+    true,
+    [],
+    {},
+    ['2099-01-01'],
+  ]) {
     const result = evaluate(expiry);
     assert.equal(result.outcome, PrivacyDecision.DENY);
     assert.equal(result.reason_code, 'CONSENT_EXPIRED');
@@ -29,9 +42,10 @@ test('malformed consent expiry never authorizes a request', () => {
   }
 });
 
-test('expired consent is denied and valid future consent remains usable', () => {
+test('expired consent is denied and valid canonical future consent remains usable', () => {
   assert.equal(evaluate(new Date(Date.now() - 60000).toISOString()).outcome, PrivacyDecision.DENY);
   assert.equal(evaluate(new Date(Date.now() + 3600000).toISOString()).outcome, PrivacyDecision.ALLOW);
+  assert.equal(evaluate('2099-01-01T05:30:00+05:30').outcome, PrivacyDecision.ALLOW);
 });
 
 test('absent optional expiry preserves the existing consent contract', () => {
