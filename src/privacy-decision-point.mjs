@@ -48,7 +48,7 @@ export class PrivacyDecisionPoint {
     if(this.consentAuthority ? !this.consentAuthority.isEffective(consent) : consent.revoked===true)return deny(request,consent.revoked?"CONSENT_REVOKED":"CONSENT_EXPIRED",["core.consent",...policy.policy_references]);
     if(consent.expires_at!==undefined&&consent.expires_at!==null){
       const value=consent.expires_at;
-      const canonical=typeof value==="string"&&value!==""&&value===value.trim()&&/(?:Z|[+-]\\d{2}:\\d{2})$/.test(value);
+      const canonical=typeof value==="string"&&value!==""&&value===value.trim()&&/(?:Z|[+-]\d{2}:\d{2})$/.test(value);
       const expiry=canonical?Date.parse(value):NaN;
       if(!Number.isFinite(expiry)||expiry<=Date.now())return deny(request,"CONSENT_EXPIRED",["core.consent",...policy.policy_references]);
     }
