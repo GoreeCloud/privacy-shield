@@ -2,15 +2,13 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import {PrivacyDecisionPoint, PrivacyDecision} from '../src/privacy-decision-point.mjs';
 
-function evaluate(expires_at) {
+function evaluateConsent(consent) {
   const pdp = new PrivacyDecisionPoint({
     manifests: new Map([['app', {resources: [{
       resource: 'doc', purposes: ['read'], operations: ['read'],
       processing_zones: ['local'], destinations: ['app']
     }]}]]),
-    consents: new Map([['consent', {
-      purpose: 'read', processing_zones: ['local'], destinations: ['app'], expires_at
-    }]])
+    consents: new Map([['consent', consent]])
   });
   return pdp.evaluate({
     request_id: 'req-expiry', requester: {id: 'app'}, resource: {id: 'doc'},
@@ -18,6 +16,37 @@ function evaluate(expires_at) {
     retention: {mode: 'none'}, consent_reference: 'consent'
   });
 }
+
+function evaluate(expires_at) {
+  return evaluateConsent({
+    purpose: 'read', processing_zones: ['local'], destinations: ['app'], expires_at
+  });
+}
+
+test('malformed legacy consent records never authorize a request', () => {
+  for (const consent of [
+    true,
+    1,
+    'granted',
+    [],
+    {purpose: ''},
+    {purpose: null},
+    {purpose: ' read'},
+    {processing_zones: 'local'},
+    {processing_zones: null},
+    {processing_zones: ['local', 1]},
+    {destinations: 'app'},
+    {destinations: null},
+    {destinations: ['app', {}]},
+    {revoked: 'false'},
+  ]) {
+    const result = evaluateConsent(consent);
+    assert.equal(result.outcome, PrivacyDecision.DENY);
+    assert.equal(result.reason_code, 'CONSENT_INVALID');
+    assert.deepEqual(result.permitted_operations, []);
+    assert.equal(result.capability_token_reference, null);
+  }
+});
 
 test('malformed consent expiry never authorizes a request', () => {
   for (const expiry of [

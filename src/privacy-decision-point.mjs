@@ -13,6 +13,15 @@ function id(prefix) { return `${prefix}_${crypto.randomUUID()}`; }
 function deny(request, reasonCode, policyReferences = []) { return { decision_id:id("psd"), request_id:request.request_id, outcome:PrivacyDecision.DENY, reason_code:reasonCode, effective_scope:null, permitted_operations:[], processing_zone:request.processing_zone, permitted_destinations:[], retention:{mode:"none"}, expires_at:null, consent_required:false, obligations:["record_privacy_evidence"], policy_references:policyReferences, max_capability_ttl_seconds:null, capability_token_reference:null, evidence_reference:id("pse") }; }
 function requiresUserDecision(request, reasonCode, policyReferences = []) { return { decision_id:id("psd"), request_id:request.request_id, outcome:PrivacyDecision.REQUIRE_USER_DECISION, reason_code:reasonCode, effective_scope:request.resource?.scope??null, permitted_operations:[], processing_zone:request.processing_zone, permitted_destinations:[], retention:{mode:"none"}, expires_at:null, consent_required:true, obligations:["obtain_explicit_consent","record_privacy_evidence"], policy_references:policyReferences, max_capability_ttl_seconds:null, capability_token_reference:null, evidence_reference:id("pse") }; }
 function validateRequest(request) { for (const key of ["request_id","requester","resource","operation","purpose","processing_zone","destination","retention"]) if (request?.[key]===undefined||request?.[key]===null) throw new TypeError(`Privacy Shield decision request is missing ${key}`); if (typeof request.processing_zone !== "string" || !Object.hasOwn(ZONE_RANK, request.processing_zone)) throw new TypeError("Unknown Privacy Shield processing zone"); }
+function canonicalConsentText(value) { return typeof value==="string"&&value!==""&&value===value.trim()&&!/[\u0000-\u001F\u007F-\u009F]/.test(value); }
+function validLegacyConsentList(value) { return value===undefined||(Array.isArray(value)&&value.every(canonicalConsentText)); }
+function legacyConsentInvalid(consent) {
+  if(!consent||typeof consent!=="object"||Array.isArray(consent))return true;
+  if(consent.revoked!==undefined&&typeof consent.revoked!=="boolean")return true;
+  if(consent.purpose!==undefined&&!canonicalConsentText(consent.purpose))return true;
+  if(!validLegacyConsentList(consent.processing_zones)||!validLegacyConsentList(consent.destinations))return true;
+  return false;
+}
 
 export class PrivacyDecisionPoint {
   constructor({ manifests = new Map(), consents = new Map(), consentAuthority = null, policies = [], policyStore = null } = {}) {
@@ -44,7 +53,8 @@ export class PrivacyDecisionPoint {
     if(request.external_disclosure&&ZONE_RANK[request.processing_zone]<ZONE_RANK.trusted_service)return deny(request,"EXTERNAL_DISCLOSURE_ZONE_MISMATCH",["core.external-disclosure"]);
 
     const policy=this.currentPolicyEngine().evaluate(request); if(policy.effect==="DENY")return deny(request,policy.reason_code,policy.policy_references); if(policy.effect==="REQUIRE_USER_DECISION")return requiresUserDecision(request,policy.reason_code,policy.policy_references); const policyViolation=policyConstraintViolation(policy,request); if(policyViolation)return deny(request,policyViolation,policy.policy_references);
-    const consent=this.resolveConsent(request); if(!consent)return requiresUserDecision(request,"CONSENT_REQUIRED",["core.consent",...policy.policy_references]);
+    const consent=this.resolveConsent(request); if(consent===undefined||consent===null)return requiresUserDecision(request,"CONSENT_REQUIRED",["core.consent",...policy.policy_references]);
+    if(!this.consentAuthority&&legacyConsentInvalid(consent))return deny(request,"CONSENT_INVALID",["core.consent",...policy.policy_references]);
     if(this.consentAuthority ? !this.consentAuthority.isEffective(consent) : consent.revoked===true)return deny(request,consent.revoked?"CONSENT_REVOKED":"CONSENT_EXPIRED",["core.consent",...policy.policy_references]);
     if(consent.expires_at!==undefined&&consent.expires_at!==null){
       const value=consent.expires_at;
