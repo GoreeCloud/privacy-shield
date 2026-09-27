@@ -13,7 +13,7 @@ Google Drive feature-roadmap copies are retired as feature authority under the G
 
 ## Implemented source capabilities
 
-Development consent-expiry hardening: the decision point rejects present malformed/non-string expiry values through CONSENT_EXPIRED. `tests/consent-expiry.test.mjs` covers malformed, expired, future, and absent expiry behavior. This source capability does not establish production consent acceptance.
+Development legacy-consent validation hardening: the decision point rejects malformed legacy-map consent structure through CONSENT_INVALID and rejects present malformed/noncanonical expiry through CONSENT_EXPIRED before authorization. `tests/consent-expiry.test.mjs` covers primitive/invalid consent records, malformed constraints, malformed/noncanonical expiry, expired consent, valid future Z/offset consent, and absent expiry behavior. This source capability does not establish production consent acceptance.
 
 | ID | Implemented feature / capability | Evidence and boundary |
 | --- | --- | --- |
