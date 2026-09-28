@@ -121,6 +121,15 @@ All Privacy Shield user interfaces must follow Glaze UI. The approved icon uses 
 
 Derived toolbar, monochrome, favicon-sized, settings, documentation, and high-resolution assets must originate from `branding/privacy-shield/privacy-shield-icon.svg`. Placeholder, inherited, generic, independently redrawn, or Wardveil artwork must not be represented as the Privacy Shield identity.
 
+## Project governance
+
+Long-lived Privacy Shield project authority is repository-local:
+
+- [PROJECT-SPECIFICATIONS.md](PROJECT-SPECIFICATIONS.md) — durable product requirements and acceptance boundaries.
+- [PROJECT-RECORD.md](PROJECT-RECORD.md) — significant architecture, lifecycle, provider-governance, and migration history.
+
+Current feature state remains in [IMPLEMENTED-FEATURES.md](IMPLEMENTED-FEATURES.md) and [PLANNED-FEATURES.md](PLANNED-FEATURES.md); chronology remains in [CHANGELOGS.md](CHANGELOGS.md). Provider evaluation, selection, and production acceptance remain governed by their exact repository records. Historical Drive project specifications become migration provenance only after the governed migration is accepted and verified.
+
 ## Documentation
 
 - [Platform architecture](docs/PLATFORM-ARCHITECTURE.md)
