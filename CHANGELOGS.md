@@ -10,6 +10,11 @@ This file records meaningful Privacy Shield implementation, governance, compatib
 
 Google Drive roadmap/changelog copies are not authoritative under the GoreeCloud Repository Feature Tracking and Changelog Governance standard.
 
+## 2026-09-28 — Browser runtime acceptance gap reporting
+
+- Added non-authorizing draft reporting for missing, duplicate, non-passing, and evidence-empty Browser runtime acceptance dimensions.
+- The strict exact-source/artifact/runtime evaluator remains unchanged and is still required for any runtime acceptance.
+
 ## 2026-09-28 — Repository-local project governance migration
 
 - Added canonical repository-local `PROJECT-SPECIFICATIONS.md` and `PROJECT-RECORD.md` reconciled to protected main `5abe4ba46f4e949fe45fc653e0f95af0b180cae9`.
