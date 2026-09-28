@@ -28,8 +28,8 @@ test("FR-013 schema and evaluator require the same complete Browser privacy dime
   assert.equal(schema.properties.dimensions.maxItems, BROWSER_RUNTIME_ACCEPTANCE_DIMENSIONS.length);
 });
 
-test("FR-013 evidence surfaces require content-addressed references", () => {
-  const expected = "^evidence\\+sha256:[0-9a-f]{64}:[^\\s]{1,700}$";
+test("FR-013 evidence surfaces require content-addressed credential-safe logical references", () => {
+  const expected = "^evidence\\+sha256:[0-9a-f]{64}:(?:[A-Za-z0-9._-][A-Za-z0-9._/-]*|[A-Za-z0-9._-]+:[A-Za-z0-9._-][A-Za-z0-9._/-]*)$";
   assert.equal(schema.properties.artifact.properties.build_provenance_reference.pattern, expected);
   assert.equal(schema.properties.dimensions.items.properties.evidence_references.items.pattern, expected);
   assert.equal(schema.properties.review.properties.evidence_reference.pattern, expected);

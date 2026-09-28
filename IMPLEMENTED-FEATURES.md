@@ -1,5 +1,9 @@
 # GoreeCloud Privacy Shield — Implemented Features
 
+## Browser runtime acceptance evidence-reference privacy hardening
+
+The FR-013 compiled-Browser acceptance evaluator requires content-addressed evidence references to use credential-safe logical locators. Transport URLs, query/fragment syntax, user-info markers, encoded locator material, assignment-style parameters, absolute paths, and traversal segments fail closed. This strengthens retained evidence privacy without creating runtime or production acceptance.
+
 **Status:** Authoritative repository feature record  
 **As of:** 2026-09-28  
 **Canonical repository:** `GoreeCloud/privacy-shield`  

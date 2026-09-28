@@ -1,5 +1,11 @@
 # GoreeCloud Privacy Shield — Changelogs
 
+## 2026-09-28 — Browser acceptance evidence-locator privacy hardening
+
+- Tightened compiled-Browser acceptance evidence references so each content-addressed digest is paired only with a credential-safe logical locator rather than URL, query, fragment, user-info, assignment, encoded, traversal, or absolute-path syntax.
+- Added regression and schema coverage while preserving exact source/tree/artifact binding, freshness, independent review, and the non-promoting production boundary.
+- This source hardening does not create compiled Browser runtime acceptance, provider acceptance, deployment authority, release, or Stable qualification.
+
 **Status:** Authoritative repository changelog  
 **Canonical repository:** `GoreeCloud/privacy-shield`  
 **Lifecycle:** Development

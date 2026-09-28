@@ -3,7 +3,8 @@ const BROWSER_REPOSITORY = "GoreeCloud/browser";
 const PRIVACY_SHIELD_REPOSITORY = "GoreeCloud/privacy-shield";
 const SHA40 = /^[0-9a-f]{40}$/;
 const SHA256 = /^[0-9a-f]{64}$/;
-const EVIDENCE_REFERENCE = /^evidence\+sha256:[0-9a-f]{64}:\S{1,700}$/;
+const EVIDENCE_REFERENCE = /^evidence\+sha256:([0-9a-f]{64}):(.{1,700})$/;
+const EVIDENCE_LOCATOR = /^(?:[A-Za-z0-9._-][A-Za-z0-9._/-]*|[A-Za-z0-9._-]+:[A-Za-z0-9._-][A-Za-z0-9._/-]*)$/;
 const CONTROL = /[\u0000-\u001F\u007F-\u009F]/;
 
 const ROOT_FIELDS = new Set([
@@ -119,8 +120,17 @@ function sha256(value, name) {
 
 function evidenceReference(value, name) {
   text(value, name, 800);
-  if (!EVIDENCE_REFERENCE.test(value)) {
-    throw new Error(`${name} must be a content-addressed evidence+sha256 reference`);
+  const match = EVIDENCE_REFERENCE.exec(value);
+  const locator = match?.[2];
+  if (
+    !match ||
+    !EVIDENCE_LOCATOR.test(locator) ||
+    locator.startsWith("/") ||
+    locator.endsWith("/") ||
+    locator.split(":").length > 2 ||
+    locator.split("/").some((segment) => !segment || segment === "." || segment === "..")
+  ) {
+    throw new Error(`${name} must be a content-addressed evidence+sha256 reference with a credential-safe logical locator`);
   }
   return value;
 }
