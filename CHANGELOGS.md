@@ -12,7 +12,7 @@ Google Drive roadmap/changelog copies are not authoritative under the GoreeCloud
 
 ## 2026-09-25 — Development legacy-consent validation hardening
 
-- Fail closed before a Privacy Decision Point can authorize a malformed legacy-map consent record. Non-object consent values, malformed revocation state, noncanonical purpose constraints, malformed processing-zone/destination constraints, and present malformed or noncanonical expiry values now deny instead of inheriting permissive behavior.
+- Fail closed before a Privacy Decision Point can authorize a malformed legacy-map consent record. Non-plain-object consent values, malformed revocation state, noncanonical purpose constraints, malformed processing-zone/destination constraints, and present malformed or noncanonical expiry values now deny instead of inheriting permissive behavior.
 - Present expiry must be a trimmed timezone-qualified string aligned with the ConsentAuthority timestamp boundary; invalid, empty, unparseable, or expired values use the existing CONSENT_EXPIRED denial path, while other malformed legacy consent structure uses CONSENT_INVALID. Absent optional expiry retains its existing behavior.
 - Added regression tests for malformed consent records and constraints, malformed/noncanonical expiry values, expired consent, valid future Z/offset consent, and omitted expiry. This is source-level hardening; production providers, independent security review, integration, runtime acceptance, and release qualification remain separately gated.
 
