@@ -10,6 +10,14 @@ This file records meaningful Privacy Shield implementation, governance, compatib
 
 Google Drive roadmap/changelog copies are not authoritative under the GoreeCloud Repository Feature Tracking and Changelog Governance standard.
 
+## 2026-09-28 — Repository-local project governance migration
+
+- Added canonical repository-local `PROJECT-SPECIFICATIONS.md` and `PROJECT-RECORD.md` reconciled to protected main `5abe4ba46f4e949fe45fc653e0f95af0b180cae9`.
+- Retired the competing root `SPECIFICATIONS.md` summary after incorporating its durable requirements into the canonical project specification.
+- Updated README navigation and fail-closed repository-baseline validation/tests so the canonical project records are required and the retired summary cannot silently return.
+- Reconciled current repository protection and PR #142 consent-record hardening evidence without promoting provider, runtime, production, release, or lifecycle authority.
+- The Drive project specification remains migration provenance until post-merge readback and governed source-retirement checks are complete.
+
 ## 2026-09-25 — Development legacy-consent validation hardening
 
 - Fail closed before a Privacy Decision Point can authorize a malformed legacy-map consent record. Non-plain-object consent values, malformed revocation state, noncanonical purpose constraints, malformed processing-zone/destination constraints, and present malformed or noncanonical expiry values now deny instead of inheriting permissive behavior.
