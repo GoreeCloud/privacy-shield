@@ -225,6 +225,39 @@ test("FR-013 requires content-addressed build, dimension, and review evidence", 
   );
 });
 
+test("FR-013 rejects secret-bearing or transport-style evidence locators", () => {
+  const unsafeLocators = [
+    "https://example.test/runtime-log",
+    "https://example.test/runtime-log?token=secret",
+    "reports/runtime.json?signature=secret",
+    "reports/runtime.json#fragment",
+    "reports/%2e%2e/secret",
+    "review@authority",
+    "reports/runtime=accepted",
+    "/absolute/private/path",
+    "reports/../secret",
+  ];
+
+  for (const locator of unsafeLocators) {
+    const value = record();
+    value.artifact.build_provenance_reference = ref("a", locator);
+    assert.throws(
+      () => assessBrowserRuntimeAcceptance(value, assessmentOptions()),
+      /credential-safe logical locator/,
+      locator,
+    );
+  }
+});
+
+test("FR-013 accepts credential-safe logical evidence locators", () => {
+  const value = record();
+  value.artifact.build_provenance_reference = ref("a", "reports/browser/build-provenance.json");
+  value.review.evidence_reference = ref("f", "review:browser-runtime");
+  const result = assessBrowserRuntimeAcceptance(value, assessmentOptions());
+  assert.equal(result.accepted_for_runtime, true);
+  assert.equal(result.accepted_for_production, false);
+});
+
 test("FR-013 rejects future, expired, and caller-age-expired runtime evidence", () => {
   const future = record({observed_at: "2026-09-12T23:46:00.000Z"});
   assert.throws(
