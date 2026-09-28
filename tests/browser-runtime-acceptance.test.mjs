@@ -21,8 +21,8 @@ function ref(seed, locator) {
 function record(overrides = {}) {
   return {
     schema_version: "goreecloud.privacy-shield.browser-runtime-acceptance.v1",
-    browser_repository: "GoreeCloud/goreecloud-browser",
-    privacy_shield_repository: "GoreeCloud/goreecloud-privacy-shield",
+    browser_repository: "GoreeCloud/browser",
+    privacy_shield_repository: "GoreeCloud/privacy-shield",
     browser_source_revision: browserRevision,
     browser_source_tree_sha: browserTreeSha,
     privacy_shield_source_revision: privacyShieldRevision,
@@ -115,6 +115,20 @@ test("FR-013 accepts only an exact compiled Browser artifact with every required
   assert.equal(result.authority_transfer, false);
   assert.equal(result.artifact_sha256, artifactSha256);
   assert.deepEqual([...result.required_dimensions], [...BROWSER_RUNTIME_ACCEPTANCE_DIMENSIONS]);
+});
+
+test("FR-013 rejects historical Browser and Privacy Shield repository identities", () => {
+  const historicalBrowser = record({browser_repository: "GoreeCloud/goreecloud-browser"});
+  assert.throws(
+    () => assessBrowserRuntimeAcceptance(historicalBrowser, assessmentOptions()),
+    /Browser repository binding mismatch/,
+  );
+
+  const historicalPrivacyShield = record({privacy_shield_repository: "GoreeCloud/goreecloud-privacy-shield"});
+  assert.throws(
+    () => assessBrowserRuntimeAcceptance(historicalPrivacyShield, assessmentOptions()),
+    /Privacy Shield repository binding mismatch/,
+  );
 });
 
 test("FR-013 requires independent exact source, tree, Privacy Shield, and artifact expectations", () => {

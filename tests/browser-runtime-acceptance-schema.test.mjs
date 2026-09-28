@@ -12,8 +12,8 @@ const schema = JSON.parse(readFileSync(join(here, "..", "contracts", "privacy-sh
 test("FR-013 schema remains closed, exact-artifact-oriented, and non-promoting", () => {
   assert.equal(schema.$id, "urn:goreecloud:privacy-shield:browser-runtime-acceptance:v1");
   assert.equal(schema.additionalProperties, false);
-  assert.equal(schema.properties.browser_repository.const, "GoreeCloud/goreecloud-browser");
-  assert.equal(schema.properties.privacy_shield_repository.const, "GoreeCloud/goreecloud-privacy-shield");
+  assert.equal(schema.properties.browser_repository.const, "GoreeCloud/browser");
+  assert.equal(schema.properties.privacy_shield_repository.const, "GoreeCloud/privacy-shield");
   assert.equal(schema.properties.artifact.properties.sha256.pattern, "^[0-9a-f]{64}$");
   assert.equal(schema.properties.artifact.properties.size_bytes.minimum, 1);
   assert.equal(schema.properties.authorization_effect.const, false);

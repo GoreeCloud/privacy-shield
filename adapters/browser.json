@@ -3,7 +3,7 @@
   "adapter": {
     "id": "browser",
     "product": "GoreeCloud Browser",
-    "runtime_authority": "GoreeCloud/goreecloud-browser",
+    "runtime_authority": "GoreeCloud/browser",
     "contract_version": 1
   },
   "capabilities": [

@@ -10,6 +10,11 @@ This file records meaningful Privacy Shield implementation, governance, compatib
 
 Google Drive roadmap/changelog copies are not authoritative under the GoreeCloud Repository Feature Tracking and Changelog Governance standard.
 
+## 2026-09-28 — Browser acceptance repository identity reconciliation
+
+- Rebound the active Browser adapter and compiled-runtime acceptance contract to the canonical `GoreeCloud/browser` and `GoreeCloud/privacy-shield` repositories.
+- Runtime and production acceptance remain separately evidence-gated.
+
 ## 2026-09-28 — Browser runtime acceptance gap reporting
 
 - Added non-authorizing draft reporting for missing, duplicate, non-passing, and evidence-empty Browser runtime acceptance dimensions.

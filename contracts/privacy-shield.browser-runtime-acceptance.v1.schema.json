@@ -23,8 +23,8 @@
   ],
   "properties": {
     "schema_version": {"const": "goreecloud.privacy-shield.browser-runtime-acceptance.v1"},
-    "browser_repository": {"const": "GoreeCloud/goreecloud-browser"},
-    "privacy_shield_repository": {"const": "GoreeCloud/goreecloud-privacy-shield"},
+    "browser_repository": {"const": "GoreeCloud/browser"},
+    "privacy_shield_repository": {"const": "GoreeCloud/privacy-shield"},
     "browser_source_revision": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
     "browser_source_tree_sha": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
     "privacy_shield_source_revision": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
