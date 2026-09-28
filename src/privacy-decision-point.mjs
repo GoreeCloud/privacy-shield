@@ -17,6 +17,8 @@ function canonicalConsentText(value) { return typeof value==="string"&&value!=="
 function validLegacyConsentList(value) { return value===undefined||(Array.isArray(value)&&value.every(canonicalConsentText)); }
 function legacyConsentInvalid(consent) {
   if(!consent||typeof consent!=="object"||Array.isArray(consent))return true;
+  const proto=Object.getPrototypeOf(consent);
+  if(proto!==Object.prototype&&proto!==null)return true;
   for(const key of ["revoked","purpose","processing_zones","destinations","expires_at"]) {
     if(key in consent&&!Object.hasOwn(consent,key))return true;
   }
