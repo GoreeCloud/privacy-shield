@@ -117,6 +117,20 @@ test("FR-013 accepts only an exact compiled Browser artifact with every required
   assert.deepEqual([...result.required_dimensions], [...BROWSER_RUNTIME_ACCEPTANCE_DIMENSIONS]);
 });
 
+test("FR-013 rejects historical Browser and Privacy Shield repository identities", () => {
+  const historicalBrowser = record({browser_repository: "GoreeCloud/goreecloud-browser"});
+  assert.throws(
+    () => assessBrowserRuntimeAcceptance(historicalBrowser, assessmentOptions()),
+    /Browser repository binding mismatch/,
+  );
+
+  const historicalPrivacyShield = record({privacy_shield_repository: "GoreeCloud/goreecloud-privacy-shield"});
+  assert.throws(
+    () => assessBrowserRuntimeAcceptance(historicalPrivacyShield, assessmentOptions()),
+    /Privacy Shield repository binding mismatch/,
+  );
+});
+
 test("FR-013 requires independent exact source, tree, Privacy Shield, and artifact expectations", () => {
   const missing = [
     "expectedBrowserRevision",
