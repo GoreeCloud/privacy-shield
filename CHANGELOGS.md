@@ -18,6 +18,15 @@ Google Drive roadmap/changelog copies are not authoritative under the GoreeCloud
 - Reconciled current repository protection and PR #142 consent-record hardening evidence without promoting provider, runtime, production, release, or lifecycle authority.
 - The Drive project specification remains migration provenance until post-merge readback and governed source-retirement checks are complete.
 
+## 2026-09-28 — Privacy Center Glaze UI V1.6 source-authority reconciliation
+
+- Bound current Privacy Center source authority to `GoreeCloud/static-websites/sites/main/privacy/index.html` on current static-websites main `5d05997e2759989db7018e91e8a7a017acfde1d4`; the canonical file still declares Glaze UI `1.6.0`.
+- Recorded the current `retained-public-site` and `Cloudflare Pages` checks as successful while preserving older PR #128 deployment evidence as historical migration provenance rather than inherited acceptance for later website revisions.
+- Reclassified this repository's `website/` Glaze UI 2.1.0 source as legacy/transitional deployment material instead of current Privacy Center source authority.
+- Reconciled the platform manifest and repository-native feature records so source adoption is implemented while exact-current human/rendered/accessibility/performance/resilience/rollback consumer acceptance and legacy deployment retirement remain open.
+- Reconciled protected-main governance into implemented source/governance truth and removed the obsolete planned protection gap.
+- No website presentation or repository-governance evidence grants consent, privacy execution authority, Privacy Shield runtime production acceptance, release approval, or lifecycle promotion.
+
 ## 2026-09-25 — Development legacy-consent validation hardening
 
 - Fail closed before a Privacy Decision Point can authorize a malformed legacy-map consent record. Non-plain-object consent values, malformed revocation state, noncanonical purpose constraints, malformed processing-zone/destination constraints, and present malformed or noncanonical expiry values now deny instead of inheriting permissive behavior.

@@ -1,16 +1,16 @@
 # GoreeCloud Privacy Shield Public Website
 
-> **Static website source authority:** the canonical source for the public Privacy Center is now `GoreeCloud/goreecloud-static-websites/sites/privacy`. This `website/` directory is a protected transitional deployment copy while Cloudflare Pages still uses the legacy repository. Future authoritative public-site source changes belong in the centralized repository. Do not remove this copy until Cloudflare repository/root/build cutover and exact production verification have passed.
+> **Static website source authority:** the current one-retained-website authority is `GoreeCloud/static-websites`, with the canonical Privacy Center route at `sites/main/privacy/index.html` and `https://www.goreecloud.com/privacy/`. This `website/` directory is a protected legacy/transitional deployment copy and is not current public-site source authority. Do not remove it until its remaining custom-domain/deployment role, rollback value, and retirement/cutover state are authoritatively resolved.
 
-The public Privacy Center is `https://privacy.goreecloud.com`.
+The canonical current Privacy Center route is `https://www.goreecloud.com/privacy/`. The legacy custom-domain deployment record remains `https://privacy.goreecloud.com` until that separate deployment is explicitly retired or redirected and verified.
 
 ## Current presentation boundary
 
-The Privacy Center's active local source still uses **Glaze UI 2.1.0** for its public presentation layer, while **Glaze UI 1.6.0** is the current shared Stable consumer target and migration remains pending. Privacy content uses solid Surface planes; Soft Glaze is bounded to persistent navigation chrome under the administration/control-surface material budget. The current mapping preserves 48 px general interaction targets, a 56 px Touch Assistance floor, safe-area handling, reduced-motion and reduced-transparency behavior, increased-contrast and forced-colors fallbacks, performance and no-backdrop resilience, and large-text/narrow-screen reflow.
+This protected legacy copy's active local source still uses **Glaze UI 2.1.0** for its presentation layer. The canonical Privacy Center source in `GoreeCloud/static-websites/sites/main/privacy/index.html` already targets **Glaze UI 1.6.0**; current exact-revision downstream human/consumer acceptance and legacy deployment retirement/cutover remain pending. Privacy content uses solid Surface planes; Soft Glaze is bounded to persistent navigation chrome under the administration/control-surface material budget. The current mapping preserves 48 px general interaction targets, a 56 px Touch Assistance floor, safe-area handling, reduced-motion and reduced-transparency behavior, increased-contrast and forced-colors fallbacks, performance and no-backdrop resilience, and large-text/narrow-screen reflow.
 
 These presentation changes do not create or upgrade Privacy Shield privacy authority, consent state, data-governance enforcement, evidence validity, or runtime acceptance. Glaze UI cannot create a privacy decision or turn a transport/visual state into privacy evidence.
 
-Current source-level status is **Historical active-source baseline / migration required**. See `GLAZE-UI-2.1-ADOPTION.md`. Historical 2.0 evidence is retained only in `GLAZE-UI-2.0-HISTORICAL.md`.
+Legacy-copy status is **Historical active-source baseline / migration required**. See `GLAZE-UI-2.1-ADOPTION.md`. It is migration provenance for this legacy deployment path, not current Privacy Center source authority. Historical 2.0 evidence is retained only in `GLAZE-UI-2.0-HISTORICAL.md`.
 
 ## Current legacy Cloudflare Pages contract
 
@@ -23,7 +23,7 @@ Until the controlled deployment cutover is completed, production still uses this
 - Build output directory: `website/dist`
 - Custom domain: `privacy.goreecloud.com`
 
-The target source authority after cutover is `GoreeCloud/goreecloud-static-websites/sites/privacy`; the final Pages root/build configuration must be verified through authenticated Cloudflare controls rather than inferred from source documentation.
+The current source authority is `GoreeCloud/static-websites/sites/main/privacy/index.html`. Any remaining Cloudflare custom-domain/root/build retirement or redirect for this legacy copy must be verified through authenticated deployment controls rather than inferred from source documentation.
 
 The legacy build copies the approved canonical Privacy Shield identity from `branding/privacy-shield/privacy-shield-icon.svg` into the isolated public artifact. The public icon is therefore not independently redrawn or maintained.
 
@@ -39,11 +39,11 @@ Legacy-repository validation remains available while this deployment source is a
 python3 website/validate.py
 ```
 
-The centralized package has its own exact-candidate validation in `GoreeCloud/goreecloud-static-websites` and has reached `validated-in-central-repo`.
+The canonical website has its own exact-candidate validation in `GoreeCloud/static-websites`. Current static-websites main is `5d05997e2759989db7018e91e8a7a017acfde1d4`; the canonical Privacy Center file remains Glaze UI 1.6.0 and current `retained-public-site` plus `Cloudflare Pages` checks are successful. Historical PR #128 remains provenance for the original V1.6 migration, not acceptance for later revisions.
 
 ## Publication and acceptance boundary
 
-Privacy Shield runtime, privacy contracts, and canonical product identity remain authoritative in this repository. **Static public website source authority does not.** The public-site source package is governed from `GoreeCloud/goreecloud-static-websites/sites/privacy`.
+Privacy Shield runtime, privacy contracts, and canonical product identity remain authoritative in this repository. **Static public website source authority does not.** The public-site source is governed from `GoreeCloud/static-websites/sites/main/privacy/index.html`.
 
 The retained `website/dist` and this legacy source copy may continue serving rollback/deployment needs only until the Cloudflare Pages project is cut over and the exact resulting production deployment is accepted. A successful source validation or build does not establish that cutover or broader Privacy Shield production acceptance.
 
