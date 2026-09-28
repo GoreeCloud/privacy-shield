@@ -29,7 +29,7 @@ test("FR-013 schema and evaluator require the same complete Browser privacy dime
 });
 
 test("FR-013 evidence surfaces require content-addressed credential-safe logical references", () => {
-  const expected = "^evidence\\\\+sha256:[0-9a-f]{64}:(?:[A-Za-z0-9._-][A-Za-z0-9._/-]*|[A-Za-z0-9._-]+:[A-Za-z0-9._-][A-Za-z0-9._/-]*)$";
+  const expected = "^evidence\\+sha256:[0-9a-f]{64}:(?:[A-Za-z0-9._-][A-Za-z0-9._/-]*|[A-Za-z0-9._-]+:[A-Za-z0-9._-][A-Za-z0-9._/-]*)$";
   assert.equal(schema.properties.artifact.properties.build_provenance_reference.pattern, expected);
   assert.equal(schema.properties.dimensions.items.properties.evidence_references.items.pattern, expected);
   assert.equal(schema.properties.review.properties.evidence_reference.pattern, expected);
