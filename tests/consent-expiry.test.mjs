@@ -48,6 +48,37 @@ test('malformed legacy consent records never authorize a request', () => {
   }
 });
 
+test('inherited legacy consent authority fields fail closed', () => {
+  const inheritedConstraints = Object.create({
+    purpose: 'read',
+    processing_zones: ['local'],
+    destinations: ['app']
+  });
+  let result = evaluateConsent(inheritedConstraints);
+  assert.equal(result.outcome, PrivacyDecision.DENY);
+  assert.equal(result.reason_code, 'CONSENT_INVALID');
+
+  const inheritedExpiry = Object.create({expires_at: '2099-01-01T00:00:00Z'});
+  Object.assign(inheritedExpiry, {
+    purpose: 'read',
+    processing_zones: ['local'],
+    destinations: ['app']
+  });
+  result = evaluateConsent(inheritedExpiry);
+  assert.equal(result.outcome, PrivacyDecision.DENY);
+  assert.equal(result.reason_code, 'CONSENT_INVALID');
+
+  const inheritedRevocation = Object.create({revoked: false});
+  Object.assign(inheritedRevocation, {
+    purpose: 'read',
+    processing_zones: ['local'],
+    destinations: ['app']
+  });
+  result = evaluateConsent(inheritedRevocation);
+  assert.equal(result.outcome, PrivacyDecision.DENY);
+  assert.equal(result.reason_code, 'CONSENT_INVALID');
+});
+
 test('malformed consent expiry never authorizes a request', () => {
   for (const expiry of [
     'invalid',
