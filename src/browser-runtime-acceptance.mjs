@@ -271,4 +271,52 @@ export function assessBrowserRuntimeAcceptance(record, {
   });
 }
 
+/**
+ * Describe collection gaps in a draft Browser runtime-acceptance dimension set.
+ *
+ * This helper does not validate source/artifact identity, evidence trust,
+ * timestamps, reviewer authority, or runtime truth. It never grants runtime or
+ * production acceptance and exists only to guide evidence collection before
+ * the strict assessor is invoked.
+ */
+export function describeBrowserRuntimeAcceptanceDimensionGaps(dimensions) {
+  const values = Array.isArray(dimensions) ? dimensions : [];
+  const counts = new Map();
+  const passed = new Set();
+  const evidencePresent = new Set();
+
+  for (const value of values) {
+    if (!value || typeof value !== "object" || Array.isArray(value)) continue;
+    if (!REQUIRED_DIMENSIONS.includes(value.id)) continue;
+    counts.set(value.id, (counts.get(value.id) || 0) + 1);
+    if (value.status === "passed") passed.add(value.id);
+    if (Array.isArray(value.evidence_references) && value.evidence_references.length > 0) {
+      evidencePresent.add(value.id);
+    }
+  }
+
+  const missingDimensionIds = REQUIRED_DIMENSIONS.filter((id) => !counts.has(id));
+  const duplicateDimensionIds = REQUIRED_DIMENSIONS.filter((id) => (counts.get(id) || 0) > 1);
+  const nonPassingDimensionIds = REQUIRED_DIMENSIONS.filter((id) => counts.has(id) && !passed.has(id));
+  const missingEvidenceDimensionIds = REQUIRED_DIMENSIONS.filter((id) => counts.has(id) && !evidencePresent.has(id));
+
+  return Object.freeze({
+    requiredDimensionIds: REQUIRED_DIMENSIONS,
+    missingDimensionIds: Object.freeze(missingDimensionIds),
+    duplicateDimensionIds: Object.freeze(duplicateDimensionIds),
+    nonPassingDimensionIds: Object.freeze(nonPassingDimensionIds),
+    missingEvidenceDimensionIds: Object.freeze(missingEvidenceDimensionIds),
+    collectionGapCount:
+      missingDimensionIds.length +
+      duplicateDimensionIds.length +
+      nonPassingDimensionIds.length +
+      missingEvidenceDimensionIds.length,
+    strictAssessmentRequired: true,
+    acceptedForRuntime: false,
+    acceptedForProduction: false,
+    authorizationEffect: false,
+    authorityTransfer: false,
+  });
+}
+
 export const BROWSER_RUNTIME_ACCEPTANCE_DIMENSIONS = REQUIRED_DIMENSIONS;
