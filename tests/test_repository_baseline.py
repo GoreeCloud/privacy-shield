@@ -31,8 +31,11 @@ class RepositoryBaselineTests(unittest.TestCase):
             else:
                 path.write_text(f"meaningful repository control for {relative}\n", encoding="utf-8")
 
-    def test_required_root_set_matches_governed_sixteen_file_baseline(self) -> None:
-        self.assertEqual(len(validator.REQUIRED_ROOT_FILES), 16)
+    def test_required_root_set_matches_governed_seventeen_file_baseline(self) -> None:
+        self.assertEqual(len(validator.REQUIRED_ROOT_FILES), 17)
+        self.assertIn("PROJECT-SPECIFICATIONS.md", validator.REQUIRED_ROOT_FILES)
+        self.assertIn("PROJECT-RECORD.md", validator.REQUIRED_ROOT_FILES)
+        self.assertNotIn("SPECIFICATIONS.md", validator.REQUIRED_ROOT_FILES)
         self.assertIn("IMPLEMENTED-FEATURES.md", validator.REQUIRED_ROOT_FILES)
         self.assertIn("PLANNED-FEATURES.md", validator.REQUIRED_ROOT_FILES)
         self.assertIn("CHANGELOGS.md", validator.REQUIRED_ROOT_FILES)
@@ -45,7 +48,7 @@ class RepositoryBaselineTests(unittest.TestCase):
             root = Path(directory)
             self.populate(root)
             validated = validator.validate_repository_baseline(root)
-            self.assertEqual(len(validated), 18)
+            self.assertEqual(len(validated), 19)
 
     def test_missing_mandatory_file_fails(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
@@ -60,6 +63,16 @@ class RepositoryBaselineTests(unittest.TestCase):
             root = Path(directory)
             self.populate(root)
             (root / "IMPLEMENTED-FEATURES.md").unlink()
+            with self.assertRaises(SystemExit):
+                validator.validate_repository_baseline(root)
+
+    def test_retired_legacy_specifications_fails(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            self.populate(root)
+            (root / "SPECIFICATIONS.md").write_text(
+                "retired specifications record must not return to the repository\n", encoding="utf-8"
+            )
             with self.assertRaises(SystemExit):
                 validator.validate_repository_baseline(root)
 
