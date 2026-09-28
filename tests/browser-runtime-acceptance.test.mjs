@@ -21,8 +21,8 @@ function ref(seed, locator) {
 function record(overrides = {}) {
   return {
     schema_version: "goreecloud.privacy-shield.browser-runtime-acceptance.v1",
-    browser_repository: "GoreeCloud/goreecloud-browser",
-    privacy_shield_repository: "GoreeCloud/goreecloud-privacy-shield",
+    browser_repository: "GoreeCloud/browser",
+    privacy_shield_repository: "GoreeCloud/privacy-shield",
     browser_source_revision: browserRevision,
     browser_source_tree_sha: browserTreeSha,
     privacy_shield_source_revision: privacyShieldRevision,
