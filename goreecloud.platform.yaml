@@ -43,11 +43,11 @@ platform_systems:
     notes: Everkeep is the resilience and preservation authority for applicable lifecycle, backup, restore, deletion, export, and succession effects. Privacy Shield now has validated single-host durable state and local backup recovery primitives, but no accepted Everkeep runtime backup/restore integration is claimed here.
   glaze_ui:
     result: applicable-migration-required
-    version: 2.1.0
+    version: 1.6.0
     evidence:
-    - website/GLAZE-UI-2.1-ADOPTION.md
-    - website/glaze-ui-2.1.0.css
-    notes: Privacy Center source still carries the pre-reset Glaze UI 2.1.0 implementation. The current shared consumer target is GLAZE UI V1.6 / 1.6.0, so repository-specific migration, rendered acceptance, accessibility/resilience validation, rollback, and production acceptance remain required.
+    - docs/integrations/privacy-center-static-site.md
+    - website/README.md
+    notes: The canonical Privacy Center source is now the single retained GoreeCloud website route at GoreeCloud/static-websites sites/main/privacy/index.html and declares the current GLAZE UI V1.6 / 1.6.0 target. Exact-current downstream human/rendered/accessibility/performance/resilience/rollback consumer acceptance remains incomplete, and this repository's website/ directory remains a historical 2.1.0 legacy/transitional deployment copy rather than current source authority.
   mesh:
     result: applicable-migration-required
     version: null
@@ -180,10 +180,10 @@ conformance:
   - tests/privacy-runtime.test.mjs
   - tests/mesh-credential-boundary.test.mjs
   - tests/platform-registry-delivery.test.mjs
-  - website/GLAZE-UI-2.1-ADOPTION.md
+  - docs/integrations/privacy-center-static-site.md
   blockers:
   - GoreeCloud Privacy Shield remains in Development and its platform authorization core is not production accepted.
-  - Privacy Center requires migration and exact-revision acceptance against the current Stable Glaze UI 1.6.0 baseline.
+  - Canonical Privacy Center source adoption of Glaze UI 1.6.0 is established, but exact-current downstream consumer acceptance, human/rendered/accessibility/performance/resilience review, rollback, and legacy deployment retirement/cutover remain incomplete.
   - GoreeCloud Sync privacy-authorization and synchronization-governance integration remains unaccepted; Sync remains separately governed and is not a tenth Integral Platform System.
   - Single-host durable consent, policy, capability replay or revocation, and privacy evidence state are implemented and source-tested, but production/distributed durability and accepted Everkeep-backed recovery remain open.
   - Production signing-key custody and rotation operations remain pending.
