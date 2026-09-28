@@ -13,6 +13,8 @@ Google Drive feature-roadmap copies are retired as feature authority under the G
 
 ## Implemented source capabilities
 
+Development legacy-consent validation hardening: the decision point rejects malformed legacy-map consent structure through CONSENT_INVALID and rejects present malformed/noncanonical expiry through CONSENT_EXPIRED before authorization. `tests/consent-expiry.test.mjs` covers primitive, array, exotic/non-plain-object, and otherwise invalid consent records; malformed constraints; malformed/noncanonical expiry; expired consent; valid future Z/offset consent; and absent expiry behavior. This source capability does not establish production consent acceptance.
+
 | ID | Implemented feature / capability | Evidence and boundary |
 | --- | --- | --- |
 | IF-001 | Authority-local opaque capability-reference verification and single-use consumption with independently authenticated service-credential boundaries. | Source integrated through PR #105. Production Identity issuance/JWKS/key custody, approved transport, requester resolution, Search required-mode enforcement, end-to-end runtime evidence, production acceptance, and Stable qualification remain open. |
