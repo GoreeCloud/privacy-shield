@@ -39,7 +39,7 @@
         "size_bytes": {"type": "integer", "minimum": 1, "maximum": 1099511627776},
         "runtime_version": {"type": "string", "minLength": 1, "maxLength": 120},
         "package_version": {"type": ["string", "null"], "maxLength": 120},
-        "build_provenance_reference": {"type": "string", "pattern": "^evidence\\+sha256:[0-9a-f]{64}:[^\\s]{1,700}$", "maxLength": 800}
+        "build_provenance_reference": {"type": "string", "pattern": "^evidence\\+sha256:[0-9a-f]{64}:(?:[A-Za-z0-9._-][A-Za-z0-9._/-]*|[A-Za-z0-9._-]+:[A-Za-z0-9._-][A-Za-z0-9._/-]*)$", "maxLength": 800}
       }
     },
     "target": {
@@ -87,7 +87,7 @@
             "minItems": 1,
             "maxItems": 20,
             "uniqueItems": true,
-            "items": {"type": "string", "pattern": "^evidence\\+sha256:[0-9a-f]{64}:[^\\s]{1,700}$", "maxLength": 800}
+            "items": {"type": "string", "pattern": "^evidence\\+sha256:[0-9a-f]{64}:(?:[A-Za-z0-9._-][A-Za-z0-9._/-]*|[A-Za-z0-9._-]+:[A-Za-z0-9._-][A-Za-z0-9._/-]*)$", "maxLength": 800}
           }
         }
       }
@@ -100,7 +100,7 @@
         "authority": {"type": "string", "minLength": 1, "maxLength": 200},
         "disposition": {"const": "accepted-for-runtime"},
         "reviewed_at": {"type": "string", "format": "date-time", "maxLength": 40},
-        "evidence_reference": {"type": "string", "pattern": "^evidence\\+sha256:[0-9a-f]{64}:[^\\s]{1,700}$", "maxLength": 800}
+        "evidence_reference": {"type": "string", "pattern": "^evidence\\+sha256:[0-9a-f]{64}:(?:[A-Za-z0-9._-][A-Za-z0-9._/-]*|[A-Za-z0-9._-]+:[A-Za-z0-9._-][A-Za-z0-9._/-]*)$", "maxLength": 800}
       }
     },
     "authorization_effect": {"const": false},
