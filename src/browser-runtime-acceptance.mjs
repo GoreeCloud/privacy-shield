@@ -119,8 +119,17 @@ function sha256(value, name) {
 
 function evidenceReference(value, name) {
   text(value, name, 800);
-  if (!EVIDENCE_REFERENCE.test(value)) {
-    throw new Error(`${name} must be a content-addressed evidence+sha256 reference`);
+  const match = EVIDENCE_REFERENCE.exec(value);
+  const locator = match?.[2];
+  if (
+    !match ||
+    !EVIDENCE_LOCATOR.test(locator) ||
+    locator.startsWith("/") ||
+    locator.endsWith("/") ||
+    locator.split(":").length > 2 ||
+    locator.split("/").some((segment) => !segment || segment === "." || segment === "..")
+  ) {
+    throw new Error(`${name} must be a content-addressed evidence+sha256 reference with a credential-safe logical locator`);
   }
   return value;
 }
