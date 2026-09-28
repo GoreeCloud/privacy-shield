@@ -4,6 +4,7 @@ import test from "node:test";
 import {
   assessBrowserRuntimeAcceptance,
   BROWSER_RUNTIME_ACCEPTANCE_DIMENSIONS,
+  describeBrowserRuntimeAcceptanceDimensionGaps,
 } from "../src/browser-runtime-acceptance.mjs";
 
 const browserRevision = "1".repeat(40);
@@ -73,6 +74,38 @@ function assessmentOptions(overrides = {}) {
     ...overrides,
   };
 }
+
+test("FR-013 draft gap reporting identifies missing, duplicate, non-passing, and evidence-empty dimensions without granting acceptance", () => {
+  const dimensions = record().dimensions.map((item) => structuredClone(item));
+  dimensions.shift();
+  dimensions[0].status = "failed";
+  dimensions[1].evidence_references = [];
+  dimensions.push(structuredClone(dimensions[2]));
+
+  const result = describeBrowserRuntimeAcceptanceDimensionGaps(dimensions);
+
+  assert.deepEqual(result.missingDimensionIds, ["content-blocking"]);
+  assert.deepEqual(result.nonPassingDimensionIds, ["tracking-resistance"]);
+  assert.deepEqual(result.missingEvidenceDimensionIds, ["url-cleaning"]);
+  assert.deepEqual(result.duplicateDimensionIds, [dimensions[2].id]);
+  assert.equal(result.collectionGapCount, 4);
+  assert.equal(result.strictAssessmentRequired, true);
+  assert.equal(result.acceptedForRuntime, false);
+  assert.equal(result.acceptedForProduction, false);
+  assert.equal(result.authorizationEffect, false);
+  assert.equal(result.authorityTransfer, false);
+});
+
+test("FR-013 draft gap reporting never substitutes for strict runtime assessment", () => {
+  const completeLooking = record().dimensions.map((item) => structuredClone(item));
+  const result = describeBrowserRuntimeAcceptanceDimensionGaps(completeLooking);
+
+  assert.equal(result.collectionGapCount, 0);
+  assert.deepEqual(result.missingDimensionIds, []);
+  assert.equal(result.strictAssessmentRequired, true);
+  assert.equal(result.acceptedForRuntime, false);
+  assert.equal(result.acceptedForProduction, false);
+});
 
 test("FR-013 accepts only an exact compiled Browser artifact with every required privacy dimension passed", () => {
   const result = assessBrowserRuntimeAcceptance(record(), assessmentOptions());
