@@ -6,7 +6,8 @@ ROOT = Path(__file__).resolve().parents[1]
 
 REQUIRED_ROOT_FILES = (
     "README.md",
-    "SPECIFICATIONS.md",
+    "PROJECT-SPECIFICATIONS.md",
+    "PROJECT-RECORD.md",
     "FEATURES.md",
     "IMPLEMENTED-FEATURES.md",
     "PLANNED-FEATURES.md",
@@ -25,6 +26,7 @@ REQUIRED_ROOT_FILES = (
 
 RETIRED_ROOT_FILES = (
     "FEATURE-ROADMAP.md",
+    "SPECIFICATIONS.md",
 )
 
 # Privacy Shield demonstrably uses pull requests for material changes, so the
