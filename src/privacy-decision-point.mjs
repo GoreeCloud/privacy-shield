@@ -17,6 +17,9 @@ function canonicalConsentText(value) { return typeof value==="string"&&value!=="
 function validLegacyConsentList(value) { return value===undefined||(Array.isArray(value)&&value.every(canonicalConsentText)); }
 function legacyConsentInvalid(consent) {
   if(!consent||typeof consent!=="object"||Array.isArray(consent))return true;
+  for(const key of ["revoked","purpose","processing_zones","destinations","expires_at"]) {
+    if(key in consent&&!Object.hasOwn(consent,key))return true;
+  }
   if(consent.revoked!==undefined&&typeof consent.revoked!=="boolean")return true;
   if(consent.purpose!==undefined&&!canonicalConsentText(consent.purpose))return true;
   if(!validLegacyConsentList(consent.processing_zones)||!validLegacyConsentList(consent.destinations))return true;
