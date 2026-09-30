@@ -1,5 +1,12 @@
 # GoreeCloud Privacy Shield — Changelogs
 
+## 2026-09-29 — Fail-closed Seal readiness guard
+
+- Added a machine-readable Privacy Shield Seal-readiness record covering eight release-critical gate groups that still block candidate freeze.
+- Added CI validation that keeps lifecycle at Weave with `candidate_identity: null`, requires zero active provider selections/production provider acceptances at the current blocked state, and rejects Seal/Anchor promotion while runtime/provider/recovery/release evidence remains incomplete.
+- Bound the guard to the failed FoundationDB candidate, draft OVHcloud signing candidate, eight migration-required external platform systems, fail-closed runtime HTTP readiness, and empty release evidence.
+- This guard does not create a Seal candidate or authorize provider spending/deployment; it prevents lifecycle metadata from outrunning accepted evidence.
+
 ## 2026-09-29 — Provider-governance inventory and provenance reconciliation
 
 - Corrected state/signing provider decision records that still reported zero candidate evaluations despite one active FoundationDB and one active OVHcloud candidate dossier.

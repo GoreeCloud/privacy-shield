@@ -272,6 +272,12 @@ Active evaluation, evidence-package, and review records now use canonical `Goree
 
 This documentation/provenance repair does not change provider eligibility. FoundationDB remains blocked by failed access-control isolation and other pending operational criteria. OVHcloud remains incomplete and additionally requires the separate proprietary-service/necessity and explicit cost/order authorization before any billable selection/deployment path.
 
+## September 29, 2026 — Fail-closed Seal readiness guard
+
+Privacy Shield now carries `qualification/seal-readiness.json` plus an exact-head CI validator that blocks candidate freeze while eight release-critical gate groups remain unresolved: production distributed state, production signing-key custody, nine-system runtime acceptance, production Identity/authenticated hosting, Everkeep recovery, runtime-adapter acceptance, Privacy Center Glaze acceptance, and hosting/observability/recovery/release evidence.
+
+The guard verifies the current failed FoundationDB state-provider candidate, draft OVHcloud signing candidate, absence of any approved provider selection or production acceptance record, eight external migration-required platform-system relationships, fail-closed runtime readiness source, `candidate_identity: null`, and empty release evidence. Any attempted Seal or Anchor declaration before those boundaries are replaced through governed accepted evidence now fails Privacy Shield validation.
+
 ## Current production/provider boundary
 
 Privacy Shield is currently Weave and remains nonconformant.
