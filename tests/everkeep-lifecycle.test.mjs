@@ -62,7 +62,7 @@ test("builds a non-authorizing lifecycle obligation pinned to current Everkeep s
 
 test("Privacy Shield cannot name itself as lifecycle executor", () => {
   assert.throws(
-    () => obligation({execution_authority: "GoreeCloud/goreecloud-privacy-shield"}),
+    () => obligation({execution_authority: "GoreeCloud/privacy-shield"}),
     /cannot be lifecycle execution authority/,
   );
 });

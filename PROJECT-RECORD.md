@@ -246,6 +246,16 @@ Privacy Shield added the producer side of the minimized status contract already 
 
 This closes the missing repository-local producer implementation but does not establish deployed delivery, producer freshness, target-environment behavior, Manager production acceptance, or Anchor qualification.
 
+## September 29, 2026 — Canonical Everkeep lifecycle-source migration
+
+Privacy Shield migrated its lifecycle handoff provenance from the predecessor Everkeep repository identity to canonical `GoreeCloud/everkeep` revision `f69e369e4d8627280fac728b7f7bcb02c43b5edd`.
+
+The canonical revision's `contracts/continuity.status.schema.json` blob SHA is `58c5a7d3580f05d395fc900d041ac54da37cbb01`, byte-identical to the historical status-schema blob used by the previous Privacy Shield pin. The migration therefore changes repository/source provenance without silently changing continuity-status semantics.
+
+Privacy Shield's own authority identity is likewise canonicalized to `GoreeCloud/privacy-shield`. The lifecycle handoff remains non-authorizing and does not transfer target execution authority to Privacy Shield or Everkeep.
+
+This advances Everkeep from source-blocked to migration-required under Platform Contract 2.0. Live Everkeep ingestion/execution, backup/restore, export/portability, target-environment recovery evidence, production recovery acceptance, Seal, and Anchor remain open.
+
 ## Current production/provider boundary
 
 Privacy Shield is currently Weave and remains nonconformant.
@@ -257,7 +267,7 @@ Still-open production obligations include:
 - accepted signing-key custody;
 - production Identity issuance/JWKS/key lifecycle;
 - live Mesh delivery;
-- Everkeep-backed backup/restore;
+- live Everkeep-backed backup/restore, export/portability, and accepted recovery;
 - current Glaze UI Privacy Center acceptance;
 - compiled Browser/runtime adapter acceptance;
 - accepted DNS/Network/application adapters;

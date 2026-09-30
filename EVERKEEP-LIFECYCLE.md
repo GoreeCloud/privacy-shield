@@ -8,7 +8,7 @@ Privacy Shield remains authoritative for the privacy/lifecycle obligation. Everk
 
 ## Authoritative Everkeep source binding
 
-This source candidate is reviewed against `GoreeCloud/goreecloud-everkeep` revision `d55d6317e084de8732681721eaad073c6bb6e725` and its `contracts/continuity.status.schema.json` contract.
+This source candidate is reviewed against `GoreeCloud/everkeep` revision `f69e369e4d8627280fac728b7f7bcb02c43b5edd` and its `contracts/continuity.status.schema.json` contract.
 
 Each issued lifecycle obligation records both that exact Everkeep source revision and status schema. Evidence presented for assessment must carry the same exact producer revision and status schema in addition to naming the Everkeep repository; a repository name alone is not enough to establish source compatibility. Evidence from another valid Everkeep revision or another schema fails closed until the obligation/consumer relationship is explicitly migrated.
 
@@ -35,8 +35,8 @@ Raw content, credentials, reusable secrets, and arbitrary payload fields are not
 
 Every lifecycle obligation fixes:
 
-- `privacy_authority: GoreeCloud/goreecloud-privacy-shield`
-- `everkeep_authority: GoreeCloud/goreecloud-everkeep`
+- `privacy_authority: GoreeCloud/privacy-shield`
+- `everkeep_authority: GoreeCloud/everkeep`
 - `authorization_effect: false`
 - `execution_authorization: false`
 - `authority_transfer: false`
