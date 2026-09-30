@@ -167,6 +167,19 @@ function exactExpectedReviewAuthority(value) {
   return text(value, "expectedReviewAuthority", 200);
 }
 
+function exactExpectedEvidenceReferences(value) {
+  if (!Array.isArray(value) || value.length < 1 || value.length > 256) {
+    throw new Error("expectedEvidenceReferences must contain 1-256 exact evidence references");
+  }
+  const references = value.map((item, index) =>
+    evidenceReference(item, `expectedEvidenceReferences[${index}]`)
+  );
+  if (new Set(references).size !== references.length) {
+    throw new Error("expectedEvidenceReferences must not contain duplicates");
+  }
+  return new Set(references);
+}
+
 /**
  * Evaluate one compiled GoreeCloud Browser artifact against the Privacy Shield
  * FR-013 runtime-acceptance boundary.
@@ -180,6 +193,7 @@ export function assessBrowserRuntimeAcceptance(record, {
   expectedPrivacyShieldRevision,
   expectedArtifactSha256,
   expectedReviewAuthority,
+  expectedEvidenceReferences,
   now = new Date(),
   maxEvidenceAgeMs,
 } = {}) {
@@ -191,6 +205,16 @@ export function assessBrowserRuntimeAcceptance(record, {
   const privacyShieldRevision = exactExpectedRevision(expectedPrivacyShieldRevision, "expectedPrivacyShieldRevision");
   const artifactDigest = exactExpectedArtifactDigest(expectedArtifactSha256);
   const reviewAuthority = exactExpectedReviewAuthority(expectedReviewAuthority);
+  const expectedEvidence = exactExpectedEvidenceReferences(expectedEvidenceReferences);
+  const usedEvidence = new Set();
+  const bindEvidence = (value, name) => {
+    const reference = evidenceReference(value, name);
+    if (!expectedEvidence.has(reference)) {
+      throw new Error(`${name} is not present in the independently expected evidence set`);
+    }
+    usedEvidence.add(reference);
+    return reference;
+  };
   const maxAge = positiveDuration(maxEvidenceAgeMs, "maxEvidenceAgeMs");
   const nowMs = now instanceof Date ? now.getTime() : timestamp(now, "now");
   if (!Number.isFinite(nowMs)) throw new Error("now must be a valid timestamp");
@@ -216,7 +240,7 @@ export function assessBrowserRuntimeAcceptance(record, {
   }
   text(artifact.runtime_version, "artifact.runtime_version", 120);
   if (artifact.package_version != null) text(artifact.package_version, "artifact.package_version", 120);
-  evidenceReference(artifact.build_provenance_reference, "artifact.build_provenance_reference");
+  bindEvidence(artifact.build_provenance_reference, "artifact.build_provenance_reference");
 
   const target = object(record.target, "target");
   closed(target, TARGET_FIELDS, "target");
@@ -252,7 +276,9 @@ export function assessBrowserRuntimeAcceptance(record, {
     if (!Array.isArray(dimension.evidence_references) || dimension.evidence_references.length < 1 || dimension.evidence_references.length > 20) {
       throw new Error(`Browser privacy dimension ${dimension.id} requires 1-20 evidence references`);
     }
-    const refs = dimension.evidence_references.map((item, refIndex) => evidenceReference(item, `dimensions[${index}].evidence_references[${refIndex}]`));
+    const refs = dimension.evidence_references.map((item, refIndex) =>
+      bindEvidence(item, `dimensions[${index}].evidence_references[${refIndex}]`)
+    );
     if (new Set(refs).size !== refs.length) throw new Error(`Browser privacy dimension ${dimension.id} contains duplicate evidence references`);
   }
   if (seen.size !== REQUIRED_DIMENSIONS.length || REQUIRED_DIMENSIONS.some((id) => !seen.has(id))) {
@@ -268,7 +294,10 @@ export function assessBrowserRuntimeAcceptance(record, {
   if (reviewedAt < observedAt) throw new Error("Browser runtime acceptance review predates the runtime observation");
   if (reviewedAt > nowMs) throw new Error("Browser runtime acceptance review cannot be future-dated");
   if (reviewedAt >= validUntil) throw new Error("Browser runtime acceptance review is outside the evidence validity window");
-  evidenceReference(review.evidence_reference, "review.evidence_reference");
+  bindEvidence(review.evidence_reference, "review.evidence_reference");
+  if (usedEvidence.size !== expectedEvidence.size) {
+    throw new Error("independently expected evidence set contains unreferenced items");
+  }
 
   if (record.authorization_effect !== false) throw new Error("Browser runtime acceptance cannot create authorization");
   if (record.authority_transfer !== false) throw new Error("Browser runtime acceptance cannot transfer authority");
@@ -281,6 +310,7 @@ export function assessBrowserRuntimeAcceptance(record, {
     privacy_shield_source_revision: recordPrivacyRevision,
     artifact_sha256: recordArtifactDigest,
     review_authority: recordReviewAuthority,
+    evidence_reference_count: usedEvidence.size,
     engine_family: target.engine_family,
     accepted_for_runtime: true,
     accepted_for_production: false,
