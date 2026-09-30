@@ -1,5 +1,12 @@
 # GoreeCloud Privacy Shield — Changelogs
 
+## 2026-09-30 — Browser runtime exact evidence-set binding
+
+- Hardened FR-013 compiled-Browser runtime acceptance so the caller must independently supply the exact content-addressed build, dimension, and review evidence-reference set.
+- Runtime acceptance now fails if the record references evidence outside that expected set, if the expected set contains unused evidence, or if the expected set contains duplicates.
+- Added regression coverage while preserving exact source/tree/artifact identity, reviewer-authority binding, freshness, all ten required runtime dimensions, and non-authorizing/non-production semantics.
+- This source hardening does not create compiled Browser evidence or grant production, Seal, Anchor, or other lifecycle authority.
+
 ## 2026-09-30 — Browser runtime reviewer-authority binding
 
 - Hardened FR-013 compiled-Browser runtime acceptance so the caller must supply an independently expected reviewer authority and the record's review authority must match it exactly.
