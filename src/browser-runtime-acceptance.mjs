@@ -185,7 +185,7 @@ export function assessBrowserRuntimeAcceptance(record, {
   const privacyShieldRevision = exactExpectedRevision(expectedPrivacyShieldRevision, "expectedPrivacyShieldRevision");
   const artifactDigest = exactExpectedArtifactDigest(expectedArtifactSha256);
   const maxAge = positiveDuration(maxEvidenceAgeMs, "maxEvidenceAgeMs");
-  const nowMs = now instanceof Date ? now.getTime() : Date.parse(now);
+  const nowMs = now instanceof Date ? now.getTime() : timestamp(now, "now");
   if (!Number.isFinite(nowMs)) throw new Error("now must be a valid timestamp");
 
   if (record.schema_version !== SCHEMA_VERSION) throw new Error("unsupported Browser runtime acceptance schema version");
