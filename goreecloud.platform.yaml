@@ -196,7 +196,7 @@ conformance:
   - tests/platform-registry-delivery.test.mjs
   - docs/integrations/privacy-center-static-site.md
   blockers:
-  - GoreeCloud Privacy Shield is classified Weave: the core privacy platform substantially exists, while its authorization core, runtime integrations, and overall production acceptance remain incomplete.
+  - "GoreeCloud Privacy Shield is classified Weave: the core privacy platform substantially exists, while its authorization core, runtime integrations, and overall production acceptance remain incomplete."
   - Canonical Privacy Center source adoption of Glaze UI 1.6.0 is established, but exact-current downstream consumer acceptance, human/rendered/accessibility/performance/resilience review, rollback, and legacy deployment retirement/cutover remain incomplete.
   - GoreeCloud Sync privacy-authorization and synchronization-governance integration remains unaccepted; Sync remains separately governed and is not a tenth Integral Platform System.
   - Single-host durable consent, policy, capability replay or revocation, and privacy evidence state are implemented and source-tested, but production/distributed durability and accepted Everkeep-backed recovery remain open.
