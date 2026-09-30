@@ -1,8 +1,8 @@
 const OBLIGATION_SCHEMA = "goreecloud.privacy-shield.everkeep-lifecycle-obligation.v1";
 const ASSESSMENT_SCHEMA = "goreecloud.privacy-shield.everkeep-lifecycle-assessment.v1";
-const PRIVACY_AUTHORITY = "GoreeCloud/goreecloud-privacy-shield";
-const EVERKEEP_AUTHORITY = "GoreeCloud/goreecloud-everkeep";
-const EVERKEEP_SOURCE_REVISION = "d55d6317e084de8732681721eaad073c6bb6e725";
+const PRIVACY_AUTHORITY = "GoreeCloud/privacy-shield";
+const EVERKEEP_AUTHORITY = "GoreeCloud/everkeep";
+const EVERKEEP_SOURCE_REVISION = "f69e369e4d8627280fac728b7f7bcb02c43b5edd";
 const EVERKEEP_STATUS_SCHEMA = "contracts/continuity.status.schema.json";
 const MAX_EVIDENCE_REFERENCES = 50;
 const OPERATIONS = new Set(["retain", "delete", "export", "recovery", "succession", "preservation"]);
