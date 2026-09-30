@@ -3,7 +3,7 @@
 ## 2026-09-29 — Provider-governance inventory and provenance reconciliation
 
 - Corrected state/signing provider decision records that still reported zero candidate evaluations despite one active FoundationDB and one active OVHcloud candidate dossier.
-- Canonicalized both active provider-evaluation integration authorities and evidence locators from the predecessor repository identity to `GoreeCloud/privacy-shield`.
+- Canonicalized active evaluation/package/review **integration authority** to `GoreeCloud/privacy-shield` while intentionally retaining the historical content-addressed evidence locators that the governed package/review chain is keyed to.
 - Corrected signing-provider documentation to reflect the two actually passed candidate criteria rather than the stale “all pending” statement.
 - Added fail-closed CI validation for candidate inventory, canonical repository provenance, zero-selection/zero-acceptance state, and current candidate status boundaries.
 - No provider was selected or production-accepted; FoundationDB remains failed and OVHcloud remains draft/non-authorizing.
