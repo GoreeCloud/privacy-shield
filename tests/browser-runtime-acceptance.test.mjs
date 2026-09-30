@@ -258,6 +258,19 @@ test("FR-013 accepts credential-safe logical evidence locators", () => {
   assert.equal(result.accepted_for_production, false);
 });
 
+test("FR-013 requires an explicit timezone when the caller clock is supplied as text", () => {
+  assert.throws(
+    () => assessBrowserRuntimeAcceptance(record(), assessmentOptions({now: "2026-09-12T23:45:00"})),
+    /now must include an explicit timezone/,
+  );
+
+  const accepted = assessBrowserRuntimeAcceptance(
+    record(),
+    assessmentOptions({now: "2026-09-12T23:45:00.000Z"}),
+  );
+  assert.equal(accepted.accepted_for_runtime, true);
+});
+
 test("FR-013 rejects future, expired, and caller-age-expired runtime evidence", () => {
   const future = record({observed_at: "2026-09-12T23:46:00.000Z"});
   assert.throws(
