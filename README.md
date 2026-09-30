@@ -71,7 +71,7 @@ Policy rules can currently:
 
 Constraints intersect rather than broaden authority. A policy cannot use this engine to add a destination, processing zone, operation, purpose, or resource that the application manifest and consent state did not already authorize.
 
-Operation-bound capabilities support explicit signing-key identifiers, rotation, revocation, reusable or single-use replay policy, and key retirement. This is still a source-level prototype: production key custody, durable distributed replay/revocation state, durable evidence persistence, runtime integration, and component-specific acceptance remain required.
+Operation-bound capabilities support explicit signing-key identifiers, rotation, revocation, reusable or single-use replay policy, and key retirement. Source-tested single-host durable consent, policy, replay/revocation, and privacy-evidence state now exists, but production/distributed authority-state acceptance, accepted Everkeep-backed recovery, production key custody, runtime integration, and component-specific acceptance remain required.
 
 ## Platform responsibilities
 
@@ -159,13 +159,14 @@ Current feature state remains in [IMPLEMENTED-FEATURES.md](IMPLEMENTED-FEATURES.
 | Canonical Privacy Shield icon | Approved and canonicalized |
 | Browser contract synchronization | Source-integrated |
 | Platform-wide privacy role | Approved and merged |
+| Platform Contract 2.0 lifecycle | Weave; deployment development, qualification blocked, next gate Seal |
 | Platform contract and adapter/status architecture | Merged |
 | Canonical capability registry | Merged and machine-validated |
 | Privacy Shield 2.0 PDP/PEP authorization prototype | Implemented; source-level validation required for each revision |
 | Policy engine and restrictive policy contract | Implemented; source-level prototype |
 | Capability rotation, revocation, and replay controls | Implemented; production key/revocation infrastructure pending |
-| Durable consent/evidence/replay persistence | Pending |
-| GoreeCloud Manager status consumer | Merged; no accepted runtime producer active yet |
+| Single-host durable consent/evidence/replay persistence | Source-implemented and validated; production/distributed provider and Everkeep recovery acceptance pending |
+| GoreeCloud Manager status path | Read-only consumer plus bounded source producer implemented; deployed delivery/freshness/target acceptance pending |
 | Wardveil Security status presenter | Merged; read-only authority separation enforced |
 | GoreeCloud DNS `dns-privacy` adapter | Draft downstream candidate; not centrally promoted or production-approved |
 | GoreeCloud Network `network-privacy` adapter | Draft downstream candidate; not centrally promoted or production-approved |

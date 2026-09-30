@@ -1,5 +1,11 @@
 # GoreeCloud Privacy Shield — Changelogs
 
+## 2026-09-29 — Capability and status documentation reconciliation
+
+- Reconciled `CAPABILITIES.md` and `README.md` with the authoritative Platform Contract 2.0 **Weave** lifecycle, development deployment state, blocked qualification state, and Seal next gate.
+- Reconciled canonical Privacy Center Glaze UI V1.6 source adoption, Manager source producer availability, Everkeep/Policy/Observability migration-required states, and the validated single-host durable privacy-state boundary.
+- Production/distributed providers, live integrations, recovery acceptance, runtime acceptance, Seal, and Anchor remain unaccepted.
+
 ## 2026-09-29 — Fail-closed Seal readiness guard
 
 - Added a machine-readable Privacy Shield Seal-readiness record covering eight release-critical gate groups that still block candidate freeze.

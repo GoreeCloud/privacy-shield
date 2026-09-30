@@ -4,7 +4,7 @@
 
 GoreeCloud Privacy Shield is the platform-wide privacy, consent, data-governance, minimization, transparency, and user-control authority for GoreeCloud.
 
-This capability record describes the current verified repository state. Privacy Shield is in **Development**. Source implementation, contracts, validators, and exact-revision tests do not by themselves establish deployed production privacy enforcement, production-approved providers, runtime acceptance, release status, or Stable qualification.
+This capability record describes the current verified repository state. Privacy Shield is classified **Weave** under Platform Contract 2.0. Its `deployment_state` remains `development`, its `qualification_state` remains `blocked`, and its next lifecycle gate is Seal. Source implementation, contracts, validators, and exact-revision tests do not by themselves establish deployed production privacy enforcement, production-approved providers, runtime acceptance, release status, Seal, or Anchor qualification.
 
 ## Core Capabilities
 
@@ -76,7 +76,7 @@ No repository reference, in-memory, file, fixture, or test provider is a product
 
 Privacy Center provides the user-facing surface for Privacy Shield state, controls, explanations, receipts, exceptions, and related privacy information.
 
-The repository retains a transitional Privacy Center implementation. Its active source still carries the historical pre-reset Glaze UI 2.1.0 implementation, while the current GoreeCloud consumer target is **Glaze UI 1.6.0 Stable**. Migration, rendered review, accessibility validation, deterministic build/deployment verification, rollback validation, and production acceptance remain required.
+The canonical Privacy Center source is now the GoreeCloud static-website privacy surface and declares the current **GLAZE UI V1.6 / `1.6.0` Anchor** target. This repository's `website/` directory remains a historical Glaze UI 2.1.0 legacy/transitional deployment copy rather than current source authority. Exact-current downstream human/rendered/accessibility/performance/resilience review, rollback, legacy deployment retirement/cutover, and production acceptance remain required.
 
 ### Privacy explanations and status
 
@@ -107,11 +107,11 @@ These controls support governed administration and review. They do not create pr
 
 ## Platform Integrations
 
-Privacy Shield is one of the nine GoreeCloud Integral Platform Systems. The current repository manifest uses Platform Contract 0.4 and keeps GoreeCloud Sync separately governed.
+Privacy Shield is one of the nine GoreeCloud Integral Platform Systems. The current repository manifest uses Platform Contract 2.0 and keeps GoreeCloud Sync separately governed.
 
 ### GoreeCloud Manager
 
-A privacy-safe read-only Manager status consumer exists, but no accepted active Privacy Shield runtime-status producer currently establishes complete current-contract acceptance.
+A privacy-safe read-only Manager status consumer exists, and Privacy Shield now implements the bounded privacy-safe source producer for that status contract. Accepted producer deployment, delivery/freshness, target-environment validation, and Manager production acceptance remain incomplete.
 
 **State:** applicable migration required.
 
@@ -129,11 +129,11 @@ Source architecture preserves Wardveil as the separate security authority. Wardv
 
 Privacy Shield has source-tested single-host durable state and local backup-recovery primitives. Everkeep remains authoritative for platform recovery and preservation.
 
-**State:** applicable blocked pending accepted Everkeep runtime backup/restore and production recovery evidence.
+**State:** applicable migration required pending live Everkeep ingestion/execution, accepted backup/restore, target-environment recovery evidence, and production recovery acceptance.
 
 ### Glaze UI
 
-Privacy Center is not yet accepted against the current shared Glaze UI 1.6.0 target.
+Canonical Privacy Center source adoption now targets GLAZE UI V1.6 / `1.6.0`, while exact-current rendered, accessibility, performance/resilience, rollback, cutover, and application acceptance remain incomplete.
 
 **State:** applicable migration required.
 
@@ -153,13 +153,13 @@ Privacy Shield contains source-validated credential-provider boundaries for scop
 
 Privacy Shield owns privacy-domain authorization semantics, while GoreeCloud Policy remains a separate platform authority.
 
-**State:** applicable blocked pending an accepted central Policy runtime contract and Privacy Shield-specific integration evidence.
+**State:** applicable migration required; Policy v1 source contracts are adopted, while live caller identity, authenticated decision exchange, distribution/freshness, obligations handling, target-environment evidence, and production acceptance remain open.
 
 ### GoreeCloud Observability
 
-Privacy Shield provides privacy-safe evidence/status boundaries but does not yet have an accepted central Observability integration.
+Privacy Shield implements the privacy-minimized GoreeCloud Observability v1 source contract, while live authenticated publication/collection and operational acceptance remain incomplete.
 
-**State:** applicable blocked pending accepted health, telemetry, freshness, completeness, diagnostics, and operational-evidence contracts.
+**State:** applicable migration required pending live producer identity, authenticated publication/collection, freshness/completeness, retention/deletion, diagnostics/alerting, target-environment evidence, and production acceptance.
 
 ## Data and Interoperability
 
