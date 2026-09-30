@@ -3,11 +3,11 @@
 **Status:** Authoritative repository planned-feature record  
 **As of:** 2026-09-29  
 **Canonical repository:** `GoreeCloud/privacy-shield`  
-**Lifecycle:** Weave
+**Lifecycle:** Seal
 
 ## Purpose
 
-This file records planned, incomplete, migration-required, blocked, and acceptance-gated Privacy Shield work. It preserves the meaningful obligations from the retired repository `FEATURE-ROADMAP.md` and the former Drive-side Privacy Shield feature-roadmap records without retaining Google Drive as a feature authority.
+This file records planned, incomplete, migration-required, blocked, and acceptance-gated Privacy Shield work against exact candidate `privacy-shield-0.1-seal.1`. Seal freezes the current implementation source for Anchor qualification; planned work does not silently expand that candidate. It preserves the meaningful obligations from the retired repository `FEATURE-ROADMAP.md` and the former Drive-side Privacy Shield feature-roadmap records without retaining Google Drive as a feature authority.
 
 Actionable implementation work remains governed through GoreeCloud Tasks Management and repository issues/PRs as applicable. A planned feature is not implemented merely because it appears here.
 
