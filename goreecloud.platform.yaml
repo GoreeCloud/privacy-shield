@@ -1,10 +1,24 @@
-schema_version: '0.4'
+schema_version: '2.0'
 component:
   type: service
   id: goreecloud-privacy-shield
   product_name: GoreeCloud Privacy Shield
   repository: GoreeCloud/privacy-shield
-lifecycle: development
+lifecycle: weave
+lifecycle_metadata:
+  flags:
+    - blocked
+    - recovery-hold
+    - migration-required
+  deployment_state: development
+  qualification_state: blocked
+  next_gate: seal
+  candidate_identity: null
+  last_transition: null
+  evidence:
+    - PROJECT-RECORD.md
+    - PLANNED-FEATURES.md
+    - README.md
 version: '0.1'
 supported_platforms:
 - web
@@ -116,10 +130,10 @@ continuity:
     - Keep Privacy Shield contracts, policy state, consent state, and evidence independently understandable and portable without requiring a proprietary control plane.
 external_dependencies: []
 compatibility:
-  platform_contract: '0.4'
+  platform_contract: '2.0'
   glaze_ui_required: 1.6.0
   requires:
-  - goreecloud-platform-contract==0.4
+  - goreecloud-platform-contract==2.0
   - glaze-ui==1.6.0
   provides:
   - privacy-shield-durable-runtime-single-host
@@ -182,7 +196,7 @@ conformance:
   - tests/platform-registry-delivery.test.mjs
   - docs/integrations/privacy-center-static-site.md
   blockers:
-  - GoreeCloud Privacy Shield remains in Development and its platform authorization core is not production accepted.
+  - GoreeCloud Privacy Shield is classified Weave: the core privacy platform substantially exists, while its authorization core, runtime integrations, and overall production acceptance remain incomplete.
   - Canonical Privacy Center source adoption of Glaze UI 1.6.0 is established, but exact-current downstream consumer acceptance, human/rendered/accessibility/performance/resilience review, rollback, and legacy deployment retirement/cutover remain incomplete.
   - GoreeCloud Sync privacy-authorization and synchronization-governance integration remains unaccepted; Sync remains separately governed and is not a tenth Integral Platform System.
   - Single-host durable consent, policy, capability replay or revocation, and privacy evidence state are implemented and source-tested, but production/distributed durability and accepted Everkeep-backed recovery remain open.
