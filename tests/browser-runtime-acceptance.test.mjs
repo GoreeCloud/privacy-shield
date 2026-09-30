@@ -64,6 +64,14 @@ function record(overrides = {}) {
   };
 }
 
+function recordEvidenceReferences(value = record()) {
+  return [
+    value.artifact.build_provenance_reference,
+    ...value.dimensions.flatMap((dimension) => dimension.evidence_references),
+    value.review.evidence_reference,
+  ];
+}
+
 function assessmentOptions(overrides = {}) {
   return {
     expectedBrowserRevision: browserRevision,
@@ -71,6 +79,7 @@ function assessmentOptions(overrides = {}) {
     expectedPrivacyShieldRevision: privacyShieldRevision,
     expectedArtifactSha256: artifactSha256,
     expectedReviewAuthority: reviewAuthority,
+    expectedEvidenceReferences: recordEvidenceReferences(),
     now,
     maxEvidenceAgeMs: 10 * 60 * 1000,
     ...overrides,
@@ -116,6 +125,7 @@ test("FR-013 accepts only an exact compiled Browser artifact with every required
   assert.equal(result.authorization_effect, false);
   assert.equal(result.authority_transfer, false);
   assert.equal(result.artifact_sha256, artifactSha256);
+  assert.equal(result.evidence_reference_count, recordEvidenceReferences().length);
   assert.deepEqual([...result.required_dimensions], [...BROWSER_RUNTIME_ACCEPTANCE_DIMENSIONS]);
 });
 
@@ -140,11 +150,15 @@ test("FR-013 requires independent exact source, tree, Privacy Shield, and artifa
     "expectedPrivacyShieldRevision",
     "expectedArtifactSha256",
     "expectedReviewAuthority",
+    "expectedEvidenceReferences",
   ];
   for (const key of missing) {
     const options = assessmentOptions();
     delete options[key];
-    assert.throws(() => assessBrowserRuntimeAcceptance(record(), options), /required for exact-|required for exact-artifact|required for independent-review/);
+    assert.throws(
+      () => assessBrowserRuntimeAcceptance(record(), options),
+      /required for exact-|required for exact-artifact|required for independent-review|expectedEvidenceReferences/,
+    );
   }
 
   assert.throws(
@@ -162,6 +176,41 @@ test("FR-013 requires independent exact source, tree, Privacy Shield, and artifa
   assert.throws(
     () => assessBrowserRuntimeAcceptance(record(), assessmentOptions({expectedArtifactSha256: "6".repeat(64)})),
     /compiled Browser artifact digest mismatch/,
+  );
+});
+
+test("FR-013 requires an independent exact evidence-reference set", () => {
+  const value = record();
+  const exact = recordEvidenceReferences(value);
+
+  const accepted = assessBrowserRuntimeAcceptance(
+    value,
+    assessmentOptions({expectedEvidenceReferences: exact}),
+  );
+  assert.equal(accepted.evidence_reference_count, exact.length);
+
+  assert.throws(
+    () => assessBrowserRuntimeAcceptance(
+      value,
+      assessmentOptions({expectedEvidenceReferences: exact.slice(1)}),
+    ),
+    /not present in the independently expected evidence set/,
+  );
+
+  assert.throws(
+    () => assessBrowserRuntimeAcceptance(
+      value,
+      assessmentOptions({expectedEvidenceReferences: [...exact, ref("9", "unreferenced-evidence")]}),
+    ),
+    /contains unreferenced items/,
+  );
+
+  assert.throws(
+    () => assessBrowserRuntimeAcceptance(
+      value,
+      assessmentOptions({expectedEvidenceReferences: [...exact, exact[0]]}),
+    ),
+    /must not contain duplicates/,
   );
 });
 
@@ -269,7 +318,10 @@ test("FR-013 accepts credential-safe logical evidence locators", () => {
   const value = record();
   value.artifact.build_provenance_reference = ref("a", "reports/browser/build-provenance.json");
   value.review.evidence_reference = ref("f", "review:browser-runtime");
-  const result = assessBrowserRuntimeAcceptance(value, assessmentOptions());
+  const result = assessBrowserRuntimeAcceptance(
+    value,
+    assessmentOptions({expectedEvidenceReferences: recordEvidenceReferences(value)}),
+  );
   assert.equal(result.accepted_for_runtime, true);
   assert.equal(result.accepted_for_production, false);
 });
