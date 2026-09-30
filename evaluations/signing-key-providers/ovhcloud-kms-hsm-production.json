@@ -17,31 +17,31 @@
     "digest_only_signing": {
       "result": "passed",
       "evidence_refs": [
-        "evidence+sha256:212607e3358fcf6a9140c3df1f7f7f130a8b6bf496648dcf1bd2e3e5e18dac46:github://GoreeCloud/privacy-shield/evidence/provider-evaluations/ovhcloud-kms-signing-lifecycle-audit-candidate-20260919.md"
+        "evidence+sha256:212607e3358fcf6a9140c3df1f7f7f130a8b6bf496648dcf1bd2e3e5e18dac46:github://GoreeCloud/goreecloud-privacy-shield/evidence/provider-evaluations/ovhcloud-kms-signing-lifecycle-audit-candidate-20260919.md"
       ]
     },
     "non_exportable_signing_material": {
       "result": "passed",
       "evidence_refs": [
-        "evidence+sha256:45593ed53b2f5bb2dac7bb24d912cdf234c8484430cf58beceadf1e11709ad68:github://GoreeCloud/privacy-shield/evidence/provider-evaluations/ovhcloud-kms-hsm-signing-candidate-20260919.md"
+        "evidence+sha256:45593ed53b2f5bb2dac7bb24d912cdf234c8484430cf58beceadf1e11709ad68:github://GoreeCloud/goreecloud-privacy-shield/evidence/provider-evaluations/ovhcloud-kms-hsm-signing-candidate-20260919.md"
       ]
     },
     "opaque_key_references": {
       "result": "pending",
       "evidence_refs": [
-        "evidence+sha256:45593ed53b2f5bb2dac7bb24d912cdf234c8484430cf58beceadf1e11709ad68:github://GoreeCloud/privacy-shield/evidence/provider-evaluations/ovhcloud-kms-hsm-signing-candidate-20260919.md"
+        "evidence+sha256:45593ed53b2f5bb2dac7bb24d912cdf234c8484430cf58beceadf1e11709ad68:github://GoreeCloud/goreecloud-privacy-shield/evidence/provider-evaluations/ovhcloud-kms-hsm-signing-candidate-20260919.md"
       ]
     },
     "stable_key_identifiers": {
       "result": "pending",
       "evidence_refs": [
-        "evidence+sha256:45593ed53b2f5bb2dac7bb24d912cdf234c8484430cf58beceadf1e11709ad68:github://GoreeCloud/privacy-shield/evidence/provider-evaluations/ovhcloud-kms-hsm-signing-candidate-20260919.md"
+        "evidence+sha256:45593ed53b2f5bb2dac7bb24d912cdf234c8484430cf58beceadf1e11709ad68:github://GoreeCloud/goreecloud-privacy-shield/evidence/provider-evaluations/ovhcloud-kms-hsm-signing-candidate-20260919.md"
       ]
     },
     "rotation_retirement_revocation": {
       "result": "pending",
       "evidence_refs": [
-        "evidence+sha256:212607e3358fcf6a9140c3df1f7f7f130a8b6bf496648dcf1bd2e3e5e18dac46:github://GoreeCloud/privacy-shield/evidence/provider-evaluations/ovhcloud-kms-signing-lifecycle-audit-candidate-20260919.md"
+        "evidence+sha256:212607e3358fcf6a9140c3df1f7f7f130a8b6bf496648dcf1bd2e3e5e18dac46:github://GoreeCloud/goreecloud-privacy-shield/evidence/provider-evaluations/ovhcloud-kms-signing-lifecycle-audit-candidate-20260919.md"
       ]
     },
     "producer_identity_binding": {
@@ -51,37 +51,37 @@
     "privacy_safe_audit": {
       "result": "pending",
       "evidence_refs": [
-        "evidence+sha256:212607e3358fcf6a9140c3df1f7f7f130a8b6bf496648dcf1bd2e3e5e18dac46:github://GoreeCloud/privacy-shield/evidence/provider-evaluations/ovhcloud-kms-signing-lifecycle-audit-candidate-20260919.md"
+        "evidence+sha256:212607e3358fcf6a9140c3df1f7f7f130a8b6bf496648dcf1bd2e3e5e18dac46:github://GoreeCloud/goreecloud-privacy-shield/evidence/provider-evaluations/ovhcloud-kms-signing-lifecycle-audit-candidate-20260919.md"
       ]
     },
     "fail_closed_untrusted_state": {
       "result": "pending",
       "evidence_refs": [
-        "evidence+sha256:212607e3358fcf6a9140c3df1f7f7f130a8b6bf496648dcf1bd2e3e5e18dac46:github://GoreeCloud/privacy-shield/evidence/provider-evaluations/ovhcloud-kms-signing-lifecycle-audit-candidate-20260919.md"
+        "evidence+sha256:212607e3358fcf6a9140c3df1f7f7f130a8b6bf496648dcf1bd2e3e5e18dac46:github://GoreeCloud/goreecloud-privacy-shield/evidence/provider-evaluations/ovhcloud-kms-signing-lifecycle-audit-candidate-20260919.md"
       ]
     },
     "outage_degraded_behavior": {
       "result": "pending",
       "evidence_refs": [
-        "evidence+sha256:45593ed53b2f5bb2dac7bb24d912cdf234c8484430cf58beceadf1e11709ad68:github://GoreeCloud/privacy-shield/evidence/provider-evaluations/ovhcloud-kms-hsm-signing-candidate-20260919.md"
+        "evidence+sha256:45593ed53b2f5bb2dac7bb24d912cdf234c8484430cf58beceadf1e11709ad68:github://GoreeCloud/goreecloud-privacy-shield/evidence/provider-evaluations/ovhcloud-kms-hsm-signing-candidate-20260919.md"
       ]
     },
     "recovery_continuity": {
       "result": "pending",
       "evidence_refs": [
-        "evidence+sha256:212607e3358fcf6a9140c3df1f7f7f130a8b6bf496648dcf1bd2e3e5e18dac46:github://GoreeCloud/privacy-shield/evidence/provider-evaluations/ovhcloud-kms-signing-lifecycle-audit-candidate-20260919.md"
+        "evidence+sha256:212607e3358fcf6a9140c3df1f7f7f130a8b6bf496648dcf1bd2e3e5e18dac46:github://GoreeCloud/goreecloud-privacy-shield/evidence/provider-evaluations/ovhcloud-kms-signing-lifecycle-audit-candidate-20260919.md"
       ]
     },
     "access_control_isolation": {
       "result": "pending",
       "evidence_refs": [
-        "evidence+sha256:45593ed53b2f5bb2dac7bb24d912cdf234c8484430cf58beceadf1e11709ad68:github://GoreeCloud/privacy-shield/evidence/provider-evaluations/ovhcloud-kms-hsm-signing-candidate-20260919.md"
+        "evidence+sha256:45593ed53b2f5bb2dac7bb24d912cdf234c8484430cf58beceadf1e11709ad68:github://GoreeCloud/goreecloud-privacy-shield/evidence/provider-evaluations/ovhcloud-kms-hsm-signing-candidate-20260919.md"
       ]
     },
     "operational_ownership": {
       "result": "pending",
       "evidence_refs": [
-        "evidence+sha256:212607e3358fcf6a9140c3df1f7f7f130a8b6bf496648dcf1bd2e3e5e18dac46:github://GoreeCloud/privacy-shield/evidence/provider-evaluations/ovhcloud-kms-signing-lifecycle-audit-candidate-20260919.md"
+        "evidence+sha256:212607e3358fcf6a9140c3df1f7f7f130a8b6bf496648dcf1bd2e3e5e18dac46:github://GoreeCloud/goreecloud-privacy-shield/evidence/provider-evaluations/ovhcloud-kms-signing-lifecycle-audit-candidate-20260919.md"
       ]
     }
   },
@@ -89,7 +89,7 @@
     "status": "draft",
     "authorizing": false,
     "production_acceptance_authorized": false,
-    "evidence_reference": "evidence+sha256:45593ed53b2f5bb2dac7bb24d912cdf234c8484430cf58beceadf1e11709ad68:github://GoreeCloud/privacy-shield/evidence/provider-evaluations/ovhcloud-kms-hsm-signing-candidate-20260919.md",
+    "evidence_reference": "evidence+sha256:45593ed53b2f5bb2dac7bb24d912cdf234c8484430cf58beceadf1e11709ad68:github://GoreeCloud/goreecloud-privacy-shield/evidence/provider-evaluations/ovhcloud-kms-hsm-signing-candidate-20260919.md",
     "evaluated_at": "2026-09-20T00:34:23Z",
     "valid_until": "2026-10-19T22:10:00Z"
   },
