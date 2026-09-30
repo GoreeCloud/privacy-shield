@@ -33,7 +33,10 @@ platform_systems:
     evidence:
     - docs/PLATFORM-ADOPTION.md
     - contracts/privacy-shield.status.schema.json
-    notes: GoreeCloud Manager has a merged privacy-safe read-only status consumer, but no accepted Privacy Shield runtime status producer is currently active for that path and current-contract acceptance remains incomplete.
+    - docs/integrations/manager.md
+    - src/manager-status.mjs
+    - tests/manager-status.test.mjs
+    notes: Privacy Shield now owns a bounded privacy-safe source producer for the status contract already consumed read-only by GoreeCloud Manager. The source producer fixes production approval false, forbids protected/active runtime claims, and exports no raw private activity, credentials, or identifiers. Accepted runtime deployment, freshness/delivery, target-environment validation, and production acceptance remain migration-required.
   privacy_shield:
     result: not-applicable-justified
     version: '0.1'
@@ -206,4 +209,5 @@ conformance:
   - Runtime-specific Browser, DNS, Network, application, and other Privacy Shield adapters retain independent acceptance gates.
   - GoreeCloud Policy v1 source contracts are adopted, but live caller identity, authenticated decision exchange, distribution, freshness/expiry, obligations handling, enforcement coordination, target-environment evidence, and production acceptance remain outstanding.
   - GoreeCloud Observability v1 source contract is adopted for privacy-minimized signal construction, but live producer identity, authenticated publication/collection, freshness/completeness, retention/deletion, diagnostics/alerting, target-environment evidence, and production acceptance remain outstanding.
+  - Manager status producer and consumer source boundaries exist, but accepted producer deployment, status delivery/freshness, target-environment validation, and Manager production acceptance remain pending.
   - Target-environment runtime, failure-mode, recovery, publication, and explicit production acceptance remain pending.
