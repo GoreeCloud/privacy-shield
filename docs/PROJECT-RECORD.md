@@ -1,7 +1,7 @@
 # GoreeCloud Privacy Shield — Project Record
 
 **Repository:** `GoreeCloud/privacy-shield`  
-**Lifecycle:** Weave — Platform Contract 2.0; qualification blocked pending runtime, provider, recovery, and production acceptance  
+**Lifecycle:** Seal — Platform Contract 2.0; exact candidate `privacy-shield-0.1-seal.1` freezes implementation source `01e7502b9828bb5611677964e4f6eada70e7d055`; Anchor qualification remains blocked pending runtime, provider, recovery, and production acceptance  
 **License:** MPL-2.0  
 **Current required Glaze target:** GLAZE UI V1.6 / `1.6.0`  
 **Migration baseline:** `5abe4ba46f4e949fe45fc653e0f95af0b180cae9`  
@@ -209,15 +209,23 @@ The active `Protect main` ruleset now requires pull-request integration, strict 
 
 ## Current Platform Contract boundary
 
-The repository uses Platform Contract 2.0 and evaluates exactly nine Integral Platform Systems. The explicit migration from legacy Contract 0.4 classifies Privacy Shield as **Weave** because the core privacy platform, authorization architecture, provider governance, durable-state foundation, Policy/Observability source adapters, Mesh/Identity delivery boundaries, Browser core, and repository governance substantially exist, while remaining work is dominated by integration, recovery, provider/runtime acceptance, target-environment validation, and release convergence.
+The repository uses Platform Contract 2.0 and evaluates exactly nine Integral Platform Systems. Privacy Shield is now **Seal** because the provider-neutral core implementation has been frozen as exact candidate `privacy-shield-0.1-seal.1` at source `01e7502b9828bb5611677964e4f6eada70e7d055` / tree `21e9a9324aeb0fc2f6f1bfd6ba74768e7006297b` for Anchor qualification.
 
-The migration preserves `deployment_state: development`, `qualification_state: blocked`, and `next_gate: seal`. No Seal candidate identity is declared because exact production providers, recovery acceptance, representative runtime evidence, and release-critical acceptance remain incomplete.
+The transition preserves `deployment_state: development`, `qualification_state: blocked`, and all existing migration/recovery blockers while changing `next_gate` to `anchor`. Production provider selection/acceptance, representative runtime evidence, recovery, current Glaze consumer acceptance, observability/hosting, release evidence, and all other blocked gates remain qualification work; Seal does not represent them as passed.
 
 Current source includes bounded adoption/integration evidence for several systems while remaining fail-closed where runtime acceptance is absent.
 
 The repository's machine-readable conformance status remains nonconformant because required runtime/provider/recovery/current-Glaze/target evidence is incomplete.
 
 Source adoption does not become production integration merely because contracts and tests pass.
+
+## September 30, 2026 — Exact Seal candidate transition
+
+Privacy Shield entered **Seal** under Platform Contract 2.0 with candidate `privacy-shield-0.1-seal.1`. The frozen implementation source is `01e7502b9828bb5611677964e4f6eada70e7d055` with tree `21e9a9324aeb0fc2f6f1bfd6ba74768e7006297b`; Privacy Shield Validation run `36782421370` succeeded on that exact source before transition.
+
+The transition corrects the earlier repository-local Seal-readiness guard to match higher-authority GoreeCloud lifecycle governance: Seal requires an exact candidate identity, while production provider/runtime acceptance, recovery, all-nine-system conformance, release publication, and production readiness remain **Anchor qualification** gates. All eight gate groups remain blocked and `anchor_promotion_authorized` remains false.
+
+The candidate remains provider-neutral, non-authorizing, and non-production. Qualification evidence may accumulate against the frozen source. Any material runtime, dependency/provider, privacy/security, recovery, supported-platform, or release-critical configuration change supersedes `seal.1` and requires a new Seal candidate.
 
 ## Current Glaze boundary
 
