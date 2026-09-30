@@ -11,6 +11,7 @@ const browserRevision = "1".repeat(40);
 const browserTreeSha = "2".repeat(40);
 const privacyShieldRevision = "3".repeat(40);
 const artifactSha256 = "4".repeat(64);
+const reviewAuthority = "Privacy Shield Browser runtime qualification reviewer";
 const now = new Date("2026-09-12T23:45:00.000Z");
 const evidenceSeeds = ["a", "b", "c", "d", "e", "f", "0", "1", "2", "3"];
 
@@ -51,7 +52,7 @@ function record(overrides = {}) {
       evidence_references: [ref(evidenceSeeds[index], `browser-${id}`)],
     })),
     review: {
-      authority: "Privacy Shield Browser runtime qualification reviewer",
+      authority: reviewAuthority,
       disposition: "accepted-for-runtime",
       reviewed_at: "2026-09-12T23:44:00.000Z",
       evidence_reference: ref("f", "browser-runtime-review"),
@@ -69,6 +70,7 @@ function assessmentOptions(overrides = {}) {
     expectedBrowserTreeSha: browserTreeSha,
     expectedPrivacyShieldRevision: privacyShieldRevision,
     expectedArtifactSha256: artifactSha256,
+    expectedReviewAuthority: reviewAuthority,
     now,
     maxEvidenceAgeMs: 10 * 60 * 1000,
     ...overrides,
@@ -137,11 +139,12 @@ test("FR-013 requires independent exact source, tree, Privacy Shield, and artifa
     "expectedBrowserTreeSha",
     "expectedPrivacyShieldRevision",
     "expectedArtifactSha256",
+    "expectedReviewAuthority",
   ];
   for (const key of missing) {
     const options = assessmentOptions();
     delete options[key];
-    assert.throws(() => assessBrowserRuntimeAcceptance(record(), options), /required for exact-|required for exact-artifact/);
+    assert.throws(() => assessBrowserRuntimeAcceptance(record(), options), /required for exact-|required for exact-artifact|required for independent-review/);
   }
 
   assert.throws(
@@ -160,6 +163,19 @@ test("FR-013 requires independent exact source, tree, Privacy Shield, and artifa
     () => assessBrowserRuntimeAcceptance(record(), assessmentOptions({expectedArtifactSha256: "6".repeat(64)})),
     /compiled Browser artifact digest mismatch/,
   );
+});
+
+test("FR-013 requires independent reviewer authority binding", () => {
+  const mismatched = record();
+  mismatched.review.authority = "Self-asserted runtime reviewer";
+
+  assert.throws(
+    () => assessBrowserRuntimeAcceptance(mismatched, assessmentOptions()),
+    /reviewer authority binding mismatch/,
+  );
+
+  const accepted = assessBrowserRuntimeAcceptance(record(), assessmentOptions());
+  assert.equal(accepted.review_authority, reviewAuthority);
 });
 
 test("FR-013 binds known compiled artifact kinds to the matching target platform", () => {
