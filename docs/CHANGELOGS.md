@@ -5,6 +5,7 @@
 - Reconciled `docs/BROWSER-INTEGRATION.md` with the already-approved canonical Privacy Shield identity; Browser surfaces must use traceable derivatives while visual approval remains separate from compiled-runtime acceptance.
 - Reconciled `docs/ACCEPTANCE-STATUS.md` to current main, Platform Contract 2.0 Weave lifecycle, merged P0 provider-governance source, and the actual empty production state-provider, signing-provider, and compiled-Browser acceptance directories.
 - Removed stale Draft/current-authority references to closed PR #73 and merged PR #80 without changing provider selection, runtime acceptance, production approval, Seal, or Anchor state.
+- Follow-up: made the acceptance-status source-baseline wording self-stable by identifying `main` as live authority and the prior SHA as a reconciliation baseline rather than a permanently current HEAD assertion.
 
 ## 2026-09-30 — Repository root symlink hardening
 
