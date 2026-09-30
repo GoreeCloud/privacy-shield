@@ -1,5 +1,12 @@
 # GoreeCloud Privacy Shield — Changelogs
 
+## 2026-09-29 — Canonical Everkeep lifecycle-source migration
+
+- Re-pinned the Privacy Shield lifecycle handoff from predecessor repository identities to canonical `GoreeCloud/privacy-shield` and `GoreeCloud/everkeep`.
+- Pinned canonical Everkeep revision `f69e369e4d8627280fac728b7f7bcb02c43b5edd`; its `continuity.status` schema blob is byte-identical to the historical pinned schema, preserving contract semantics while correcting provenance.
+- Added canonical-provenance regression coverage and reconciled Platform Contract 2.0 Everkeep from source-blocked to migration-required.
+- Live Everkeep ingestion/execution, backup/restore, export/portability, recovery evidence, production acceptance, Seal, and Anchor remain separate gates.
+
 ## 2026-09-29 — Manager status producer source adoption
 
 - Added a privacy-minimized schema-version-1 Privacy Shield status producer for the existing GoreeCloud Manager read-only consumer contract.
