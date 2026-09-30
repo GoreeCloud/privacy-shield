@@ -7,7 +7,7 @@
   "provider_class": "signing-key-provider",
   "provider_id": "ovhcloud-kms-hsm",
   "provider_name": "OVHcloud KMS HSM-backed asymmetric signing",
-  "integration_authority": "GoreeCloud/goreecloud-privacy-shield",
+  "integration_authority": "GoreeCloud/privacy-shield",
   "scope": {
     "service": "privacy-shield",
     "capability": "operation-bound-capability-signing",

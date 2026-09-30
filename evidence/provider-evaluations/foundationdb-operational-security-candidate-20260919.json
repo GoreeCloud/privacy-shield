@@ -6,7 +6,7 @@
   "provider_id": "foundationdb-self-hosted-multihost",
   "provider_name": "FoundationDB self-hosted multi-host cluster",
   "provider_implementation": "FoundationDB self-hosted multi-host cluster",
-  "integration_authority": "GoreeCloud/goreecloud-privacy-shield",
+  "integration_authority": "GoreeCloud/privacy-shield",
   "scope": {
     "service": "privacy-shield",
     "capability": "durable-authorization-state",

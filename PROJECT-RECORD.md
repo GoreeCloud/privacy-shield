@@ -264,6 +264,14 @@ The existing capability-reference verification transport is formalized at `POST 
 
 The Platform Contract now declares these source interfaces and API version instead of null health/API state. No production host, domain, Identity transport binding, provider deployment, monitoring, target-environment acceptance, Seal, or Anchor is established by the source change.
 
+## September 29, 2026 — Provider-governance inventory/provenance reconciliation
+
+The repository's provider decision READMEs were corrected to match live authoritative source: one FoundationDB state-provider evaluation exists and is explicitly failed; one OVHcloud KMS/HSM signing-provider evaluation exists and remains draft/non-authorizing. There are still zero approved provider selections and zero production-approved provider acceptance records.
+
+Active evaluation, evidence-package, and review records now use canonical `GoreeCloud/privacy-shield` integration authority. Historical content-addressed evidence locators remain unchanged because the governed package/review chain is keyed to those exact provenance references. CI validates the live authority/inventory boundary without rewriting historical locator identity.
+
+This documentation/provenance repair does not change provider eligibility. FoundationDB remains blocked by failed access-control isolation and other pending operational criteria. OVHcloud remains incomplete and additionally requires the separate proprietary-service/necessity and explicit cost/order authorization before any billable selection/deployment path.
+
 ## Current production/provider boundary
 
 Privacy Shield is currently Weave and remains nonconformant.

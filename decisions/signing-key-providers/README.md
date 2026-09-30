@@ -10,6 +10,6 @@ A candidate evaluation is non-authorizing. A selection record is also **not** pr
 
 CI rejects multiple active approved selections for the same environment. If a production signing-key acceptance record exists, CI requires a matching active approved selection for the same provider, integration authority, producer identity, and environment before that acceptance record can be considered structurally valid.
 
-There are currently **zero signing-key provider candidate evaluation records**, **zero approved signing-key provider selections**, and **zero production-approved signing-key provider acceptance records** in this repository. No KMS, HSM, cloud key service, or other production custody provider is selected by the presence of these directories, schemas, or validators.
+There is currently **one signing-key provider candidate evaluation record**: `ovhcloud-kms-hsm-production`. It remains **draft and non-authorizing**; digest-only signing and non-exportable signing material are passed, while the remaining criteria are pending. There are **zero approved signing-key provider selections** and **zero production-approved signing-key provider acceptance records**. No KMS, HSM, cloud key service, or other production custody provider is selected by the presence of these directories, schemas, validators, or candidate evidence.
 
 Do not store signing secrets, credentials, raw private payloads, or full capability tokens in evaluation or selection records.
