@@ -43,6 +43,12 @@ Development legacy-consent validation hardening: the decision point rejects malf
 | IF-016 | Canonical public Privacy Center source adoption of Glaze UI V1.6 / 1.6.0 in the single retained GoreeCloud website. | `docs/integrations/privacy-center-static-site.md` binds the canonical route to `GoreeCloud/static-websites/sites/main/privacy/index.html`. Current static-websites main `5d05997e2759989db7018e91e8a7a017acfde1d4` retains Glaze UI `1.6.0`; its `retained-public-site` and `Cloudflare Pages` checks are successful. Current human/rendered/accessibility/performance/resilience/rollback consumer acceptance, legacy 2.1.0 deployment retirement, and Privacy Shield runtime/production acceptance remain open. |
 | IF-017 | Enforced protected-main repository integration for the single-maintainer model. | Active ruleset `Protect main` requires pull requests, strict `validate`, review-thread resolution, deletion and non-fast-forward protection, zero configured approving reviews, no last-push approval, and no bypass actors. PR #142 and PR #144 both merged through this protected path and passed exact-main post-merge validation. This is repository-governance evidence only, not runtime or production acceptance. |
 
+## Manager status producer source boundary
+
+Privacy Shield now constructs the shared schema-version-1 Manager status document through `src/manager-status.mjs`. The producer accepts only canonical capability identifiers, fixes all privacy guarantees to exclude raw activity/credentials/identifiers, requires explicit-timezone timestamps, keeps runtime acceptance required, fixes production approval false, and refuses `protected` or `active` runtime claims at this source-only stage.
+| IF-018 | Privacy-minimized GoreeCloud Manager status producer with canonical capability vocabulary and fail-closed non-production acceptance semantics. | `src/manager-status.mjs`, `tests/manager-status.test.mjs`, and `docs/integrations/manager.md`. End-to-end runtime publication, freshness/delivery, target-environment acceptance, and production approval remain open. |
+
+
 ## Authority boundary
 
 Privacy Shield owns privacy-domain authorization and data-use decisions within its defined authority. It does not manufacture Identity, Mesh, Everkeep, Wardveil Security, Policy, Observability, Glaze UI, application-runtime, provider, deployment, or production authority. An implemented contract, adapter, validator, or passing workflow proves only the exact source/build/test scope it actually validates.
