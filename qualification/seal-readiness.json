@@ -45,7 +45,7 @@
       "id": "everkeep-recovery",
       "state": "blocked",
       "evidence": [
-        "EVERKEEP-LIFECYCLE.md",
+        "docs/EVERKEEP-LIFECYCLE.md",
         "goreecloud.platform.yaml"
       ],
       "reason": "Live Everkeep ingestion, backup/restore, export/portability, and target-environment recovery remain unaccepted."
@@ -54,7 +54,7 @@
       "id": "runtime-adapter-acceptance",
       "state": "blocked",
       "evidence": [
-        "RUNTIME-TRUST-ACCEPTANCE-MATRIX.md",
+        "docs/RUNTIME-TRUST-ACCEPTANCE-MATRIX.md",
         "goreecloud.platform.yaml"
       ],
       "reason": "Compiled Browser plus DNS, Network, application, and other runtime adapter acceptance remains incomplete."

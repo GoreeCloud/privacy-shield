@@ -125,13 +125,22 @@ Derived toolbar, monochrome, favicon-sized, settings, documentation, and high-re
 
 Long-lived Privacy Shield project authority is repository-local:
 
-- [PROJECT-SPECIFICATIONS.md](PROJECT-SPECIFICATIONS.md) — durable product requirements and acceptance boundaries.
-- [PROJECT-RECORD.md](PROJECT-RECORD.md) — significant architecture, lifecycle, provider-governance, and migration history.
+- [Project specifications](docs/PROJECT-SPECIFICATIONS.md) — durable product requirements and acceptance boundaries.
+- [Project record](docs/PROJECT-RECORD.md) — significant architecture, lifecycle, provider-governance, and migration history.
 
-Current feature state remains in [IMPLEMENTED-FEATURES.md](IMPLEMENTED-FEATURES.md) and [PLANNED-FEATURES.md](PLANNED-FEATURES.md); chronology remains in [CHANGELOGS.md](CHANGELOGS.md). Provider evaluation, selection, and production acceptance remain governed by their exact repository records. Historical Drive project specifications become migration provenance only after the governed migration is accepted and verified.
+Current feature state remains in [Implemented features](docs/IMPLEMENTED-FEATURES.md) and [Planned features](docs/PLANNED-FEATURES.md); chronology remains in [Changelogs](docs/CHANGELOGS.md). Provider evaluation, selection, and production acceptance remain governed by their exact repository records. Historical Drive project specifications become migration provenance only after the governed migration is accepted and verified.
 
 ## Documentation
 
+- [Documentation index](docs/README.md)
+- [Capabilities](docs/CAPABILITIES.md)
+- [Features](docs/FEATURES.md)
+- [Benefits](docs/BENEFITS.md)
+- [Branding](docs/BRANDING.md)
+- [User manual](docs/USER-MANUAL.md)
+- [Security](docs/SECURITY.md)
+- [Privacy policy](docs/PRIVACY%20POLICY.md)
+- [Runtime trust acceptance matrix](docs/RUNTIME-TRUST-ACCEPTANCE-MATRIX.md)
 - [Platform architecture](docs/PLATFORM-ARCHITECTURE.md)
 - [Platform adoption](docs/PLATFORM-ADOPTION.md)
 - [Canonical capability registry](contracts/privacy-shield.capabilities.json)

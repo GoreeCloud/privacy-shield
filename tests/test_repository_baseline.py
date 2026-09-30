@@ -17,7 +17,7 @@ SPEC.loader.exec_module(validator)
 
 class RepositoryBaselineTests(unittest.TestCase):
     def populate(self, root: Path) -> None:
-        for relative in (*validator.REQUIRED_ROOT_FILES, *validator.REQUIRED_REPOSITORY_CONTROLS):
+        for relative in (*validator.REQUIRED_ROOT_FILES, *validator.REQUIRED_DOC_FILES, *validator.REQUIRED_REPOSITORY_CONTROLS):
             path = root / relative
             path.parent.mkdir(parents=True, exist_ok=True)
             if relative == validator.VALIDATION_WORKFLOW:
@@ -31,30 +31,33 @@ class RepositoryBaselineTests(unittest.TestCase):
             else:
                 path.write_text(f"meaningful repository control for {relative}\n", encoding="utf-8")
 
-    def test_required_root_set_matches_governed_seventeen_file_baseline(self) -> None:
-        self.assertEqual(len(validator.REQUIRED_ROOT_FILES), 17)
-        self.assertIn("PROJECT-SPECIFICATIONS.md", validator.REQUIRED_ROOT_FILES)
-        self.assertIn("PROJECT-RECORD.md", validator.REQUIRED_ROOT_FILES)
-        self.assertNotIn("SPECIFICATIONS.md", validator.REQUIRED_ROOT_FILES)
-        self.assertIn("IMPLEMENTED-FEATURES.md", validator.REQUIRED_ROOT_FILES)
-        self.assertIn("PLANNED-FEATURES.md", validator.REQUIRED_ROOT_FILES)
-        self.assertIn("CHANGELOGS.md", validator.REQUIRED_ROOT_FILES)
-        self.assertIn("PRIVACY POLICY.md", validator.REQUIRED_ROOT_FILES)
-        self.assertIn("NOTES.md", validator.REQUIRED_ROOT_FILES)
-        self.assertNotIn("FEATURE-ROADMAP.md", validator.REQUIRED_ROOT_FILES)
+    def test_required_files_follow_clean_root_and_docs_layout(self) -> None:
+        self.assertEqual(
+            validator.REQUIRED_ROOT_FILES,
+            ("README.md", "LICENSE", ".gitignore", ".editorconfig", "goreecloud.platform.yaml"),
+        )
+        self.assertIn("docs/PROJECT-SPECIFICATIONS.md", validator.REQUIRED_DOC_FILES)
+        self.assertIn("docs/PROJECT-RECORD.md", validator.REQUIRED_DOC_FILES)
+        self.assertIn("docs/IMPLEMENTED-FEATURES.md", validator.REQUIRED_DOC_FILES)
+        self.assertIn("docs/PLANNED-FEATURES.md", validator.REQUIRED_DOC_FILES)
+        self.assertIn("docs/CHANGELOGS.md", validator.REQUIRED_DOC_FILES)
+        self.assertIn("docs/PRIVACY POLICY.md", validator.REQUIRED_DOC_FILES)
+        self.assertIn("docs/NOTES.md", validator.REQUIRED_DOC_FILES)
+        self.assertIn("PROJECT-SPECIFICATIONS.md", validator.PROHIBITED_ROOT_DOCUMENTS)
+        self.assertNotIn("FEATURE-ROADMAP.md", validator.REQUIRED_DOC_FILES)
 
     def test_complete_baseline_passes(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             self.populate(root)
             validated = validator.validate_repository_baseline(root)
-            self.assertEqual(len(validated), 19)
+            self.assertEqual(len(validated), len(validator.REQUIRED_ROOT_FILES) + len(validator.REQUIRED_DOC_FILES) + len(validator.REQUIRED_REPOSITORY_CONTROLS))
 
     def test_missing_mandatory_file_fails(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             self.populate(root)
-            (root / "SECURITY.md").unlink()
+            (root / "docs/SECURITY.md").unlink()
             with self.assertRaises(SystemExit):
                 validator.validate_repository_baseline(root)
 
@@ -62,7 +65,17 @@ class RepositoryBaselineTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             self.populate(root)
-            (root / "IMPLEMENTED-FEATURES.md").unlink()
+            (root / "docs/IMPLEMENTED-FEATURES.md").unlink()
+            with self.assertRaises(SystemExit):
+                validator.validate_repository_baseline(root)
+
+    def test_prohibited_root_documentation_fails(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            self.populate(root)
+            (root / "CHANGELOGS.md").write_text(
+                "duplicate root documentation must not return\n", encoding="utf-8"
+            )
             with self.assertRaises(SystemExit):
                 validator.validate_repository_baseline(root)
 
@@ -90,7 +103,7 @@ class RepositoryBaselineTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             self.populate(root)
-            (root / "FEATURES.md").write_text("TBD\n", encoding="utf-8")
+            (root / "docs/FEATURES.md").write_text("TBD\n", encoding="utf-8")
             with self.assertRaises(SystemExit):
                 validator.validate_repository_baseline(root)
 
