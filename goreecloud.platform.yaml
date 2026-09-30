@@ -64,10 +64,6 @@ platform_systems:
     version: 1.6.0
     evidence:
     - docs/integrations/privacy-center-static-site.md
-  - docs/integrations/manager.md
-  - src/manager-status.mjs
-  - tests/manager-status.test.mjs
-  - tests/manager-status-schema.test.mjs
     - website/README.md
     notes: The canonical Privacy Center source is now the single retained GoreeCloud website route at GoreeCloud/static-websites sites/main/privacy/index.html and declares the current GLAZE UI V1.6 / 1.6.0 target. Exact-current downstream human/rendered/accessibility/performance/resilience/rollback consumer acceptance remains incomplete, and this repository's website/ directory remains a historical 2.1.0 legacy/transitional deployment copy rather than current source authority.
   mesh:
@@ -203,6 +199,10 @@ conformance:
   - tests/mesh-credential-boundary.test.mjs
   - tests/platform-registry-delivery.test.mjs
   - docs/integrations/privacy-center-static-site.md
+  - docs/integrations/manager.md
+  - src/manager-status.mjs
+  - tests/manager-status.test.mjs
+  - tests/manager-status-schema.test.mjs
   blockers:
   - "GoreeCloud Privacy Shield is classified Weave: the core privacy platform substantially exists, while its authorization core, runtime integrations, and overall production acceptance remain incomplete."
   - Canonical Privacy Center source adoption of Glaze UI 1.6.0 is established, but exact-current downstream consumer acceptance, human/rendered/accessibility/performance/resilience review, rollback, and legacy deployment retirement/cutover remain incomplete.
