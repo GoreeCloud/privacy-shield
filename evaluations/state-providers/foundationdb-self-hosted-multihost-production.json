@@ -24,67 +24,67 @@
     "durability": {
       "result": "passed",
       "evidence_refs": [
-        "evidence+sha256:48f47b24f596a1756c11a1150d49a77ade9d0a923be28ed105738c08a2c03be8:github://GoreeCloud/privacy-shield/evidence/provider-evaluations/foundationdb-state-candidate-20260919.md"
+        "evidence+sha256:48f47b24f596a1756c11a1150d49a77ade9d0a923be28ed105738c08a2c03be8:github://GoreeCloud/goreecloud-privacy-shield/evidence/provider-evaluations/foundationdb-state-candidate-20260919.md"
       ]
     },
     "restart_recovery": {
       "result": "pending",
       "evidence_refs": [
-        "evidence+sha256:0ca034c0f7618b2684006f0b6dc47c8720de410b36da131f3405e30b1806ca30:github://GoreeCloud/privacy-shield/evidence/provider-evaluations/foundationdb-operational-security-candidate-20260919.md"
+        "evidence+sha256:0ca034c0f7618b2684006f0b6dc47c8720de410b36da131f3405e30b1806ca30:github://GoreeCloud/goreecloud-privacy-shield/evidence/provider-evaluations/foundationdb-operational-security-candidate-20260919.md"
       ]
     },
     "atomic_transactions": {
       "result": "passed",
       "evidence_refs": [
-        "evidence+sha256:48f47b24f596a1756c11a1150d49a77ade9d0a923be28ed105738c08a2c03be8:github://GoreeCloud/privacy-shield/evidence/provider-evaluations/foundationdb-state-candidate-20260919.md"
+        "evidence+sha256:48f47b24f596a1756c11a1150d49a77ade9d0a923be28ed105738c08a2c03be8:github://GoreeCloud/goreecloud-privacy-shield/evidence/provider-evaluations/foundationdb-state-candidate-20260919.md"
       ]
     },
     "multi_writer_serializability": {
       "result": "passed",
       "evidence_refs": [
-        "evidence+sha256:48f47b24f596a1756c11a1150d49a77ade9d0a923be28ed105738c08a2c03be8:github://GoreeCloud/privacy-shield/evidence/provider-evaluations/foundationdb-state-candidate-20260919.md"
+        "evidence+sha256:48f47b24f596a1756c11a1150d49a77ade9d0a923be28ed105738c08a2c03be8:github://GoreeCloud/goreecloud-privacy-shield/evidence/provider-evaluations/foundationdb-state-candidate-20260919.md"
       ]
     },
     "distributed_topology": {
       "result": "passed",
       "evidence_refs": [
-        "evidence+sha256:48f47b24f596a1756c11a1150d49a77ade9d0a923be28ed105738c08a2c03be8:github://GoreeCloud/privacy-shield/evidence/provider-evaluations/foundationdb-state-candidate-20260919.md"
+        "evidence+sha256:48f47b24f596a1756c11a1150d49a77ade9d0a923be28ed105738c08a2c03be8:github://GoreeCloud/goreecloud-privacy-shield/evidence/provider-evaluations/foundationdb-state-candidate-20260919.md"
       ]
     },
     "fail_closed_conflict_behavior": {
       "result": "pending",
       "evidence_refs": [
-        "evidence+sha256:48f47b24f596a1756c11a1150d49a77ade9d0a923be28ed105738c08a2c03be8:github://GoreeCloud/privacy-shield/evidence/provider-evaluations/foundationdb-state-candidate-20260919.md"
+        "evidence+sha256:48f47b24f596a1756c11a1150d49a77ade9d0a923be28ed105738c08a2c03be8:github://GoreeCloud/goreecloud-privacy-shield/evidence/provider-evaluations/foundationdb-state-candidate-20260919.md"
       ]
     },
     "backup_restore": {
       "result": "passed",
       "evidence_refs": [
-        "evidence+sha256:48f47b24f596a1756c11a1150d49a77ade9d0a923be28ed105738c08a2c03be8:github://GoreeCloud/privacy-shield/evidence/provider-evaluations/foundationdb-state-candidate-20260919.md"
+        "evidence+sha256:48f47b24f596a1756c11a1150d49a77ade9d0a923be28ed105738c08a2c03be8:github://GoreeCloud/goreecloud-privacy-shield/evidence/provider-evaluations/foundationdb-state-candidate-20260919.md"
       ]
     },
     "migration_rollback": {
       "result": "pending",
       "evidence_refs": [
-        "evidence+sha256:0ca034c0f7618b2684006f0b6dc47c8720de410b36da131f3405e30b1806ca30:github://GoreeCloud/privacy-shield/evidence/provider-evaluations/foundationdb-operational-security-candidate-20260919.md"
+        "evidence+sha256:0ca034c0f7618b2684006f0b6dc47c8720de410b36da131f3405e30b1806ca30:github://GoreeCloud/goreecloud-privacy-shield/evidence/provider-evaluations/foundationdb-operational-security-candidate-20260919.md"
       ]
     },
     "access_control_isolation": {
       "result": "failed",
       "evidence_refs": [
-        "evidence+sha256:0ca034c0f7618b2684006f0b6dc47c8720de410b36da131f3405e30b1806ca30:github://GoreeCloud/privacy-shield/evidence/provider-evaluations/foundationdb-operational-security-candidate-20260919.md"
+        "evidence+sha256:0ca034c0f7618b2684006f0b6dc47c8720de410b36da131f3405e30b1806ca30:github://GoreeCloud/goreecloud-privacy-shield/evidence/provider-evaluations/foundationdb-operational-security-candidate-20260919.md"
       ]
     },
     "privacy_safe_observability": {
       "result": "pending",
       "evidence_refs": [
-        "evidence+sha256:0ca034c0f7618b2684006f0b6dc47c8720de410b36da131f3405e30b1806ca30:github://GoreeCloud/privacy-shield/evidence/provider-evaluations/foundationdb-operational-security-candidate-20260919.md"
+        "evidence+sha256:0ca034c0f7618b2684006f0b6dc47c8720de410b36da131f3405e30b1806ca30:github://GoreeCloud/goreecloud-privacy-shield/evidence/provider-evaluations/foundationdb-operational-security-candidate-20260919.md"
       ]
     },
     "operational_ownership": {
       "result": "pending",
       "evidence_refs": [
-        "evidence+sha256:0ca034c0f7618b2684006f0b6dc47c8720de410b36da131f3405e30b1806ca30:github://GoreeCloud/privacy-shield/evidence/provider-evaluations/foundationdb-operational-security-candidate-20260919.md"
+        "evidence+sha256:0ca034c0f7618b2684006f0b6dc47c8720de410b36da131f3405e30b1806ca30:github://GoreeCloud/goreecloud-privacy-shield/evidence/provider-evaluations/foundationdb-operational-security-candidate-20260919.md"
       ]
     }
   },
@@ -92,7 +92,7 @@
     "status": "failed",
     "authorizing": false,
     "production_acceptance_authorized": false,
-    "evidence_reference": "evidence+sha256:48f47b24f596a1756c11a1150d49a77ade9d0a923be28ed105738c08a2c03be8:github://GoreeCloud/privacy-shield/evidence/provider-evaluations/foundationdb-state-candidate-20260919.md",
+    "evidence_reference": "evidence+sha256:48f47b24f596a1756c11a1150d49a77ade9d0a923be28ed105738c08a2c03be8:github://GoreeCloud/goreecloud-privacy-shield/evidence/provider-evaluations/foundationdb-state-candidate-20260919.md",
     "evaluated_at": "2026-09-20T00:34:23Z",
     "valid_until": "2026-10-19T22:10:00Z"
   },
