@@ -318,7 +318,10 @@ test("FR-013 accepts credential-safe logical evidence locators", () => {
   const value = record();
   value.artifact.build_provenance_reference = ref("a", "reports/browser/build-provenance.json");
   value.review.evidence_reference = ref("f", "review:browser-runtime");
-  const result = assessBrowserRuntimeAcceptance(value, assessmentOptions());
+  const result = assessBrowserRuntimeAcceptance(
+    value,
+    assessmentOptions({expectedEvidenceReferences: recordEvidenceReferences(value)}),
+  );
   assert.equal(result.accepted_for_runtime, true);
   assert.equal(result.accepted_for_production, false);
 });
