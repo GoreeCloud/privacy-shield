@@ -38,9 +38,6 @@ platform_systems:
     - docs/PLATFORM-ADOPTION.md
     - contracts/privacy-shield.status.schema.json
     - docs/integrations/manager.md
-  - docs/integrations/runtime-http.md
-  - src/runtime-http.mjs
-  - tests/runtime-http.test.mjs
     - src/manager-status.mjs
     - tests/manager-status.test.mjs
     - tests/manager-status-schema.test.mjs
@@ -218,6 +215,9 @@ conformance:
   - src/everkeep-lifecycle.mjs
   - tests/everkeep-lifecycle.test.mjs
   - tests/everkeep-canonical-provenance.test.mjs
+  - docs/integrations/runtime-http.md
+  - src/runtime-http.mjs
+  - tests/runtime-http.test.mjs
   blockers:
   - "GoreeCloud Privacy Shield is classified Weave: the core privacy platform substantially exists, while its authorization core, runtime integrations, and overall production acceptance remain incomplete."
   - Canonical Privacy Center source adoption of Glaze UI 1.6.0 is established, but exact-current downstream consumer acceptance, human/rendered/accessibility/performance/resilience review, rollback, and legacy deployment retirement/cutover remain incomplete.
