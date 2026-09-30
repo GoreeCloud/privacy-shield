@@ -6,7 +6,7 @@ This document records the current acceptance state of GoreeCloud Privacy Shield 
 
 ## Current source baseline
 
-Current authoritative `main` is `147444914cdcaa02cd3f517f36bef00237e30af9`.
+`main` is the authoritative live source. This record was reconciled from pre-PR baseline `147444914cdcaa02cd3f517f36bef00237e30af9`; do not treat that historical baseline as a frozen current-HEAD assertion.
 
 The transactional authority-state and signing-key-custody source line introduced through the Privacy Shield 2.0 P0 work is integrated on `main`. Historical PR #73 is closed without merge and is not current authority. PR #80 merged the provider-neutral state/signing acceptance boundaries as `f26e112dc5adfd4ee9cdb2785b34125339e78e1e`; later mainline stabilization, Platform Contract 2.0 migration, repository-governance, Policy/Observability, Everkeep, runtime-readiness, and Browser-acceptance control work supersedes that merge as the current repository state.
 
