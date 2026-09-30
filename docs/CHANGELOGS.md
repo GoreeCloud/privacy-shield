@@ -1,5 +1,11 @@
 # GoreeCloud Privacy Shield — Changelogs
 
+## 2026-09-30 — Browser runtime reviewer-authority binding
+
+- Hardened FR-013 compiled-Browser runtime acceptance so the caller must supply an independently expected reviewer authority and the record's review authority must match it exactly.
+- Added regression coverage for missing and mismatched reviewer authority while preserving exact source/tree/artifact binding, evidence freshness, all ten required runtime dimensions, and non-authorizing/non-production semantics.
+- This source hardening does not create Browser runtime evidence, production approval, release authority, Seal, or Anchor state.
+
 ## 2026-09-30 — Acceptance and Browser identity documentation reconciliation
 
 - Reconciled `docs/BROWSER-INTEGRATION.md` with the already-approved canonical Privacy Shield identity; Browser surfaces must use traceable derivatives while visual approval remains separate from compiled-runtime acceptance.

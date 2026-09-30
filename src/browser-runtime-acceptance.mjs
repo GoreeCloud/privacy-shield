@@ -162,6 +162,11 @@ function exactExpectedArtifactDigest(value) {
   return sha256(value, "expectedArtifactSha256");
 }
 
+function exactExpectedReviewAuthority(value) {
+  if (value == null) throw new Error("expectedReviewAuthority is required for independent-review acceptance");
+  return text(value, "expectedReviewAuthority", 200);
+}
+
 /**
  * Evaluate one compiled GoreeCloud Browser artifact against the Privacy Shield
  * FR-013 runtime-acceptance boundary.
@@ -174,6 +179,7 @@ export function assessBrowserRuntimeAcceptance(record, {
   expectedBrowserTreeSha,
   expectedPrivacyShieldRevision,
   expectedArtifactSha256,
+  expectedReviewAuthority,
   now = new Date(),
   maxEvidenceAgeMs,
 } = {}) {
@@ -184,6 +190,7 @@ export function assessBrowserRuntimeAcceptance(record, {
   const browserTreeSha = exactExpectedRevision(expectedBrowserTreeSha, "expectedBrowserTreeSha");
   const privacyShieldRevision = exactExpectedRevision(expectedPrivacyShieldRevision, "expectedPrivacyShieldRevision");
   const artifactDigest = exactExpectedArtifactDigest(expectedArtifactSha256);
+  const reviewAuthority = exactExpectedReviewAuthority(expectedReviewAuthority);
   const maxAge = positiveDuration(maxEvidenceAgeMs, "maxEvidenceAgeMs");
   const nowMs = now instanceof Date ? now.getTime() : timestamp(now, "now");
   if (!Number.isFinite(nowMs)) throw new Error("now must be a valid timestamp");
@@ -254,7 +261,8 @@ export function assessBrowserRuntimeAcceptance(record, {
 
   const review = object(record.review, "review");
   closed(review, REVIEW_FIELDS, "review");
-  text(review.authority, "review.authority", 200);
+  const recordReviewAuthority = text(review.authority, "review.authority", 200);
+  if (recordReviewAuthority !== reviewAuthority) throw new Error("Browser runtime acceptance reviewer authority binding mismatch");
   if (review.disposition !== "accepted-for-runtime") throw new Error("Browser runtime acceptance review has not been accepted");
   const reviewedAt = timestamp(review.reviewed_at, "review.reviewed_at");
   if (reviewedAt < observedAt) throw new Error("Browser runtime acceptance review predates the runtime observation");
@@ -272,6 +280,7 @@ export function assessBrowserRuntimeAcceptance(record, {
     browser_source_tree_sha: recordBrowserTree,
     privacy_shield_source_revision: recordPrivacyRevision,
     artifact_sha256: recordArtifactDigest,
+    review_authority: recordReviewAuthority,
     engine_family: target.engine_family,
     accepted_for_runtime: true,
     accepted_for_production: false,
