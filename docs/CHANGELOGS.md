@@ -1,5 +1,12 @@
 # GoreeCloud Privacy Shield — Changelogs
 
+## 2026-09-29 — Repository root documentation migration
+
+- Moved the repository's human-readable project records from root into the canonical `docs/` tree under the GoreeCloud repository-root cleanliness standard.
+- Added `docs/README.md` as the documentation index and updated README navigation, Platform Contract evidence paths, Seal-readiness evidence paths, pull-request guidance, and repository-baseline validation.
+- Repository CI now requires the migrated documentation under `docs/` and fails if those records are reintroduced at root; README.md, LICENSE, source-control controls, and `goreecloud.platform.yaml` remain at root for entry-point or technical purposes.
+- This organization change does not modify Privacy Shield runtime/provider/recovery acceptance, production authority, Seal, or Anchor state.
+
 ## 2026-09-29 — Capability and status documentation reconciliation
 
 - Reconciled `CAPABILITIES.md` and `README.md` with the authoritative Platform Contract 2.0 **Weave** lifecycle, development deployment state, blocked qualification state, and Seal next gate.

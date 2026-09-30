@@ -16,8 +16,8 @@ lifecycle_metadata:
   candidate_identity: null
   last_transition: null
   evidence:
-    - PROJECT-RECORD.md
-    - PLANNED-FEATURES.md
+    - docs/PROJECT-RECORD.md
+    - docs/PLANNED-FEATURES.md
     - README.md
 version: '0.1'
 supported_platforms:
@@ -60,7 +60,7 @@ platform_systems:
     result: applicable-migration-required
     version: null
     evidence:
-    - EVERKEEP-LIFECYCLE.md
+    - docs/EVERKEEP-LIFECYCLE.md
     - src/everkeep-lifecycle.mjs
     - tests/everkeep-lifecycle.test.mjs
     - tests/everkeep-canonical-provenance.test.mjs
@@ -211,7 +211,7 @@ conformance:
   - src/manager-status.mjs
   - tests/manager-status.test.mjs
   - tests/manager-status-schema.test.mjs
-  - EVERKEEP-LIFECYCLE.md
+  - docs/EVERKEEP-LIFECYCLE.md
   - src/everkeep-lifecycle.mjs
   - tests/everkeep-lifecycle.test.mjs
   - tests/everkeep-canonical-provenance.test.mjs

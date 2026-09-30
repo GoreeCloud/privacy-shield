@@ -34,7 +34,7 @@ Confirm applicable impacts on:
 
 ## Documentation and records
 
-List affected repository documentation and canonical GoreeCloud records. Update `IMPLEMENTED-FEATURES.md`, `PLANNED-FEATURES.md`, and `CHANGELOGS.md` when feature state or meaningful implementation history changes. Keep actionable unfinished work in GoreeCloud Tasks Management. Do not recreate or synchronize retired Google Drive feature-roadmap/changelog mirrors.
+List affected repository documentation and canonical GoreeCloud records. Update `docs/IMPLEMENTED-FEATURES.md`, `docs/PLANNED-FEATURES.md`, and `docs/CHANGELOGS.md` when feature state or meaningful implementation history changes. Keep actionable unfinished work in GoreeCloud Tasks Management. Do not recreate or synchronize retired Google Drive feature-roadmap/changelog mirrors.
 
 ## Rollback and recovery
 

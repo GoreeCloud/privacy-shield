@@ -348,3 +348,12 @@ Update this record for:
 Routine implementation chronology remains in `CHANGELOGS.md`.
 
 Current source capability state remains in `IMPLEMENTED-FEATURES.md` and `PLANNED-FEATURES.md`.
+
+
+## September 29, 2026 — Canonical docs/ root-cleanliness migration
+
+Privacy Shield migrated its human-readable root documentation into the repository's canonical `docs/` tree in accordance with the GoreeCloud Repository Root Cleanliness and Documentation Organization Standard.
+
+The migration preserves document content and history, keeps `README.md`, `LICENSE`, source-control controls, and `goreecloud.platform.yaml` at root for entry-point or technical purposes, adds `docs/README.md` as the documentation index, and updates path-sensitive validation/evidence references. Repository validation now fails closed if the migrated documentation returns to root.
+
+This is a repository-organization and maintainability change only. It does not establish provider selection, deployed runtime acceptance, production recovery, Seal, Anchor, or production privacy authority.

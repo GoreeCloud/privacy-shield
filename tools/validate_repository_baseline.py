@@ -6,22 +6,53 @@ ROOT = Path(__file__).resolve().parents[1]
 
 REQUIRED_ROOT_FILES = (
     "README.md",
-    "PROJECT-SPECIFICATIONS.md",
-    "PROJECT-RECORD.md",
-    "FEATURES.md",
-    "IMPLEMENTED-FEATURES.md",
-    "PLANNED-FEATURES.md",
-    "CHANGELOGS.md",
-    "BENEFITS.md",
-    "COMPETITIVE-OBJECTIVES.md",
-    "BRANDING.md",
-    "USER-MANUAL.md",
-    "PRIVACY POLICY.md",
-    "NOTES.md",
-    "SECURITY.md",
+    "LICENSE",
     ".gitignore",
     ".editorconfig",
     "goreecloud.platform.yaml",
+)
+
+REQUIRED_DOC_FILES = (
+    "docs/README.md",
+    "docs/BENEFITS.md",
+    "docs/BRANDING.md",
+    "docs/CAPABILITIES.md",
+    "docs/CHANGELOGS.md",
+    "docs/COMPETITIVE-OBJECTIVES.md",
+    "docs/EVERKEEP-LIFECYCLE.md",
+    "docs/FEATURES.md",
+    "docs/IMPLEMENTED-FEATURES.md",
+    "docs/NOTES.md",
+    "docs/PLANNED-FEATURES.md",
+    "docs/PRIVACY POLICY.md",
+    "docs/PRIVACY-LOCK.md",
+    "docs/PRIVACY-RECEIPTS-2.md",
+    "docs/PROJECT-RECORD.md",
+    "docs/PROJECT-SPECIFICATIONS.md",
+    "docs/RUNTIME-TRUST-ACCEPTANCE-MATRIX.md",
+    "docs/SECURITY.md",
+    "docs/USER-MANUAL.md",
+)
+
+PROHIBITED_ROOT_DOCUMENTS = (
+    "BENEFITS.md",
+    "BRANDING.md",
+    "CAPABILITIES.md",
+    "CHANGELOGS.md",
+    "COMPETITIVE-OBJECTIVES.md",
+    "EVERKEEP-LIFECYCLE.md",
+    "FEATURES.md",
+    "IMPLEMENTED-FEATURES.md",
+    "NOTES.md",
+    "PLANNED-FEATURES.md",
+    "PRIVACY POLICY.md",
+    "PRIVACY-LOCK.md",
+    "PRIVACY-RECEIPTS-2.md",
+    "PROJECT-RECORD.md",
+    "PROJECT-SPECIFICATIONS.md",
+    "RUNTIME-TRUST-ACCEPTANCE-MATRIX.md",
+    "SECURITY.md",
+    "USER-MANUAL.md",
 )
 
 RETIRED_ROOT_FILES = (
@@ -45,7 +76,7 @@ def validate_repository_baseline(root: Path = ROOT) -> list[str]:
     validated: list[str] = []
     problems: list[str] = []
 
-    for relative in (*REQUIRED_ROOT_FILES, *REQUIRED_REPOSITORY_CONTROLS):
+    for relative in (*REQUIRED_ROOT_FILES, *REQUIRED_DOC_FILES, *REQUIRED_REPOSITORY_CONTROLS):
         path = root / relative
         if not path.is_file():
             problems.append(f"missing required repository control: {relative}")
@@ -66,6 +97,10 @@ def validate_repository_baseline(root: Path = ROOT) -> list[str]:
             continue
 
         validated.append(relative)
+
+    for relative in PROHIBITED_ROOT_DOCUMENTS:
+        if (root / relative).exists():
+            problems.append(f"prohibited root documentation must not exist: {relative}")
 
     for relative in RETIRED_ROOT_FILES:
         if (root / relative).exists():
