@@ -1,5 +1,11 @@
 # GoreeCloud Privacy Shield — Changelogs
 
+## 2026-09-29 — Browser acceptance caller-clock integrity hardening
+
+- Require a timezone-qualified timestamp when FR-013 receives its caller-controlled evaluation clock as text, eliminating environment-dependent parsing from freshness and review-window decisions.
+- Preserve `Date` object support and all existing exact-source, exact-tree, exact-artifact, evidence-validity, review, and non-authorizing boundaries.
+- This hardening does not create Browser runtime evidence, production approval, release authority, or lifecycle promotion.
+
 ## 2026-09-28 — Browser acceptance evidence-locator privacy hardening
 
 - Tightened compiled-Browser acceptance evidence references so each content-addressed digest is paired only with a credential-safe logical locator rather than URL, query, fragment, user-info, assignment, encoded, traversal, or absolute-path syntax.
