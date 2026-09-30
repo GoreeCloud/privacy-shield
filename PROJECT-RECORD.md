@@ -256,6 +256,14 @@ Privacy Shield's own authority identity is likewise canonicalized to `GoreeCloud
 
 This advances Everkeep from source-blocked to migration-required under Platform Contract 2.0. Live Everkeep ingestion/execution, backup/restore, export/portability, target-environment recovery evidence, production recovery acceptance, Seal, and Anchor remain open.
 
+## September 29, 2026 — Runtime HTTP liveness/readiness boundary
+
+Privacy Shield added a portable HTTP surface for a hosted authority runtime. `/healthz` is liveness-only. `/readyz` returns ready only when the runtime is explicitly production-mode, carries fresh exact state-provider and signing-key acceptance records using the canonical acceptance contracts, and a host-supplied read-only runtime connectivity probe succeeds. Missing or stale dependency evidence fails closed to HTTP 503.
+
+The existing capability-reference verification transport is formalized at `POST /v1/capabilities/verify`, with authenticated consumer identity still supplied independently by the hosting GoreeCloud Identity-aware transport.
+
+The Platform Contract now declares these source interfaces and API version instead of null health/API state. No production host, domain, Identity transport binding, provider deployment, monitoring, target-environment acceptance, Seal, or Anchor is established by the source change.
+
 ## Current production/provider boundary
 
 Privacy Shield is currently Weave and remains nonconformant.

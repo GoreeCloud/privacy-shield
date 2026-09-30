@@ -1,5 +1,12 @@
 # GoreeCloud Privacy Shield — Changelogs
 
+## 2026-09-29 — Runtime HTTP liveness/readiness boundary
+
+- Added portable `/healthz` liveness and fail-closed `/readyz` readiness routing for a hosted Privacy Shield authority runtime.
+- Readiness requires production mode, fresh canonical state-provider acceptance, fresh canonical signing-key acceptance, and a successful host-supplied read-only runtime connectivity probe.
+- Formalized the already bounded capability-reference verification HTTP contract at `POST /v1/capabilities/verify`.
+- Declared the source API/health interfaces in Platform Contract 2.0 while preserving all hosting, Identity, provider, monitoring, recovery, deployment, Seal, and Anchor gates.
+
 ## 2026-09-29 — Canonical Everkeep lifecycle-source migration
 
 - Re-pinned the Privacy Shield lifecycle handoff from predecessor repository identities to canonical `GoreeCloud/privacy-shield` and `GoreeCloud/everkeep`.

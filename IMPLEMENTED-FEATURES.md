@@ -49,6 +49,10 @@ Development legacy-consent validation hardening: the decision point rejects malf
 Privacy Shield now constructs the shared schema-version-1 Manager status document through `src/manager-status.mjs`. The producer accepts only canonical capability identifiers, fixes all privacy guarantees to exclude raw activity/credentials/identifiers, requires explicit-timezone timestamps, keeps runtime acceptance required, fixes production approval false, and refuses `protected` or `active` runtime claims at this source-only stage.
 
 
+## Runtime HTTP liveness, readiness, and capability verification
+
+Privacy Shield now defines a portable hosted-runtime HTTP boundary with `GET /healthz`, `GET /readyz`, and the existing authenticated `POST /v1/capabilities/verify` contract. Readiness fails closed unless the runtime is in production mode, carries fresh canonical state-provider and signing-key acceptance records, and passes a host-supplied read-only runtime connectivity probe. Source implementation does not imply deployment.
+
 ## Authority boundary
 
 Privacy Shield owns privacy-domain authorization and data-use decisions within its defined authority. It does not manufacture Identity, Mesh, Everkeep, Wardveil Security, Policy, Observability, Glaze UI, application-runtime, provider, deployment, or production authority. An implemented contract, adapter, validator, or passing workflow proves only the exact source/build/test scope it actually validates.
