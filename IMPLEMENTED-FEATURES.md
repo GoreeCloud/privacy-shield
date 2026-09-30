@@ -1,5 +1,9 @@
 # GoreeCloud Privacy Shield — Implemented Features
 
+## Browser runtime acceptance clock-integrity hardening
+
+The FR-013 compiled-Browser acceptance evaluator now requires an explicit timezone when the caller evaluation clock is supplied as text, preventing host-local timezone interpretation from changing freshness or review-window decisions. Native `Date` inputs remain supported. This is source-level validation hardening only and creates no runtime or production acceptance.
+
 ## Browser runtime acceptance evidence-reference privacy hardening
 
 The FR-013 compiled-Browser acceptance evaluator requires content-addressed evidence references to use credential-safe logical locators. Transport URLs, query/fragment syntax, user-info markers, encoded locator material, assignment-style parameters, absolute paths, and traversal segments fail closed. This strengthens retained evidence privacy without creating runtime or production acceptance.
