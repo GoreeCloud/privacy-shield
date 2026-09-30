@@ -6,11 +6,18 @@ This document records the current acceptance state of GoreeCloud Privacy Shield 
 
 ## Current source baseline
 
-Current `main` HEAD is `a779655dc5ee545857b5cdb767abdf89ade7949d`, a documentation-only commit that added the repository feature-roadmap control. The previously recorded merged implementation baseline `f10d90c0c53c0b876d6ff5cdb6926d6b87205438` passed both repository validation jobs and its Cloudflare Pages deployment check on September 6, 2026.
+Current authoritative `main` is `147444914cdcaa02cd3f517f36bef00237e30af9`.
 
-Draft PR #73 extends that merged baseline with the transactional production state-provider boundary and independent provider-acceptance gate. Its reconciled exact head `204605975032252118aa22cc6584c4e75c6e160d` is source-validation green but remains Development/Draft/non-production.
+The transactional authority-state and signing-key-custody source line introduced through the Privacy Shield 2.0 P0 work is integrated on `main`. Historical PR #73 is closed without merge and is not current authority. PR #80 merged the provider-neutral state/signing acceptance boundaries as `f26e112dc5adfd4ee9cdb2785b34125339e78e1e`; later mainline stabilization, Platform Contract 2.0 migration, repository-governance, Policy/Observability, Everkeep, runtime-readiness, and Browser-acceptance control work supersedes that merge as the current repository state.
 
-PR #80 carries the current Privacy Shield 2.0 P0 state-provider and signing-key-custody source line on top of current authoritative main. It contains the transactional state-provider boundary, runtime-enforced exact state-provider acceptance gate, opaque signing-provider boundary, fail-closed exact signing-provider acceptance layer, provider-neutral operational qualification harnesses, and provider-governance evidence/selection controls. The work remains Development/non-production and does not inherit production acceptance from source validation, qualification-harness results, or any historical stacked ancestry.
+Current lifecycle is **Weave** under Platform Contract 2.0. Deployment remains development, qualification remains blocked, and the next gate is Seal. Current required Glaze UI target is V1.6 / `1.6.0`.
+
+The acceptance directories remain fail closed:
+- `acceptance/state-providers/` contains no production state-provider acceptance record;
+- `acceptance/signing-key-providers/` contains no production signing-key-provider acceptance record;
+- `acceptance/browser/` contains no accepted compiled-Browser runtime record.
+
+Source validation, merged schemas, qualification harnesses, provider evaluation history, or Browser source/security CI do not substitute for those missing exact-runtime/provider acceptance records.
 
 ## Acceptance gates
 
@@ -32,9 +39,9 @@ The built-in file provider is explicitly not distributed or multi-writer seriali
 
 ### 3. Production state provider
 
-**State: Contract and acceptance gate implemented in Draft development; provider implementation and runtime acceptance pending.**
+**State: Contract and acceptance gate integrated in source; production provider implementation and runtime acceptance pending.**
 
-Draft PR #73 requires the V1 state-provider capability profile: durability, restart recovery, atomic transactions, multi-writer serializability, distributed operation, and fail-closed conflict handling. It also requires independently governed exact-provider/exact-deployment acceptance evidence. A capability declaration or schema-valid record is necessary source metadata, not proof that a provider actually satisfies those properties.
+The current integrated source requires the V1 state-provider capability profile: durability, restart recovery, atomic transactions, multi-writer serializability, distributed operation, and fail-closed conflict handling. It also requires independently governed exact-provider/exact-deployment acceptance evidence. A capability declaration or schema-valid record is necessary source metadata, not proof that a provider actually satisfies those properties.
 
 Production acceptance requires exact-provider and exact-deployment concurrency, failure/recovery, backup/restore, topology, access-control, operational evidence, and a fresh production-approved acceptance record. No source-controlled provider currently carries production acceptance.
 
@@ -42,9 +49,9 @@ The production runtime now consumes that record directly rather than trusting pr
 
 ### 4. Production signing-key custody
 
-**State: Source custody boundary, exact acceptance gate, and provider-neutral operational qualification harness implemented in Draft development; real production provider and production acceptance pending.**
+**State: Source custody boundary, exact acceptance gate, and provider-neutral operational qualification harness integrated; real production provider and production acceptance pending.**
 
-PR #80 moves capability signing behind `goreecloud.privacy-shield.signing-key-provider.v1`. `PrivacyCapabilityAuthority` computes a local SHA-256 digest and delegates only the digest plus an opaque key identifier to the provider. Tokens bind the key ID, provider ID, provider version, producer identity, and signing algorithm. Privacy Shield independently rejects untrusted public key state before provider signature verification can run.
+Merged PR #80 introduced capability signing behind `goreecloud.privacy-shield.signing-key-provider.v1`. `PrivacyCapabilityAuthority` computes a local SHA-256 digest and delegates only the digest plus an opaque key identifier to the provider. Tokens bind the key ID, provider ID, provider version, producer identity, and signing algorithm. Privacy Shield independently rejects untrusted public key state before provider signature verification can run.
 
 Production runtime construction requires more than provider capability declarations. `createPrivacyRuntime({ production: true, ... })` requires a fresh passing `goreecloud.privacy-shield.signing-key-provider-acceptance.v1` record that matches the exact Privacy Shield source revision, exact provider ID and provider version, producer identity, accepted signing algorithm, and deployment ID. Every required custody qualification must be passed and backed by passing evidence.
 
@@ -90,11 +97,11 @@ Passing portable-source validation must never be substituted for this gate.
 
 ### 7. Canonical visual identity
 
-**State: Existing identity passed; Privacy Shield 2.0 identity refresh remains separate planned work.**
+**State: Canonical identity approved; any future replacement identity remains separately governed.**
 
 Candidate 01 was explicitly approved by the user on August 19, 2026 after direct review of a 1024×1024 PNG rendered from the exact authored SVG. PR #20 merged the authored design as `44d47982d154e0a0a9a913d232a2eae835c6905f`. PR #22 promoted the approved geometry to `branding/privacy-shield/privacy-shield-icon.svg` and merged as `164310648a140a97df006146949fc0c59272eda8`.
 
-That historical/current identity acceptance does not pre-approve the proposed Privacy Shield 2.0 icon/logo/artwork refresh. Any replacement identity requires its own design, accessibility, compact-size, Glaze UI V1.3 conformance, human review, and explicit promotion evidence.
+That historical/current identity acceptance does not pre-approve the proposed Privacy Shield 2.0 icon/logo/artwork refresh. Any replacement identity requires its own design, accessibility, compact-size, current applicable Glaze UI conformance, human review, and explicit promotion evidence.
 
 ### 8. Adapter-specific runtime acceptance
 
