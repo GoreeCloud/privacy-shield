@@ -1,5 +1,11 @@
 # GoreeCloud Privacy Shield — Changelogs
 
+## 2026-09-30 — Acceptance and Browser identity documentation reconciliation
+
+- Reconciled `docs/BROWSER-INTEGRATION.md` with the already-approved canonical Privacy Shield identity; Browser surfaces must use traceable derivatives while visual approval remains separate from compiled-runtime acceptance.
+- Reconciled `docs/ACCEPTANCE-STATUS.md` to current main, Platform Contract 2.0 Weave lifecycle, merged P0 provider-governance source, and the actual empty production state-provider, signing-provider, and compiled-Browser acceptance directories.
+- Removed stale Draft/current-authority references to closed PR #73 and merged PR #80 without changing provider selection, runtime acceptance, production approval, Seal, or Anchor state.
+
 ## 2026-09-30 — Repository root symlink hardening
 
 - Hardened repository-baseline validation so prohibited or retired root documentation is rejected even when reintroduced as a broken symbolic link whose target does not exist.

@@ -23,13 +23,13 @@ All of these surfaces must follow Glaze UI patterns.
 Browser integration must:
 
 - use the Privacy Shield name for browser-specific privacy and content-protection features;
-- use the approved Privacy Shield icon only after final artwork is explicitly approved;
+- use the approved canonical Privacy Shield icon and only traceable derivatives of that source;
 - keep Privacy Shield visually distinct from the Browser application icon;
 - keep Privacy Shield visually and semantically distinct from Wardveil Security;
 - avoid substituting generic shield, padlock, fingerprint, checkmark, inherited Browser, or Wardveil artwork where the Privacy Shield identity should appear;
 - use compact or monochrome derivatives only when they originate from the approved canonical Privacy Shield artwork.
 
-While the canonical icon remains pending, Browser surfaces must use a non-branded text/state fallback or another clearly non-identity development treatment rather than presenting placeholder artwork as Privacy Shield.
+The canonical Privacy Shield icon is approved. Browser surfaces must not substitute placeholder, generic, inherited Browser, Wardveil, or independently redrawn artwork for that identity.
 
 ## Canonical asset contract
 
@@ -47,7 +47,7 @@ The machine-readable identity state is maintained in:
 contracts/privacy-shield.identity.json
 ```
 
-A Browser build or showcase surface must not claim canonical Privacy Shield visual readiness while that contract remains `pending-canonical-icon` / `blocked-pending-canonical-icon`.
+The identity contract records `approved-canonical-icon` and `showcase_status: approved`. Visual-identity approval remains separate from Browser runtime acceptance and does not establish production readiness.
 
 ## Ruleset consumption contract
 
@@ -109,4 +109,6 @@ The exact compiled GoreeCloud Browser must validate Privacy Shield request block
 
 ## Artwork status
 
-No final Privacy Shield icon artwork is approved yet. No placeholder, inherited, generic, or temporary icon may be represented as the official Privacy Shield identity or used to claim showcase readiness.
+The canonical Privacy Shield icon is approved and recorded in `docs/APPROVED-ICON.md` and `contracts/privacy-shield.identity.json`. Browser-specific packaged or generated derivatives must remain traceable to `branding/privacy-shield/privacy-shield-icon.svg`.
+
+Visual-identity approval does not satisfy exact compiled Browser runtime acceptance.
