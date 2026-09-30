@@ -15,7 +15,8 @@ A future record must use `contracts/privacy-shield.browser-runtime-acceptance.v1
 - exact GoreeCloud Browser source commit;
 - exact GoreeCloud Browser source tree;
 - exact Privacy Shield source commit;
-- exact compiled Browser artifact SHA-256; and
+- exact compiled Browser artifact SHA-256;
+- independently expected runtime-review authority; and
 - caller-selected evidence freshness.
 
 The exact compiled artifact must carry bounded build provenance and representative target metadata. Every required Browser privacy dimension must have a passed result with content-addressed evidence:
@@ -30,6 +31,8 @@ The exact compiled artifact must carry bounded build provenance and representati
 - failure modes;
 - accessibility/status accuracy; and
 - rendering-engine boundary behavior, including explicit Firefox/Gecko vs Chromium-family authority boundaries where applicable.
+
+The strict evaluator requires the expected reviewer authority from the caller and rejects a record whose self-declared review authority does not match that independent expectation.
 
 A record accepted for runtime remains non-authorizing and non-promoting. `authorization_effect`, `authority_transfer`, and `production_approved` are fixed to `false` in the FR-013 source contract.
 
