@@ -4,7 +4,7 @@ component:
   id: goreecloud-privacy-shield
   product_name: GoreeCloud Privacy Shield
   repository: GoreeCloud/privacy-shield
-lifecycle: weave
+lifecycle: seal
 lifecycle_metadata:
   flags:
     - blocked
@@ -12,12 +12,28 @@ lifecycle_metadata:
     - migration-required
   deployment_state: development
   qualification_state: blocked
-  next_gate: seal
-  candidate_identity: null
+  next_gate: anchor
+  candidate_identity:
+    source_revision: 01e7502b9828bb5611677964e4f6eada70e7d055
+    review_identity: null
+    build_identity: "GitHub Actions: Privacy Shield Validation 36782421370"
+    artifact_name: null
+    artifact_digest: null
+    container_digest: null
+    package_identity: null
+    sbom_identity: null
+    schema_migration_identity: null
+    configuration_boundary: "Provider-neutral Privacy Shield source candidate; qualification evidence must bind production state/signing providers and runtime adapters to this candidate, and any material runtime/dependency/privacy/security/recovery/platform/configuration change supersedes it."
+    dependency_state: "Anchor qualification blocked on qualification/seal-readiness.json; unresolved qualification dependencies do not expand candidate authority."
+    previous_known_good: "Weave source baseline 01e7502b9828bb5611677964e4f6eada70e7d055"
+    rollback_target: "01e7502b9828bb5611677964e4f6eada70e7d055"
   last_transition: null
   evidence:
+    - qualification/seal-candidate.json
+    - qualification/seal-readiness.json
     - docs/PROJECT-RECORD.md
     - docs/PLANNED-FEATURES.md
+    - docs/ACCEPTANCE-STATUS.md
     - README.md
 version: '0.1'
 supported_platforms:

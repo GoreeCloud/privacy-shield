@@ -1,5 +1,13 @@
 # GoreeCloud Privacy Shield — Changelogs
 
+## 2026-09-30 — Privacy Shield 0.1 Seal candidate
+
+- Promoted the current release line from Weave to **Seal** under Platform Contract 2.0 by freezing exact candidate `privacy-shield-0.1-seal.1` at implementation source `01e7502b9828bb5611677964e4f6eada70e7d055` / tree `21e9a9324aeb0fc2f6f1bfd6ba74768e7006297b`.
+- Added `qualification/seal-candidate.json` with the successful exact-source Privacy Shield Validation identity and a non-authorizing provider-neutral candidate boundary.
+- Reclassified the existing eight gate groups as blocked **Anchor qualification** gates rather than reasons to withhold exact Seal identity.
+- Updated Platform Contract lifecycle metadata, Seal/Anchor readiness validation, README, acceptance status, project record, and planned-feature authority while preserving development deployment, blocked qualification, migration/recovery flags, unaccepted providers/adapters, and empty published-release evidence.
+- Any material release-critical implementation/configuration change invalidates `seal.1` and requires a new Seal candidate; this transition grants no production or Anchor authority.
+
 ## 2026-09-30 — Browser runtime exact evidence-set binding
 
 - Hardened FR-013 compiled-Browser runtime acceptance so the caller must independently supply the exact content-addressed build, dimension, and review evidence-reference set.
@@ -96,7 +104,7 @@
 
 **Status:** Authoritative repository changelog  
 **Canonical repository:** `GoreeCloud/privacy-shield`  
-**Lifecycle:** Weave
+**Lifecycle:** Seal
 
 ## Purpose
 

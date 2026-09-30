@@ -10,7 +10,7 @@ This document records the current acceptance state of GoreeCloud Privacy Shield 
 
 The transactional authority-state and signing-key-custody source line introduced through the Privacy Shield 2.0 P0 work is integrated on `main`. Historical PR #73 is closed without merge and is not current authority. PR #80 merged the provider-neutral state/signing acceptance boundaries as `f26e112dc5adfd4ee9cdb2785b34125339e78e1e`; later mainline stabilization, Platform Contract 2.0 migration, repository-governance, Policy/Observability, Everkeep, runtime-readiness, and Browser-acceptance control work supersedes that merge as the current repository state.
 
-Current lifecycle is **Weave** under Platform Contract 2.0. Deployment remains development, qualification remains blocked, and the next gate is Seal. Current required Glaze UI target is V1.6 / `1.6.0`.
+Current lifecycle is **Seal** under Platform Contract 2.0. Exact candidate `privacy-shield-0.1-seal.1` freezes implementation source `01e7502b9828bb5611677964e4f6eada70e7d055` for Anchor qualification. Deployment remains development, qualification remains blocked, and the next gate is Anchor. Current required Glaze UI target is V1.6 / `1.6.0`. Seal establishes candidate identity only; it does not convert any provider, Browser/runtime adapter, recovery, deployment, or production gate into accepted evidence.
 
 The acceptance directories remain fail closed:
 - `acceptance/state-providers/` contains no production state-provider acceptance record;

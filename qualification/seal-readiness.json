@@ -1,10 +1,11 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "component": "GoreeCloud Privacy Shield",
-  "lifecycle": "weave",
-  "next_gate": "seal",
-  "seal_candidate_declared": false,
-  "promotion_authorized": false,
+  "lifecycle": "seal",
+  "next_gate": "anchor",
+  "seal_candidate_declared": true,
+  "anchor_promotion_authorized": false,
+  "candidate": "qualification/seal-candidate.json",
   "gates": [
     {
       "id": "production-state-provider",
@@ -13,7 +14,7 @@
         "evaluations/state-providers/foundationdb-self-hosted-multihost-production.json",
         "acceptance/state-providers/README.md"
       ],
-      "reason": "Current FoundationDB candidate is failed; no approved selection or production acceptance record exists."
+      "reason": "Anchor qualification blocker: Current FoundationDB candidate is failed; no approved selection or production acceptance record exists."
     },
     {
       "id": "production-signing-key-provider",
@@ -22,7 +23,7 @@
         "evaluations/signing-key-providers/ovhcloud-kms-hsm-production.json",
         "acceptance/signing-key-providers/README.md"
       ],
-      "reason": "Current signing candidate is draft; no approved selection or production acceptance record exists."
+      "reason": "Anchor qualification blocker: Current signing candidate is draft; no approved selection or production acceptance record exists."
     },
     {
       "id": "platform-system-runtime-acceptance",
@@ -30,7 +31,7 @@
       "evidence": [
         "goreecloud.platform.yaml"
       ],
-      "reason": "Eight external Integral Platform Systems remain migration-required at runtime/production scope."
+      "reason": "Anchor qualification blocker: Eight external Integral Platform Systems remain migration-required at runtime/production scope."
     },
     {
       "id": "identity-authenticated-runtime",
@@ -39,7 +40,7 @@
         "src/runtime-http.mjs",
         "goreecloud.platform.yaml"
       ],
-      "reason": "Production Identity issuance/JWKS/rotation and authenticated hosted transport are not accepted."
+      "reason": "Anchor qualification blocker: Production Identity issuance/JWKS/rotation and authenticated hosted transport are not accepted."
     },
     {
       "id": "everkeep-recovery",
@@ -48,7 +49,7 @@
         "docs/EVERKEEP-LIFECYCLE.md",
         "goreecloud.platform.yaml"
       ],
-      "reason": "Live Everkeep ingestion, backup/restore, export/portability, and target-environment recovery remain unaccepted."
+      "reason": "Anchor qualification blocker: Live Everkeep ingestion, backup/restore, export/portability, and target-environment recovery remain unaccepted."
     },
     {
       "id": "runtime-adapter-acceptance",
@@ -57,7 +58,7 @@
         "docs/RUNTIME-TRUST-ACCEPTANCE-MATRIX.md",
         "goreecloud.platform.yaml"
       ],
-      "reason": "Compiled Browser plus DNS, Network, application, and other runtime adapter acceptance remains incomplete."
+      "reason": "Anchor qualification blocker: Compiled Browser plus DNS, Network, application, and other runtime adapter acceptance remains incomplete."
     },
     {
       "id": "privacy-center-glaze-acceptance",
@@ -66,7 +67,7 @@
         "docs/integrations/privacy-center-static-site.md",
         "goreecloud.platform.yaml"
       ],
-      "reason": "Exact-current rendered/accessibility/performance/resilience/rollback consumer acceptance remains open."
+      "reason": "Anchor qualification blocker: Exact-current rendered/accessibility/performance/resilience/rollback consumer acceptance remains open."
     },
     {
       "id": "hosting-observability-recovery-release",
@@ -75,7 +76,7 @@
         "docs/integrations/runtime-http.md",
         "goreecloud.platform.yaml"
       ],
-      "reason": "No production host/deployment, deployed health/readiness, monitoring/alerting, rollback/recovery, or published release provenance is accepted."
+      "reason": "Anchor qualification blocker: No production host/deployment, deployed health/readiness, monitoring/alerting, rollback/recovery, or published release provenance is accepted."
     }
   ]
 }
