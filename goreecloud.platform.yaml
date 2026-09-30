@@ -53,12 +53,16 @@ platform_systems:
     - contracts/privacy-shield.platform.json
     notes: Wardveil Security has a merged read-only Privacy Shield presentation boundary, while runtime-specific Privacy Shield production and current-contract acceptance remain independent and incomplete.
   everkeep:
-    result: applicable-blocked
+    result: applicable-migration-required
     version: null
     evidence:
-    - README.md
-    - src/privacy-state-store.mjs
-    notes: Everkeep is the resilience and preservation authority for applicable lifecycle, backup, restore, deletion, export, and succession effects. Privacy Shield now has validated single-host durable state and local backup recovery primitives, but no accepted Everkeep runtime backup/restore integration is claimed here.
+    - EVERKEEP-LIFECYCLE.md
+    - src/everkeep-lifecycle.mjs
+    - tests/everkeep-lifecycle.test.mjs
+    - tests/everkeep-canonical-provenance.test.mjs
+    - contracts/privacy-shield.everkeep-lifecycle-obligation.v1.schema.json
+    - contracts/privacy-shield.everkeep-lifecycle-assessment.v1.schema.json
+    notes: Privacy Shield implements a bounded non-authorizing Everkeep lifecycle handoff pinned to canonical GoreeCloud/everkeep revision f69e369e4d8627280fac728b7f7bcb02c43b5edd. The current canonical continuity.status schema is byte-identical to the historical schema previously pinned by Privacy Shield. Live Everkeep ingestion/execution, backup/restore, export/portability, target-environment recovery evidence, and production acceptance remain migration-required.
   glaze_ui:
     result: applicable-migration-required
     version: 1.6.0
@@ -203,6 +207,10 @@ conformance:
   - src/manager-status.mjs
   - tests/manager-status.test.mjs
   - tests/manager-status-schema.test.mjs
+  - EVERKEEP-LIFECYCLE.md
+  - src/everkeep-lifecycle.mjs
+  - tests/everkeep-lifecycle.test.mjs
+  - tests/everkeep-canonical-provenance.test.mjs
   blockers:
   - "GoreeCloud Privacy Shield is classified Weave: the core privacy platform substantially exists, while its authorization core, runtime integrations, and overall production acceptance remain incomplete."
   - Canonical Privacy Center source adoption of Glaze UI 1.6.0 is established, but exact-current downstream consumer acceptance, human/rendered/accessibility/performance/resilience review, rollback, and legacy deployment retirement/cutover remain incomplete.
@@ -210,7 +218,7 @@ conformance:
   - Single-host durable consent, policy, capability replay or revocation, and privacy evidence state are implemented and source-tested, but production/distributed durability and accepted Everkeep-backed recovery remain open.
   - Production signing-key custody and rotation operations remain pending.
   - Scoped Identity credential boundaries and Mesh/Platform Registry clients are source-validated, but live GoreeCloud Identity issuance, deployed JWKS trust, credential rotation/revocation, live Mesh publication, and end-to-end acceptance remain pending.
-  - Everkeep production backup, restore, export, portability, and recovery acceptance remain pending.
+  - Canonical Everkeep lifecycle source adoption is implemented, but live ingestion/execution, backup/restore, export/portability, target-environment recovery evidence, and production acceptance remain migration-required.
   - Runtime-specific Browser, DNS, Network, application, and other Privacy Shield adapters retain independent acceptance gates.
   - GoreeCloud Policy v1 source contracts are adopted, but live caller identity, authenticated decision exchange, distribution, freshness/expiry, obligations handling, enforcement coordination, target-environment evidence, and production acceptance remain outstanding.
   - GoreeCloud Observability v1 source contract is adopted for privacy-minimized signal construction, but live producer identity, authenticated publication/collection, freshness/completeness, retention/deletion, diagnostics/alerting, target-environment evidence, and production acceptance remain outstanding.
