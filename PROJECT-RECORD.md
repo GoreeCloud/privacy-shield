@@ -240,6 +240,12 @@ Branding identity does not create runtime/privacy acceptance.
 
 The separate open branding-review PR #44 remains independent from this project-governance migration.
 
+## September 29, 2026 — Manager status producer source adoption
+
+Privacy Shield added the producer side of the minimized status contract already consumed by GoreeCloud Manager. The source producer uses only canonical Privacy Shield capability identifiers, fixes raw-private-activity/credential/identifier guarantees to false, requires timezone-qualified timestamps, preserves `runtime_acceptance_required=true`, fixes `production_approved=false`, and rejects `protected` or `active` runtime claims at the source-only boundary.
+
+This closes the missing repository-local producer implementation but does not establish deployed delivery, producer freshness, target-environment behavior, Manager production acceptance, or Anchor qualification.
+
 ## Current production/provider boundary
 
 Privacy Shield is currently Weave and remains nonconformant.
