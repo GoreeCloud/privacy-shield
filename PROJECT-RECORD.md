@@ -1,7 +1,7 @@
 # GoreeCloud Privacy Shield — Project Record
 
 **Repository:** `GoreeCloud/privacy-shield`  
-**Lifecycle:** Development  
+**Lifecycle:** Weave — Platform Contract 2.0; qualification blocked pending runtime, provider, recovery, and production acceptance  
 **License:** MPL-2.0  
 **Current required Glaze target:** GLAZE UI V1.6 / `1.6.0`  
 **Migration baseline:** `5abe4ba46f4e949fe45fc653e0f95af0b180cae9`  
@@ -43,7 +43,7 @@ The Privacy Shield 2.0 line introduced a platform authorization path including:
 - privacy evidence and receipts;
 - minimized status/evidence contracts.
 
-Development source may prove mechanism behavior without establishing production privacy authority.
+Weave source may prove mechanism behavior without establishing production privacy authority.
 
 ## Durable-state development
 
@@ -209,7 +209,9 @@ The active `Protect main` ruleset now requires pull-request integration, strict 
 
 ## Current Platform Contract boundary
 
-The repository currently uses Platform Contract 0.4 and evaluates exactly nine Integral Platform Systems. Canonical Platform Contract 2.0 now governs new migrations; Privacy Shield must migrate explicitly from current evidence rather than silently translating the 0.4 lifecycle.
+The repository uses Platform Contract 2.0 and evaluates exactly nine Integral Platform Systems. The explicit migration from legacy Contract 0.4 classifies Privacy Shield as **Weave** because the core privacy platform, authorization architecture, provider governance, durable-state foundation, Policy/Observability source adapters, Mesh/Identity delivery boundaries, Browser core, and repository governance substantially exist, while remaining work is dominated by integration, recovery, provider/runtime acceptance, target-environment validation, and release convergence.
+
+The migration preserves `deployment_state: development`, `qualification_state: blocked`, and `next_gate: seal`. No Seal candidate identity is declared because exact production providers, recovery acceptance, representative runtime evidence, and release-critical acceptance remain incomplete.
 
 Current source includes bounded adoption/integration evidence for several systems while remaining fail-closed where runtime acceptance is absent.
 
@@ -240,7 +242,7 @@ The separate open branding-review PR #44 remains independent from this project-g
 
 ## Current production/provider boundary
 
-At the migration baseline, Privacy Shield remains Development.
+Privacy Shield is currently Weave and remains nonconformant.
 
 The repository contains substantial authorization, consent, capability, evidence, provider-governance, Policy, Observability, Mesh/Identity delivery, and bounded durable-state source mechanisms.
 
@@ -259,6 +261,12 @@ Still-open production obligations include:
 - explicit production approval.
 
 No source/CI/documentation state should be represented as satisfying those gates.
+
+## September 29, 2026 — Platform Contract 2.0 Weave migration
+
+Privacy Shield was explicitly reclassified from legacy Contract 0.4 `development` semantics to Contract 2.0 `weave` using verified present evidence rather than a mechanical lifecycle translation. The core platform substantially exists; the unresolved work is now predominantly convergence work: production state/signing providers, Identity and Mesh runtime acceptance, Everkeep recovery, Privacy Center and compiled Browser acceptance, Policy/Observability live integration, adapter-specific production evidence, rollback, deployment, and explicit production approval.
+
+The migration does not establish Seal or Anchor. Qualification remains blocked, no exact Seal candidate is frozen, and every existing production/provider/runtime blocker remains authoritative until independently accepted.
 
 ## Current repository protection state
 
