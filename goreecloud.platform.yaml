@@ -36,6 +36,7 @@ platform_systems:
     - docs/integrations/manager.md
     - src/manager-status.mjs
     - tests/manager-status.test.mjs
+    - tests/manager-status-schema.test.mjs
     notes: Privacy Shield now owns a bounded privacy-safe source producer for the status contract already consumed read-only by GoreeCloud Manager. The source producer fixes production approval false, forbids protected/active runtime claims, and exports no raw private activity, credentials, or identifiers. Accepted runtime deployment, freshness/delivery, target-environment validation, and production acceptance remain migration-required.
   privacy_shield:
     result: not-applicable-justified
@@ -63,6 +64,10 @@ platform_systems:
     version: 1.6.0
     evidence:
     - docs/integrations/privacy-center-static-site.md
+  - docs/integrations/manager.md
+  - src/manager-status.mjs
+  - tests/manager-status.test.mjs
+  - tests/manager-status-schema.test.mjs
     - website/README.md
     notes: The canonical Privacy Center source is now the single retained GoreeCloud website route at GoreeCloud/static-websites sites/main/privacy/index.html and declares the current GLAZE UI V1.6 / 1.6.0 target. Exact-current downstream human/rendered/accessibility/performance/resilience/rollback consumer acceptance remains incomplete, and this repository's website/ directory remains a historical 2.1.0 legacy/transitional deployment copy rather than current source authority.
   mesh:
