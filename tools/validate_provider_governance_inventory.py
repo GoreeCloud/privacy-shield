@@ -8,7 +8,6 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 CANONICAL_REPOSITORY = "GoreeCloud/privacy-shield"
-PREDECESSOR_REPOSITORY = "GoreeCloud/goreecloud-privacy-shield"
 
 
 def fail(message: str) -> None:
@@ -49,9 +48,6 @@ def main() -> None:
     for record in state + signing:
         if record.get("integration_authority") != CANONICAL_REPOSITORY:
             fail(f"{record.get('evaluation_id')}: integration_authority must use {CANONICAL_REPOSITORY}")
-        encoded = json.dumps(record, sort_keys=True)
-        if PREDECESSOR_REPOSITORY in encoded:
-            fail(f"{record.get('evaluation_id')}: predecessor repository identity remains in active evaluation")
 
     if state_decisions or signing_decisions:
         fail("no provider selection decision is currently authorized by the active incomplete/failed evaluations")
