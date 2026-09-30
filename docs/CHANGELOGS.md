@@ -1,5 +1,11 @@
 # GoreeCloud Privacy Shield — Changelogs
 
+## 2026-09-30 — Repository root symlink hardening
+
+- Hardened repository-baseline validation so prohibited or retired root documentation is rejected even when reintroduced as a broken symbolic link whose target does not exist.
+- Added regression coverage for both migrated root documentation and retired `FEATURE-ROADMAP.md` symlink cases.
+- This repository-governance hardening does not change Privacy Shield runtime/provider/recovery acceptance, production authority, Seal, or Anchor state.
+
 ## 2026-09-29 — Repository root documentation migration
 
 - Moved the repository's human-readable project records from root into the canonical `docs/` tree under the GoreeCloud repository-root cleanliness standard.
