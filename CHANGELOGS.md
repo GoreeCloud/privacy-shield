@@ -1,5 +1,12 @@
 # GoreeCloud Privacy Shield — Changelogs
 
+## 2026-09-29 — Manager status producer source adoption
+
+- Added a privacy-minimized schema-version-1 Privacy Shield status producer for the existing GoreeCloud Manager read-only consumer contract.
+- Restricted source-only status to development/partial/attention/unavailable and inactive/pending-acceptance/unavailable capability states; `protected`, active runtime claims, and production approval cannot be self-created.
+- Fixed raw private activity, credential content, and identifying content declarations to false and require canonical capability IDs plus timezone-qualified status times.
+- Manager integration remains migration-required pending deployed delivery, freshness, target-environment validation, and production acceptance.
+
 ## 2026-09-29 — Platform Contract 2.0 Weave migration
 
 - Migrated the authoritative platform manifest from Contract 0.4 to Contract 2.0 and reclassified Privacy Shield from legacy Development to **Weave** based on verified convergence maturity.
