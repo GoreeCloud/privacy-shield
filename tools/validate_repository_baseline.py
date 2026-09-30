@@ -99,11 +99,13 @@ def validate_repository_baseline(root: Path = ROOT) -> list[str]:
         validated.append(relative)
 
     for relative in PROHIBITED_ROOT_DOCUMENTS:
-        if (root / relative).exists():
+        path = root / relative
+        if path.exists() or path.is_symlink():
             problems.append(f"prohibited root documentation must not exist: {relative}")
 
     for relative in RETIRED_ROOT_FILES:
-        if (root / relative).exists():
+        path = root / relative
+        if path.exists() or path.is_symlink():
             problems.append(f"retired repository control must not exist: {relative}")
 
     workflow_path = root / VALIDATION_WORKFLOW

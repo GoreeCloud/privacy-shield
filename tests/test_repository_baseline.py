@@ -79,6 +79,26 @@ class RepositoryBaselineTests(unittest.TestCase):
             with self.assertRaises(SystemExit):
                 validator.validate_repository_baseline(root)
 
+    def test_broken_symlink_prohibited_root_documentation_fails(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            self.populate(root)
+            (root / "CHANGELOGS.md").symlink_to(root / "missing-changelog-target.md")
+            self.assertTrue((root / "CHANGELOGS.md").is_symlink())
+            self.assertFalse((root / "CHANGELOGS.md").exists())
+            with self.assertRaises(SystemExit):
+                validator.validate_repository_baseline(root)
+
+    def test_broken_symlink_retired_feature_roadmap_fails(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            self.populate(root)
+            (root / "FEATURE-ROADMAP.md").symlink_to(root / "missing-roadmap-target.md")
+            self.assertTrue((root / "FEATURE-ROADMAP.md").is_symlink())
+            self.assertFalse((root / "FEATURE-ROADMAP.md").exists())
+            with self.assertRaises(SystemExit):
+                validator.validate_repository_baseline(root)
+
     def test_retired_legacy_specifications_fails(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
