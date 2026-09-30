@@ -1,5 +1,12 @@
 # GoreeCloud Privacy Shield — Changelogs
 
+## 2026-09-29 — Platform Contract 2.0 Weave migration
+
+- Migrated the authoritative platform manifest from Contract 0.4 to Contract 2.0 and reclassified Privacy Shield from legacy Development to **Weave** based on verified convergence maturity.
+- Added explicit lifecycle metadata with development deployment state, blocked qualification, migration/recovery flags, next gate Seal, and no fabricated candidate identity.
+- Repinned Platform Contract validation to the current Contract 2.0 evaluator while preserving all unresolved provider, runtime, Everkeep, Glaze UI consumer, Browser, Identity, Mesh, Manager, Policy, Observability, deployment, and production blockers.
+- This lifecycle correction does not create Seal, Anchor, production privacy authority, provider acceptance, or runtime acceptance.
+
 ## 2026-09-29 — Browser acceptance caller-clock integrity hardening
 
 - Require a timezone-qualified timestamp when FR-013 receives its caller-controlled evaluation clock as text, eliminating environment-dependent parsing from freshness and review-window decisions.
@@ -14,11 +21,11 @@
 
 **Status:** Authoritative repository changelog  
 **Canonical repository:** `GoreeCloud/privacy-shield`  
-**Lifecycle:** Development
+**Lifecycle:** Weave
 
 ## Purpose
 
-This file records meaningful Privacy Shield implementation, governance, compatibility, privacy/security-boundary, and lifecycle changes. It is repository history, not a release announcement and not proof of deployment, production acceptance, or Stable qualification.
+This file records meaningful Privacy Shield implementation, governance, compatibility, privacy/security-boundary, and lifecycle changes. It is repository history, not a release announcement and not proof of deployment, production acceptance, Seal, or Anchor qualification.
 
 Google Drive roadmap/changelog copies are not authoritative under the GoreeCloud Repository Feature Tracking and Changelog Governance standard.
 
