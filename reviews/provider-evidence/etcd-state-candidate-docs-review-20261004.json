@@ -1,0 +1,64 @@
+{
+  "schema_version": 1,
+  "contract_id": "goreecloud.privacy-shield.provider-evidence-review.v1",
+  "review_id": "etcd-state-candidate-docs-review-20261004",
+  "evidence_id": "etcd-state-candidate-docs-20261004",
+  "evidence_ref": "evidence+sha256:c3bfaa70698e64f5191d9c9fcd9e217a8abed967ff7f6026f14190184fb2b586:github://GoreeCloud/privacy-shield/evidence/provider-evaluations/etcd-state-candidate-20261004.md",
+  "provider_class": "state-provider",
+  "provider_id": "etcd-self-hosted-multimember",
+  "provider_name": "etcd self-hosted multi-member cluster",
+  "provider_implementation": "etcd v3.7.2 self-hosted multi-member cluster",
+  "integration_authority": "GoreeCloud/privacy-shield",
+  "scope": {
+    "service": "privacy-shield",
+    "capability": "durable-authorization-state",
+    "authority_state": [
+      "consent",
+      "policy_versions_and_active_pointer",
+      "capability_revocation",
+      "single_use_capability_consumption",
+      "privacy_evidence_and_chain_head"
+    ],
+    "environments": [
+      "production"
+    ]
+  },
+  "supports": [
+    "durability",
+    "restart_recovery",
+    "atomic_transactions",
+    "multi_writer_serializability",
+    "distributed_topology",
+    "fail_closed_conflict_behavior",
+    "backup_restore",
+    "migration_rollback",
+    "access_control_isolation",
+    "privacy_safe_observability",
+    "evaluation-summary"
+  ],
+  "review": {
+    "decision": "accepted-for-evaluation",
+    "review_authority": "GoreeCloud owner decision under current GoreeCloud operating, open-source, and licensing governance",
+    "review_authority_reference": "evidence+sha256:102011f6aa807c7550bb640cdd69b899abed9f5a280bfa02557e4037e3ff5a02:github://GoreeCloud/privacy-shield/reviews/provider-evidence/goreecloud-owner-review-authority-20261004.md",
+    "review_evidence_reference": "evidence+sha256:e50c5739bf2229941dab813070f1c57c891cfa9826b56351882b33b890f8a1ac:github://GoreeCloud/privacy-shield/reviews/provider-evidence/etcd-state-candidate-docs-review-20261004.md",
+    "reviewed_at": "2026-10-04T21:30:00Z",
+    "valid_until": "2026-11-02T21:30:00Z"
+  },
+  "governance": {
+    "status": "active",
+    "authorizing": false,
+    "provider_selection_authorized": false,
+    "production_acceptance_authorized": false,
+    "review_authority_validated_by_schema": false
+  },
+  "privacy": {
+    "credentials_in_review": false,
+    "secret_material_in_review": false,
+    "raw_private_payloads_in_review": false,
+    "full_capability_tokens_in_review": false
+  },
+  "limitations": [
+    "Evidence acceptance is limited to candidate evaluation and does not authorize provider selection or production use.",
+    "Exact GoreeCloud deployment evidence remains separately required."
+  ]
+}
