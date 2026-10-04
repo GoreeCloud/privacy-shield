@@ -51,6 +51,8 @@ The current integrated source requires the V1 state-provider capability profile:
 
 Production acceptance requires exact-provider and exact-deployment concurrency, failure/recovery, backup/restore, topology, access-control, operational evidence, and a fresh production-approved acceptance record. No source-controlled provider currently carries production acceptance.
 
+Current candidate inventory contains two governed state-provider evaluations. `foundationdb-self-hosted-multihost-production` remains explicitly failed. `etcd-self-hosted-multimember-production` is complete and non-authorizing for candidate-evaluation purposes only. The etcd dossier does not select a provider, authorize the Privacy Shield etcd adapter, prove an exact deployed access-control boundary, establish operational qualification, or create production acceptance. There remain zero approved state-provider selections and zero production-approved state-provider acceptance records.
+
 The production runtime now consumes that record directly rather than trusting provider capability claims. Startup requires exact source revision and source-tree binding, the requested environment/topology, matching provider identity/version/implementation/authority metadata, complete passing qualification evidence, and a fresh production-approved state-provider acceptance record.
 
 ### 4. Production signing-key custody
@@ -88,6 +90,8 @@ Current authoritative `GoreeCloud/browser` development uses a CEF/Chromium deskt
 The canonical `GoreeCloud/firefox-addons` repository has an accepted Privacy Shield 0.2.0 Stable Firefox adapter with exact Mozilla-signed XPI provenance, real-Firefox runtime regression, human target-environment acceptance, compatibility/recovery evidence, persistent installation, and restart acceptance. See `docs/integrations/firefox-adapter-acceptance.md`.
 
 Those Firefox release records explicitly exclude GoreeCloud Browser compiled-runtime acceptance. Current `GoreeCloud/browser` CEF/Chromium development likewise has no accepted compiled Privacy Shield Browser record. The blocker is therefore the missing exact CEF/Chromium Browser acceptance evidence, not an unsupported engine boundary.
+
+Representative CEF evidence is currently bound to exact Browser source `16d02d80292fea225308b07ff69d947286dbb193` / tree `59a60318a3dd30c6f3d07d39d22f0d062b5fa4a4`. Core CI run `37236788843` exercised the exact-source CEF runtime path, and Security Evidence run `37236788926` retained artifact `11315419742` with digest `sha256:05af7ad06ed350cff3e15836281a5ebc5762f7dcb980ae06d90f3ecee1196fb4`. This remains supporting evidence rather than acceptance: the compiled Browser binary was not retained with a governed SHA-256, the strict Privacy Shield record does not yet carry all ten required dimension-level evidence references, freshness, and independent review, and any newer intended Browser build requires fresh exact binary-bound evidence.
 
 The exact compiled GoreeCloud Browser must demonstrate, against the intended Privacy Shield source revision, governed engine/runtime boundary, and exact Browser binary, at minimum:
 
