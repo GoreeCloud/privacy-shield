@@ -85,11 +85,11 @@ platform_systems:
     notes: Privacy Shield implements a bounded non-authorizing Everkeep lifecycle handoff pinned to canonical GoreeCloud/everkeep revision f69e369e4d8627280fac728b7f7bcb02c43b5edd. The current canonical continuity.status schema is byte-identical to the historical schema previously pinned by Privacy Shield. Live Everkeep ingestion/execution, backup/restore, export/portability, target-environment recovery evidence, and production acceptance remain migration-required.
   glaze_ui:
     result: applicable-migration-required
-    version: 1.6.0
+    version: 1.7.0
     evidence:
     - docs/integrations/privacy-center-static-site.md
     - website/README.md
-    notes: The canonical Privacy Center source is the single retained GoreeCloud website route at GoreeCloud/static-websites sites/main/privacy/index.html and currently retains historical Glaze UI 1.6.0 source adoption. The current shared target is Glaze V1.7 / 1.7.0, so fresh migration plus downstream human/rendered/accessibility/performance/resilience/rollback consumer acceptance remains incomplete. This repository's website/ directory remains a historical 2.1.0 legacy/transitional deployment copy rather than current source authority.
+    notes: The canonical Privacy Center source in GoreeCloud/static-websites now targets Glaze V1.7 / 1.7.0 at revision 531744f2a82133caca8ddde00fa782415d1a42e1. Post-merge source/build/browser checks and the Cloudflare Pages deployment check passed for that revision. Consumer review, canonical-site readback, rollback evidence, and legacy deployment retirement remain incomplete. This repository's website/ directory remains a historical 2.1.0 legacy/transitional deployment copy rather than current source authority.
   mesh:
     result: applicable-migration-required
     version: null
@@ -236,7 +236,7 @@ conformance:
   - tests/runtime-http.test.mjs
   blockers:
   - "GoreeCloud Privacy Shield Version 2.0 is classified Seal: the exact verified source candidate is frozen while provider, runtime, recovery, current-Glaze, release, and overall Anchor qualification remain incomplete."
-  - Canonical Privacy Center source remains on historical Glaze UI 1.6.0 while the current required target is Glaze V1.7 / 1.7.0; migration, exact-current downstream consumer acceptance, human/rendered/accessibility/performance/resilience review, rollback, and legacy deployment retirement/cutover remain incomplete.
+  - Canonical Privacy Center source now targets Glaze V1.7 / 1.7.0 at GoreeCloud/static-websites revision 531744f2a82133caca8ddde00fa782415d1a42e1, with successful source/build/browser checks and a successful Cloudflare Pages deployment check. Downstream consumer review, canonical-site readback, rollback evidence, and legacy deployment retirement/cutover remain incomplete.
   - GoreeCloud Sync privacy-authorization and synchronization-governance integration remains unaccepted; Sync remains separately governed and is not a tenth Integral Platform System.
   - Single-host durable consent, policy, capability replay or revocation, and privacy evidence state are implemented and source-tested, but production/distributed durability and accepted Everkeep-backed recovery remain open.
   - Production signing-key custody and rotation operations remain pending.
