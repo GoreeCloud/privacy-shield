@@ -29,7 +29,7 @@ Until the controlled legacy retirement/cutover is completed, the retained legacy
 
 The current source authority is `GoreeCloud/static-websites/sites/main/privacy/index.html`. Any remaining Cloudflare custom-domain/root/build retirement or redirect for this legacy copy must be verified through authenticated deployment controls rather than inferred from source documentation.
 
-The legacy build copies the approved canonical Privacy Shield identity from `branding/privacy-shield/privacy-shield-icon.svg` into the isolated public artifact. The public icon is therefore not independently redrawn or maintained.
+The legacy build copies the approved canonical Privacy Shield identity from `branding/privacy-shield/privacy-shield-icon.svg` into the isolated public artifact. The public icon is therefore not independently redrawn or maintained. The retained legacy publication evidence does not itself authorize broader Privacy Shield claims.
 
 `website/dist` is legacy publication evidence, not canonical source authority. It must remain deterministic while the legacy deployment is in service. The canonical central package intentionally excludes generated `dist` as source authority.
 
