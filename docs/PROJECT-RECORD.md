@@ -395,3 +395,11 @@ Live `GoreeCloud/browser` development now uses a CEF/Chromium desktop render pat
 
 The `runtime-adapter-acceptance` gate therefore remains blocked pending governed runtime-boundary/candidate reconciliation and exact compiled GoreeCloud Browser acceptance. The bounded Firefox-adapter evidence is recorded in `docs/integrations/firefox-adapter-acceptance.md`.
 
+## October 3, 2026 — Release provenance and rollback evidence contract
+
+Privacy Shield added `qualification/release-evidence.template.json`, `docs/RELEASE-PROVENANCE-ROLLBACK.md`, and a fail-closed validator to define the release-specific evidence required by the Version 2.0 hosting/Observability/recovery/release gate.
+
+The template binds candidate `privacy-shield-2.0.0-seal.1` to required published release identity, artifact/package digest, SBOM/signing/source provenance, exact deployment identity, canonical readback, rollback target, and a completed rollback exercise. Every release-specific value remains pending or null and the record remains non-authorizing.
+
+The gate remains blocked. No release tag, release artifact, production deployment, Privacy Shield production authority, Anchor, or Stable status is established by defining the evidence contract.
+
