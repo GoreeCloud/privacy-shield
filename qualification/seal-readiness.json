@@ -56,10 +56,11 @@
       "state": "blocked",
       "evidence": [
         "docs/RUNTIME-TRUST-ACCEPTANCE-MATRIX.md",
+        "docs/ACCEPTANCE-STATUS.md",
         "docs/integrations/firefox-adapter-acceptance.md",
         "goreecloud.platform.yaml"
       ],
-      "reason": "Version 2.0 Anchor qualification blocker: standalone Firefox-adapter acceptance remains separate from compiled GoreeCloud Browser acceptance. Seal.2 source 9b938bb1ded71e8545da7abd7bedfdb0294857ef corrects the ruleset runtime authority to canonical GoreeCloud/browser and retains an engine-aware compiled-Browser acceptance contract supporting chromium-cef. Current GoreeCloud/browser uses the CEF/Chromium path, so fresh exact compiled Browser evidence for that artifact/runtime remains required. Broader DNS, Network, application, and other adapter expansion remains 2.0.1 scope unless explicitly added to 2.0."
+      "reason": "Version 2.0 Anchor qualification blocker: standalone Firefox-adapter acceptance remains separate from compiled GoreeCloud Browser acceptance. Seal.2 source 9b938bb1ded71e8545da7abd7bedfdb0294857ef retains an engine-aware compiled-Browser acceptance contract supporting chromium-cef. Current GoreeCloud/browser main 16d02d80292fea225308b07ff69d947286dbb193 (tree 59a60318a3dd30c6f3d07d39d22f0d062b5fa4a4) passed Core CI run 37236788843, including exact-source CEF build/runtime payload checks, sandboxed renderer launch, HTTPS load, windowless pixels, pointer/context-menu, popup, keyboard, clipboard, and IME interaction. Security Evidence run 37236788926 retained exact-source artifact 11315419742 with digest sha256:05af7ad06ed350cff3e15836281a5ebc5762f7dcb980ae06d90f3ecee1196fb4. The compiled Browser binary itself is not retained with a governed SHA-256, and the strict Privacy Shield record still lacks all ten dimension-level evidence references, freshness, and independent review. Runtime-adapter-acceptance therefore remains blocked."
     },
     {
       "id": "privacy-center-glaze-acceptance",
