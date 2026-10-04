@@ -8,6 +8,11 @@ Before a selection record can exist, it must reference an evidence-backed candid
 
 A candidate evaluation is non-authorizing. A provider selection is also **not** production acceptance. Every evaluation record must keep `authorizing: false` and `production_acceptance_authorized: false`; every selection record must keep `production_acceptance_authorized: false`. A separately governed, fresh exact-provider/exact-deployment record under `acceptance/state-providers/` remains mandatory before production use can be claimed.
 
-There is currently **one state-provider candidate evaluation record**: `foundationdb-self-hosted-multihost-production`. It is explicitly **failed** because access-control isolation does not meet the production boundary, with additional operational criteria still pending. There are **zero approved state-provider selections** and **zero production-approved state-provider acceptance records**.
+There are currently **two state-provider candidate evaluation records**:
+
+- `foundationdb-self-hosted-multihost-production` is explicitly **failed** because access-control isolation does not meet the production boundary, with additional operational criteria still pending.
+- `etcd-self-hosted-multimember-production` is **complete, non-authorizing** candidate-evaluation evidence. Its bounded capability and operational-profile criteria are complete for evaluation purposes only; no provider selection, Privacy Shield etcd adapter implementation, exact-deployment access-control assessment, operational qualification, or production acceptance is implied.
+
+There are **zero approved state-provider selections** and **zero production-approved state-provider acceptance records**.
 
 Do not add credentials, secret material, or raw private payloads to candidate-evaluation or provider-selection records.

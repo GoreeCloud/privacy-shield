@@ -12,9 +12,10 @@
       "state": "blocked",
       "evidence": [
         "evaluations/state-providers/foundationdb-self-hosted-multihost-production.json",
+        "evaluations/state-providers/etcd-self-hosted-multimember-production.json",
         "acceptance/state-providers/README.md"
       ],
-      "reason": "Version 2.0 Anchor qualification blocker: Current FoundationDB candidate is failed; no approved selection or production acceptance record exists."
+      "reason": "Version 2.0 Anchor qualification blocker: the FoundationDB candidate remains failed. A complete, non-authorizing self-hosted etcd v3.7.2 multi-member candidate evaluation now exists, but no approved state-provider selection, Privacy Shield etcd adapter implementation, exact-deployment access-control assessment, controlled operational qualification, or production acceptance record exists."
     },
     {
       "id": "production-signing-key-provider",

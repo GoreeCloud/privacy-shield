@@ -35,10 +35,19 @@ def main() -> None:
     state_acceptance = load_records(ROOT / "acceptance" / "state-providers")
     signing_acceptance = load_records(ROOT / "acceptance" / "signing-key-providers")
 
-    if len(state) != 1 or state[0].get("evaluation_id") != "foundationdb-self-hosted-multihost-production":
-        fail("state-provider candidate inventory must contain the one current FoundationDB evaluation")
-    if state[0].get("governance", {}).get("status") != "failed":
-        fail("FoundationDB candidate must remain explicitly failed unless a separately governed reevaluation replaces it")
+    state_by_id = {record.get("evaluation_id"): record for record in state}
+    expected_state = {
+        "foundationdb-self-hosted-multihost-production": "failed",
+        "etcd-self-hosted-multimember-production": "complete",
+    }
+    if len(state_by_id) != len(state) or set(state_by_id) != set(expected_state):
+        fail("state-provider candidate inventory must contain exactly the current FoundationDB and etcd evaluations")
+    for evaluation_id, expected_status in expected_state.items():
+        actual_status = state_by_id[evaluation_id].get("governance", {}).get("status")
+        if actual_status != expected_status:
+            fail(
+                f"{evaluation_id} must remain {expected_status!r} unless a separately governed reevaluation replaces it"
+            )
 
     if len(signing) != 1 or signing[0].get("evaluation_id") != "ovhcloud-kms-hsm-production":
         fail("signing-provider candidate inventory must contain the one current OVHcloud evaluation")
@@ -59,9 +68,11 @@ def main() -> None:
     signing_doc = (ROOT / "docs" / "SIGNING-KEY-PROVIDER-SELECTION.md").read_text(encoding="utf-8")
 
     for phrase in [
-        "one state-provider candidate evaluation record",
+        "two state-provider candidate evaluation records",
         "foundationdb-self-hosted-multihost-production",
         "explicitly **failed**",
+        "etcd-self-hosted-multimember-production",
+        "complete, non-authorizing",
         "zero approved state-provider selections",
         "zero production-approved state-provider acceptance records",
     ]:
@@ -85,7 +96,7 @@ def main() -> None:
 
     print(
         "Privacy Shield provider-governance inventory valid "
-        "(state candidates=1 failed; signing candidates=1 draft; selections=0; acceptance=0)."
+        "(state candidates=2: 1 failed, 1 complete; signing candidates=1 draft; selections=0; acceptance=0)."
     )
 
 

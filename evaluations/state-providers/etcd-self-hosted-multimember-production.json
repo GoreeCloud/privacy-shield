@@ -1,0 +1,110 @@
+{
+  "schema_version": 1,
+  "contract_id": "goreecloud.privacy-shield.state-provider-evaluation.v1",
+  "evaluation_id": "etcd-self-hosted-multimember-production",
+  "provider_id": "etcd-self-hosted-multimember",
+  "provider_name": "etcd self-hosted multi-member cluster",
+  "provider_implementation": "etcd v3.7.2 self-hosted multi-member cluster",
+  "integration_authority": "GoreeCloud/privacy-shield",
+  "scope": {
+    "service": "privacy-shield",
+    "capability": "durable-authorization-state",
+    "authority_state": [
+      "consent",
+      "policy_versions_and_active_pointer",
+      "capability_revocation",
+      "single_use_capability_consumption",
+      "privacy_evidence_and_chain_head"
+    ],
+    "environments": [
+      "production"
+    ]
+  },
+  "criteria": {
+    "durability": {
+      "result": "passed",
+      "evidence_refs": [
+        "evidence+sha256:c3bfaa70698e64f5191d9c9fcd9e217a8abed967ff7f6026f14190184fb2b586:github://GoreeCloud/privacy-shield/evidence/provider-evaluations/etcd-state-candidate-20261004.md"
+      ]
+    },
+    "restart_recovery": {
+      "result": "passed",
+      "evidence_refs": [
+        "evidence+sha256:c3bfaa70698e64f5191d9c9fcd9e217a8abed967ff7f6026f14190184fb2b586:github://GoreeCloud/privacy-shield/evidence/provider-evaluations/etcd-state-candidate-20261004.md"
+      ]
+    },
+    "atomic_transactions": {
+      "result": "passed",
+      "evidence_refs": [
+        "evidence+sha256:c3bfaa70698e64f5191d9c9fcd9e217a8abed967ff7f6026f14190184fb2b586:github://GoreeCloud/privacy-shield/evidence/provider-evaluations/etcd-state-candidate-20261004.md"
+      ]
+    },
+    "multi_writer_serializability": {
+      "result": "passed",
+      "evidence_refs": [
+        "evidence+sha256:c3bfaa70698e64f5191d9c9fcd9e217a8abed967ff7f6026f14190184fb2b586:github://GoreeCloud/privacy-shield/evidence/provider-evaluations/etcd-state-candidate-20261004.md"
+      ]
+    },
+    "distributed_topology": {
+      "result": "passed",
+      "evidence_refs": [
+        "evidence+sha256:c3bfaa70698e64f5191d9c9fcd9e217a8abed967ff7f6026f14190184fb2b586:github://GoreeCloud/privacy-shield/evidence/provider-evaluations/etcd-state-candidate-20261004.md"
+      ]
+    },
+    "fail_closed_conflict_behavior": {
+      "result": "passed",
+      "evidence_refs": [
+        "evidence+sha256:c3bfaa70698e64f5191d9c9fcd9e217a8abed967ff7f6026f14190184fb2b586:github://GoreeCloud/privacy-shield/evidence/provider-evaluations/etcd-state-candidate-20261004.md"
+      ]
+    },
+    "backup_restore": {
+      "result": "passed",
+      "evidence_refs": [
+        "evidence+sha256:c3bfaa70698e64f5191d9c9fcd9e217a8abed967ff7f6026f14190184fb2b586:github://GoreeCloud/privacy-shield/evidence/provider-evaluations/etcd-state-candidate-20261004.md"
+      ]
+    },
+    "migration_rollback": {
+      "result": "passed",
+      "evidence_refs": [
+        "evidence+sha256:c3bfaa70698e64f5191d9c9fcd9e217a8abed967ff7f6026f14190184fb2b586:github://GoreeCloud/privacy-shield/evidence/provider-evaluations/etcd-state-candidate-20261004.md"
+      ]
+    },
+    "access_control_isolation": {
+      "result": "passed",
+      "evidence_refs": [
+        "evidence+sha256:c3bfaa70698e64f5191d9c9fcd9e217a8abed967ff7f6026f14190184fb2b586:github://GoreeCloud/privacy-shield/evidence/provider-evaluations/etcd-state-candidate-20261004.md"
+      ]
+    },
+    "privacy_safe_observability": {
+      "result": "passed",
+      "evidence_refs": [
+        "evidence+sha256:c3bfaa70698e64f5191d9c9fcd9e217a8abed967ff7f6026f14190184fb2b586:github://GoreeCloud/privacy-shield/evidence/provider-evaluations/etcd-state-candidate-20261004.md",
+        "evidence+sha256:1e65e73c1905ca85a23655e5d966ac7291fc30563e4ec09d118308442ac0b08c:github://GoreeCloud/privacy-shield/evidence/provider-evaluations/etcd-operational-profile-20261004.md"
+      ]
+    },
+    "operational_ownership": {
+      "result": "passed",
+      "evidence_refs": [
+        "evidence+sha256:1e65e73c1905ca85a23655e5d966ac7291fc30563e4ec09d118308442ac0b08c:github://GoreeCloud/privacy-shield/evidence/provider-evaluations/etcd-operational-profile-20261004.md"
+      ]
+    }
+  },
+  "governance": {
+    "status": "complete",
+    "authorizing": false,
+    "production_acceptance_authorized": false,
+    "evidence_reference": "evidence+sha256:c3bfaa70698e64f5191d9c9fcd9e217a8abed967ff7f6026f14190184fb2b586:github://GoreeCloud/privacy-shield/evidence/provider-evaluations/etcd-state-candidate-20261004.md",
+    "evaluated_at": "2026-10-04T21:35:00Z",
+    "valid_until": "2026-11-02T21:30:00Z"
+  },
+  "privacy": {
+    "credentials_in_evaluation_record": false,
+    "raw_private_payloads_in_evaluation_record": false,
+    "secret_material_in_evaluation_record": false
+  },
+  "limitations": [
+    "No GoreeCloud etcd deployment exists; this is candidate evaluation evidence only.",
+    "Exact production security configuration, topology, recovery, observability, capacity, and performance remain unverified.",
+    "Exact deployed access-control assessment, provider selection, adapter implementation, operational qualification, and production acceptance remain required."
+  ]
+}
