@@ -1,5 +1,12 @@
 # GoreeCloud Privacy Shield — Changelogs
 
+## 2026-10-03 — Version 2.0 release identity and 2.0.1 scope split
+
+- Rebased the governed Privacy Shield release identity to **Version 2.0.0** without changing the frozen implementation source: candidate `privacy-shield-2.0.0-seal.1` remains bound to `01e7502b9828bb5611677964e4f6eada70e7d055`.
+- Preserved Seal lifecycle, development deployment, blocked Anchor qualification, and all eight mandatory qualification gate groups. Missing state-provider, signing-key, platform-runtime, Identity, Everkeep, Browser, Glaze, hosting, Observability, recovery, and release evidence is not treated as passing.
+- Assigned non-gating unfinished/unverified feature expansion to **Version 2.0.1**, including the replacement visual-identity work and broader adapter expansion beyond the supported Browser/Firefox 2.0 boundary.
+- Retained exact compiled GoreeCloud Browser acceptance, current Glaze migration/acceptance, provider selection/acceptance, recovery, and production-release evidence as Version 2.0 requirements.
+
 ## 2026-09-30 — Privacy Shield 0.1 Seal candidate
 
 - Promoted the current release line from Weave to **Seal** under Platform Contract 2.0 by freezing exact candidate `privacy-shield-0.1-seal.1` at implementation source `01e7502b9828bb5611677964e4f6eada70e7d055` / tree `21e9a9324aeb0fc2f6f1bfd6ba74768e7006297b`.
