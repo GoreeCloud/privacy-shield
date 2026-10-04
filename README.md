@@ -183,7 +183,7 @@ Current feature state remains in [Implemented features](docs/IMPLEMENTED-FEATURE
 | GoreeCloud Network `network-privacy` adapter | Draft downstream candidate; not centrally promoted or production-approved |
 | Additional application privacy adapters | Planned/incremental |
 | Standalone Firefox adapter 0.2.0 | Accepted in `GoreeCloud/firefox-addons`; does not certify compiled GoreeCloud Browser |
-| Compiled Browser runtime/UI acceptance | Pending; seal.1 contract already supports CEF/Chromium, but no fresh exact compiled Browser acceptance record exists |
+| Compiled Browser runtime/UI acceptance | Pending; seal.2 uses canonical `GoreeCloud/browser` runtime authority and supports CEF/Chromium, but no fresh exact compiled Browser acceptance record exists |
 | Privacy Center Glaze V1.7 source adoption | Complete at static-websites `531744f2a82133caca8ddde00fa782415d1a42e1`; consumer acceptance still pending |
 | Overall platform production approval | Not a single global gate; adapter-specific acceptance required |
 
