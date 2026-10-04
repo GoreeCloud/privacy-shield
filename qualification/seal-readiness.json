@@ -69,7 +69,7 @@
         "website/README.md",
         "goreecloud.platform.yaml"
       ],
-      "reason": "Version 2.0 Anchor qualification blocker: canonical Privacy Center source migration to Glaze V1.7 / 1.7.0 is complete at GoreeCloud/static-websites revision 531744f2a82133caca8ddde00fa782415d1a42e1 and that revision has successful source/build/browser checks plus a successful Cloudflare Pages deployment check. Current consumer review, canonical-site readback, rollback evidence, legacy deployment retirement/cutover, and final consumer acceptance remain incomplete."
+      "reason": "Version 2.0 Anchor qualification blocker: canonical Privacy Center source migration, exact machine validation, production deployment, and canonical readback are complete for the current Glaze V1.7 website bytes. The authoritative shared website consumer record remains pending-human-acceptance; owner visual, keyboard, assistive-technology, representative performance/resilience, final consumer approval, and Privacy Shield legacy deployment retirement/cutover remain incomplete."
     },
     {
       "id": "hosting-observability-recovery-release",
