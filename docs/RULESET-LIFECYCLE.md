@@ -46,7 +46,7 @@ The lifecycle contract records the exact schema and ruleset versions it governs.
 
 A Browser adapter consuming the canonical contract must validate both schema and ruleset versions. An unsupported contract must fail closed rather than being interpreted optimistically or partially.
 
-Fail closed in this context means the adapter must refuse to treat an unknown configuration contract as approved Privacy Shield policy. This requirement does not mean that ordinary web requests should be broadly blocked when Privacy Shield configuration cannot be loaded; Browser failure behavior must remain deliberate, visible, and compatible with inherited Firefox security and networking behavior.
+Fail closed in this context means the adapter must refuse to treat an unknown configuration contract as approved Privacy Shield policy. This requirement does not mean that ordinary web requests should be broadly blocked when Privacy Shield configuration cannot be loaded; Browser failure behavior must remain deliberate, visible, and compatible with the active Browser engine/runtime security and networking behavior.
 
 ## Privacy boundaries
 
@@ -60,7 +60,7 @@ Local-resource substitution uses exact reviewed matches and fails open to the or
 
 Source validation verifies that the ruleset and lifecycle contract are internally consistent. It does not establish production readiness.
 
-Production acceptance requires the exact compiled GoreeCloud Browser to validate Privacy Shield behavior, private-browsing behavior, site compatibility, failure handling, and inherited Firefox/Gecko security boundaries.
+Production acceptance requires the exact compiled GoreeCloud Browser to validate Privacy Shield behavior, private-browsing behavior, site compatibility, failure handling, and preservation of the security boundaries provided by the active Browser engine/runtime.
 
 The lifecycle contract therefore keeps `production_ready` false and the canonical configuration keeps `production_approved` false until that separate acceptance process is completed and explicitly recorded.
 
