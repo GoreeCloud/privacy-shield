@@ -49,3 +49,4 @@ This directory is the canonical repository documentation tree for **GoreeCloud P
 ## Authority boundary
 
 Repository documentation describes verified source and governance state. Live GitHub remains authoritative for repository/branch/CI state, and source-level documentation or successful CI does not itself establish production provider, runtime, recovery, Seal, or Anchor acceptance.
+- [Firefox adapter acceptance evidence](integrations/firefox-adapter-acceptance.md)

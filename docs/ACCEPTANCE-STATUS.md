@@ -21,7 +21,7 @@ Source validation, merged schemas, qualification harnesses, provider evaluation 
 
 ## Version 2.0 qualification boundary
 
-All eight gate groups in `qualification/seal-readiness.json` remain attached to Version 2.0 and must pass before Anchor/Stable promotion. Exact compiled GoreeCloud Browser acceptance for the supported Firefox runtime is part of that 2.0 boundary. Broader adapter expansion outside the supported 2.0 runtime boundary and other non-gating feature expansion are assigned to Version 2.0.1.
+All eight gate groups in `qualification/seal-readiness.json` remain attached to Version 2.0 and must pass before Anchor/Stable promotion. The frozen Version 2.0 Browser gate was defined around exact compiled GoreeCloud Browser acceptance for a supported Firefox runtime. Current `GoreeCloud/browser` development now uses a CEF/Chromium desktop render path, so no CEF/Chromium evidence may be treated as automatically equivalent to the frozen Firefox boundary. A governed runtime-boundary/candidate reconciliation is required before current Browser evidence can satisfy this gate. Broader adapter expansion outside the bounded 2.0 release remains assigned to Version 2.0.1.
 
 Privacy Center source migration is no longer the missing portion of the Glaze gate: the canonical route now targets Glaze V1.7 / 1.7.0 at static-websites revision `531744f2a82133caca8ddde00fa782415d1a42e1`, with successful post-merge repository/main-site validation and a successful Cloudflare Pages deployment check. The gate remains blocked because the V1.7 website consumer record is still pending and canonical-site readback, human/accessibility review, representative performance/resilience, rollback, legacy deployment retirement/cutover, and final consumer acceptance are not complete.
 
@@ -75,15 +75,21 @@ No KMS, HSM, cloud key service, or other exact production signing provider has b
 
 ### 5. Browser source integration
 
-**State: Integrated at the source-contract level, but not sufficient for production approval.**
+**State: Historical Firefox/Gecko source integration exists; current Browser runtime boundary requires reconciliation.**
 
-GoreeCloud Browser is the privileged Firefox/Gecko runtime authority. The Browser owns preference persistence, HTTP-channel integration, lifecycle hooks, private-browsing behavior, persistent site exceptions, navigation/copy/share integration, packaged UI behavior, and inherited Firefox security boundaries.
+Privacy Shield originated with Firefox/Gecko Browser integration assumptions for preference persistence, HTTP-channel integration, lifecycle hooks, private-browsing behavior, persistent site exceptions, navigation/copy/share integration, packaged UI behavior, and inherited Firefox security boundaries.
+
+Current authoritative `GoreeCloud/browser` development uses a CEF/Chromium desktop render path and remains Development. That current Browser path does not automatically inherit the historical Firefox/Gecko Privacy Shield acceptance model, and the frozen Version 2.0 candidate must not be silently reinterpreted to a different engine/runtime boundary.
 
 ### 6. Exact compiled Browser acceptance
 
-**State: Pending.**
+**State: Pending; standalone Firefox adapter accepted separately.**
 
-The exact compiled GoreeCloud Browser must demonstrate, against the intended Privacy Shield source revision and exact Browser binary, at minimum:
+The canonical `GoreeCloud/firefox-addons` repository has an accepted Privacy Shield 0.2.0 Stable Firefox adapter with exact Mozilla-signed XPI provenance, real-Firefox runtime regression, human target-environment acceptance, compatibility/recovery evidence, persistent installation, and restart acceptance. See `docs/integrations/firefox-adapter-acceptance.md`.
+
+Those Firefox release records explicitly exclude GoreeCloud Browser compiled-runtime acceptance. Current `GoreeCloud/browser` CEF/Chromium development likewise has no accepted compiled Privacy Shield Browser record. The engine/runtime mismatch with the frozen Version 2.0 Firefox boundary therefore remains part of the blocker.
+
+The exact compiled GoreeCloud Browser must demonstrate, against the intended Privacy Shield source revision, governed engine/runtime boundary, and exact Browser binary, at minimum:
 
 - request blocking and allow/bypass behavior;
 - navigation, copy, and share URL cleaning;
