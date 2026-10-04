@@ -1,5 +1,12 @@
 # GoreeCloud Privacy Shield — Changelogs
 
+## 2026-10-03 — Version 2.0 release provenance/rollback evidence contract
+
+- Added a fail-closed machine-readable release-evidence template for `privacy-shield-2.0.0-seal.1`.
+- Bound required final evidence to exact release/tag identity, artifact/package digest, SBOM/signing/source provenance, deployed revision/environment, canonical readback, and a completed rollback exercise.
+- Added validation that requires every release-specific value to remain pending or null while only the template exists.
+- Kept hosting/Observability/recovery/release qualification blocked; this contract does not create a published release, artifact identity, production deployment, Anchor, or Stable authority.
+
 ## 2026-10-03 — Firefox adapter evidence and Browser runtime-boundary reconciliation
 
 - Bound the accepted standalone Privacy Shield 0.2.0 Firefox-adapter release from `GoreeCloud/firefox-addons` into Version 2.0 qualification evidence without treating it as compiled GoreeCloud Browser acceptance.
