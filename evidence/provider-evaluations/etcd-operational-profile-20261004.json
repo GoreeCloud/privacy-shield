@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "contract_id": "goreecloud.privacy-shield.provider-evidence-package.v1",
+  "evidence_id": "etcd-operational-profile-20261004",
+  "provider_class": "state-provider",
+  "provider_id": "etcd-self-hosted-multimember",
+  "provider_name": "etcd self-hosted multi-member cluster",
+  "provider_implementation": "etcd v3.7.2 self-hosted multi-member cluster",
+  "integration_authority": "GoreeCloud/privacy-shield",
+  "scope": {
+    "service": "privacy-shield",
+    "capability": "durable-authorization-state",
+    "authority_state": [
+      "consent",
+      "policy_versions_and_active_pointer",
+      "capability_revocation",
+      "single_use_capability_consumption",
+      "privacy_evidence_and_chain_head"
+    ],
+    "environments": [
+      "production"
+    ]
+  },
+  "evidence_ref": "evidence+sha256:1e65e73c1905ca85a23655e5d966ac7291fc30563e4ec09d118308442ac0b08c:github://GoreeCloud/privacy-shield/evidence/provider-evaluations/etcd-operational-profile-20261004.md",
+  "artifact": {
+    "digest_algorithm": "sha256",
+    "digest": "1e65e73c1905ca85a23655e5d966ac7291fc30563e4ec09d118308442ac0b08c",
+    "locator": "github://GoreeCloud/privacy-shield/evidence/provider-evaluations/etcd-operational-profile-20261004.md",
+    "media_type": "text/markdown",
+    "source_authority": "GoreeCloud/privacy-shield candidate operational profile",
+    "collected_at": "2026-10-04T21:20:00Z",
+    "valid_until": "2026-11-03T21:20:00Z"
+  },
+  "supports": [
+    "privacy_safe_observability",
+    "operational_ownership"
+  ],
+  "governance": {
+    "status": "reviewed",
+    "authorizing": false,
+    "production_acceptance_authorized": false,
+    "reviewed_at": "2026-10-04T21:30:00Z"
+  },
+  "privacy": {
+    "credentials_in_package": false,
+    "secret_material_in_package": false,
+    "raw_private_payloads_in_package": false,
+    "full_capability_tokens_in_package": false
+  },
+  "limitations": [
+    "Candidate plan only; deployed controls remain separately governed.",
+    "Exact deployment qualification and production acceptance remain mandatory."
+  ]
+}
