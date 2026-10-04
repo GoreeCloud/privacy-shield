@@ -89,7 +89,7 @@ platform_systems:
     evidence:
     - docs/integrations/privacy-center-static-site.md
     - website/README.md
-    notes: The canonical Privacy Center source is the single retained GoreeCloud website route at GoreeCloud/static-websites sites/main/privacy/index.html and currently retains historical Glaze UI 1.6.0 source adoption. The current shared target is Glaze V1.7 / 1.7.0, so fresh migration plus downstream human/rendered/accessibility/performance/resilience/rollback consumer acceptance remains incomplete. This repository's website/ directory remains a historical 2.1.0 legacy/transitional deployment copy rather than current source authority.
+    notes: The canonical Privacy Center source in GoreeCloud/static-websites now targets Glaze V1.7 / 1.7.0 at revision 531744f2a82133caca8ddde00fa782415d1a42e1. Post-merge source/build/browser checks and the Cloudflare Pages deployment check passed for that revision. Consumer review, canonical-site readback, rollback evidence, and legacy deployment retirement remain incomplete. This repository's website/ directory remains a historical 2.1.0 legacy/transitional deployment copy rather than current source authority.
   mesh:
     result: applicable-migration-required
     version: null
