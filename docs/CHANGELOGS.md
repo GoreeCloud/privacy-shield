@@ -1,5 +1,13 @@
 # GoreeCloud Privacy Shield — Changelogs
 
+## 2026-10-03 — Firefox adapter evidence and Browser runtime-boundary reconciliation
+
+- Bound the accepted standalone Privacy Shield 0.2.0 Firefox-adapter release from `GoreeCloud/firefox-addons` into Version 2.0 qualification evidence without treating it as compiled GoreeCloud Browser acceptance.
+- Recorded the exact release source, successful Mozilla signing workflow, accepted signed-XPI digest, and accepted Firefox 155.0.1 / Zorin OS target environment in `docs/integrations/firefox-adapter-acceptance.md`.
+- Reconciled current Browser reality: live `GoreeCloud/browser` development uses CEF/Chromium, while the frozen Version 2.0 Browser gate was defined around a Firefox runtime.
+- Kept `runtime-adapter-acceptance` blocked pending governed runtime-boundary/candidate reconciliation and exact compiled GoreeCloud Browser acceptance.
+- No platform-wide Privacy Shield production authority, Anchor, or Stable status is created by the accepted standalone Firefox adapter.
+
 ## 2026-10-03 — Privacy Center Glaze V1.7 source adoption
 
 - Reconciled the canonical Privacy Center source to Glaze V1.7 / `1.7.0` after static-websites PR #132 merged as `531744f2a82133caca8ddde00fa782415d1a42e1`.
