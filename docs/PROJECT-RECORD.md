@@ -25,7 +25,7 @@ The project originated with a portable Browser privacy core and reviewed Browser
 
 Platform Privacy Shield later expanded beyond Browser without converting Browser into the platform privacy authority.
 
-The standalone Privacy Shield Firefox adapter is independently accepted in `GoreeCloud/firefox-addons`, while current `GoreeCloud/browser` development uses a CEF/Chromium desktop render path. The Version 2.0 Browser acceptance schema/evaluator already supports `chromium-cef` and is byte-identical at frozen candidate source `01e7502b9828bb5611677964e4f6eada70e7d055`; current Browser acceptance therefore requires fresh exact compiled CEF/Chromium evidence rather than a contract rewrite.
+The standalone Privacy Shield Firefox adapter is independently accepted in `GoreeCloud/firefox-addons`, while current `GoreeCloud/browser` development uses a CEF/Chromium desktop render path. Seal.2 source `9b938bb1ded71e8545da7abd7bedfdb0294857ef` corrects Browser ruleset runtime authority to canonical `GoreeCloud/browser` and retains `chromium-cef` support; current Browser acceptance therefore requires fresh exact compiled CEF/Chromium evidence.
 
 Compiled GoreeCloud Browser runtime acceptance remains independently gated.
 
