@@ -21,13 +21,13 @@ The central principle remains:
 
 ## Browser foundation
 
-The project originated with a portable Browser privacy core and reviewed Browser rules/configuration lifecycle.
-
-Browser remains the privileged runtime for Firefox/Gecko-specific privacy behavior, including applicable tracking resistance, native blocking, tracking-parameter cleanup, reviewed local substitution, site exceptions, and user controls.
+The project originated with a portable Browser privacy core and reviewed Browser rules/configuration lifecycle built around Firefox/Gecko-specific privacy behavior, including applicable tracking resistance, native blocking, tracking-parameter cleanup, reviewed local substitution, site exceptions, and user controls.
 
 Platform Privacy Shield later expanded beyond Browser without converting Browser into the platform privacy authority.
 
-Compiled Browser runtime acceptance remains independently gated.
+The standalone Privacy Shield Firefox adapter is now independently accepted in `GoreeCloud/firefox-addons`, but current `GoreeCloud/browser` development uses a CEF/Chromium desktop render path. The frozen Version 2.0 Browser gate still reflects the earlier Firefox runtime boundary, so current Browser evidence requires governed runtime-boundary/candidate reconciliation rather than automatic substitution.
+
+Compiled GoreeCloud Browser runtime acceptance remains independently gated.
 
 ## Privacy Shield 2.0 authorization foundation
 
@@ -373,7 +373,7 @@ This is a repository-organization and maintainability change only. It does not e
 
 Privacy Shield's governed release identity is now **Internal Version 2.0.0 / External Version 2.0.0** while remaining lifecycle **Seal**. Candidate `privacy-shield-2.0.0-seal.1` deliberately reuses the already-validated provider-neutral implementation source `01e7502b9828bb5611677964e4f6eada70e7d055`; this is a release-scope/version rebaseline, not a claim that missing production evidence became verified.
 
-All eight gate groups in `qualification/seal-readiness.json` remain Version 2.0 Anchor blockers. Exact compiled GoreeCloud Browser acceptance for the supported Firefox runtime remains a 2.0 gate. Unfinished or unverified feature expansion beyond the bounded 2.0 release—such as the replacement visual-identity work and broader adapter expansion—is transferred to Version 2.0.1. Stable/Anchor status remains withheld until the exact 2.0 candidate satisfies every applicable gate.
+All eight gate groups in `qualification/seal-readiness.json` remain Version 2.0 Anchor blockers. The Version 2.0 Browser gate was frozen around exact compiled GoreeCloud Browser acceptance for a Firefox runtime. Current `GoreeCloud/browser` development uses CEF/Chromium, so that runtime-boundary mismatch must be governed before current Browser evidence can satisfy the gate. Unfinished or unverified feature expansion beyond the bounded 2.0 release—such as the replacement visual-identity work and broader adapter expansion—is transferred to Version 2.0.1. Stable/Anchor status remains withheld until the exact 2.0 candidate satisfies every applicable gate.
 
 ## October 3, 2026 — Privacy Center Glaze V1.7 source adoption
 
@@ -384,4 +384,14 @@ The exact canonical Privacy route blob is `aadf935248db716858b7882b1685d0bcdd4a6
 The website's V1.7 consumer record remains `pending-evidence`. Canonical-site exact readback, human visual/keyboard/assistive-technology review, representative performance/resilience, rollback evidence, legacy deployment retirement/cutover, and final consumer acceptance remain open.
 
 Accordingly, Privacy Shield's `privacy-center-glaze-acceptance` gate remains blocked. This source migration does not create Privacy Shield runtime authority, production acceptance, Anchor, or Stable status.
+
+## October 3, 2026 — Firefox adapter acceptance evidence and Browser runtime boundary
+
+The canonical `GoreeCloud/firefox-addons` repository retains an accepted Privacy Shield 0.2.0 Stable Firefox-adapter release. Its exact reviewed and signed source is `eb5e2ff4c439d290ac3f61dc73e9e90b49f3181b`; Mozilla signing run `34070682147` completed successfully; the accepted signed XPI SHA-256 is `c4d01e131fe4a18fdd7f0c13c22fd849f2e99d271fef43ca6cbb390430819b62`; and the accepted target environment was Firefox 155.0.1 on a Zorin OS laptop.
+
+That release completed real-Firefox runtime, human target, compatibility/recovery, persistent signed installation, and same-profile restart acceptance. Its own release records explicitly exclude GoreeCloud Browser compiled-runtime acceptance.
+
+Live `GoreeCloud/browser` development now uses a CEF/Chromium desktop render path and remains Development. This conflicts with the frozen Version 2.0 Browser gate's Firefox runtime boundary. No CEF/Chromium evidence is treated as automatically equivalent, and no compiled Browser acceptance record is created by the standalone Firefox release.
+
+The `runtime-adapter-acceptance` gate therefore remains blocked pending governed runtime-boundary/candidate reconciliation and exact compiled GoreeCloud Browser acceptance. The bounded Firefox-adapter evidence is recorded in `docs/integrations/firefox-adapter-acceptance.md`.
 
