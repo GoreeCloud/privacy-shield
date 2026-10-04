@@ -56,9 +56,10 @@
       "state": "blocked",
       "evidence": [
         "docs/RUNTIME-TRUST-ACCEPTANCE-MATRIX.md",
+        "docs/integrations/firefox-adapter-acceptance.md",
         "goreecloud.platform.yaml"
       ],
-      "reason": "Version 2.0 Anchor qualification blocker: Compiled GoreeCloud Browser acceptance for the supported Firefox runtime remains incomplete. Broader DNS, Network, application, and other adapter expansion is assigned to 2.0.1 unless explicitly added to the 2.0 supported scope."
+      "reason": "Version 2.0 Anchor qualification blocker: the standalone Privacy Shield Firefox adapter has accepted 0.2.0 Stable evidence in GoreeCloud/firefox-addons, including signed real-Firefox runtime and human target acceptance, but those release records explicitly exclude GoreeCloud Browser compiled-runtime acceptance. Exact compiled GoreeCloud Browser acceptance for the supported Version 2.0 Browser runtime remains incomplete. Broader DNS, Network, application, and other adapter expansion is assigned to 2.0.1 unless explicitly added to the 2.0 supported scope."
     },
     {
       "id": "privacy-center-glaze-acceptance",
