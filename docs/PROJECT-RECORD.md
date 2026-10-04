@@ -1,7 +1,7 @@
 # GoreeCloud Privacy Shield — Project Record
 
 **Repository:** `GoreeCloud/privacy-shield`  
-**Lifecycle:** Seal — Platform Contract 2.0; exact candidate `privacy-shield-2.0.0-seal.1` assigns Version 2.0.0 to implementation source `01e7502b9828bb5611677964e4f6eada70e7d055`; Anchor qualification remains blocked pending runtime, provider, recovery, current-consumer, release, and production acceptance  
+**Lifecycle:** Seal — Platform Contract 2.0; exact candidate `privacy-shield-2.0.0-seal.2` assigns Version 2.0.0 to corrected implementation source `9b938bb1ded71e8545da7abd7bedfdb0294857ef`; Anchor qualification remains blocked pending runtime, provider, recovery, current-consumer, release, and production acceptance  
 **License:** MPL-2.0  
 **Current required Glaze target:** Glaze V1.7 / `1.7.0`  
 **Migration baseline:** `5abe4ba46f4e949fe45fc653e0f95af0b180cae9`  
@@ -25,7 +25,7 @@ The project originated with a portable Browser privacy core and reviewed Browser
 
 Platform Privacy Shield later expanded beyond Browser without converting Browser into the platform privacy authority.
 
-The standalone Privacy Shield Firefox adapter is independently accepted in `GoreeCloud/firefox-addons`, while current `GoreeCloud/browser` development uses a CEF/Chromium desktop render path. The Version 2.0 Browser acceptance schema/evaluator already supports `chromium-cef` and is byte-identical at frozen candidate source `01e7502b9828bb5611677964e4f6eada70e7d055`; current Browser acceptance therefore requires fresh exact compiled CEF/Chromium evidence rather than a contract rewrite.
+The standalone Privacy Shield Firefox adapter is independently accepted in `GoreeCloud/firefox-addons`, while current `GoreeCloud/browser` development uses a CEF/Chromium desktop render path. Seal.2 source `9b938bb1ded71e8545da7abd7bedfdb0294857ef` corrects Browser ruleset runtime authority to canonical `GoreeCloud/browser` and retains `chromium-cef` support; current Browser acceptance therefore requires fresh exact compiled CEF/Chromium evidence.
 
 Compiled GoreeCloud Browser runtime acceptance remains independently gated.
 
@@ -290,7 +290,7 @@ The guard verifies the current failed FoundationDB state-provider candidate, dra
 
 ## Current production/provider boundary
 
-Privacy Shield is currently Weave and remains nonconformant.
+Privacy Shield is currently Seal under exact candidate `privacy-shield-2.0.0-seal.2` and remains nonconformant for Anchor while the mandatory qualification gates remain blocked.
 
 The repository contains substantial authorization, consent, capability, evidence, provider-governance, Policy, Observability, Mesh/Identity delivery, and bounded durable-state source mechanisms.
 

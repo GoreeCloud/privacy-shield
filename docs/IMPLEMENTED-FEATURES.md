@@ -15,7 +15,7 @@ The FR-013 compiled-Browser acceptance evaluator requires content-addressed evid
 
 ## Verified Version 2.0 scope
 
-Version 2.0.0 is the bounded release identity for the implementation already frozen at source `01e7502b9828bb5611677964e4f6eada70e7d055`. This record identifies source capabilities that exist; it does not convert any source-only capability into runtime or production acceptance. Mandatory Version 2.0 Anchor gates remain in `qualification/seal-readiness.json`. Future feature expansion outside those gates is assigned to Version 2.0.1.
+Version 2.0.0 is the bounded release identity for seal.2, frozen at corrected source `9b938bb1ded71e8545da7abd7bedfdb0294857ef` after canonical Browser runtime-authority reconciliation. This record identifies source capabilities that exist; it does not convert any source-only capability into runtime or production acceptance. Mandatory Version 2.0 Anchor gates remain in `qualification/seal-readiness.json`. Future feature expansion outside those gates is assigned to Version 2.0.1.
 
 ## Purpose
 

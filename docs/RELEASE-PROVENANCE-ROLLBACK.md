@@ -2,7 +2,7 @@
 
 **Requirement level:** Mandatory  
 **Status:** Template defined; evidence not yet accepted  
-**Candidate:** `privacy-shield-2.0.0-seal.1`
+**Candidate:** `privacy-shield-2.0.0-seal.2`
 
 ## Purpose
 

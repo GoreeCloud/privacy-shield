@@ -4,7 +4,7 @@ GoreeCloud Privacy Shield is the platform-wide privacy, consent, data-governance
 
 GoreeCloud Browser remains a privileged Privacy Shield runtime and continues to provide Browser-specific native ad and tracker blocking, tracking-parameter cleanup, reviewed local-resource substitution, site exceptions, and privacy-focused browsing controls.
 
-> **Current status:** Seal under Platform Contract 2.0. Exact candidate `privacy-shield-2.0.0-seal.1` assigns Privacy Shield **Version 2.0.0** to the already-validated implementation source at `01e7502b9828bb5611677964e4f6eada70e7d055`. Deployment remains development and Anchor/Stable qualification remains blocked on the non-deferrable gate groups in `qualification/seal-readiness.json`. Unfinished feature expansion outside the bounded 2.0 release is assigned to **2.0.1** in `docs/PLANNED-FEATURES.md`. Seal does not create production privacy authority or convert missing provider/runtime/recovery evidence into acceptance. The canonical Privacy Center source now targets Glaze V1.7 / `1.7.0` at `GoreeCloud/static-websites@531744f2a82133caca8ddde00fa782415d1a42e1`, but its downstream consumer acceptance remains blocked.
+> **Current status:** Seal under Platform Contract 2.0. Exact candidate `privacy-shield-2.0.0-seal.2` assigns Privacy Shield **Version 2.0.0** to corrected source `9b938bb1ded71e8545da7abd7bedfdb0294857ef`, validated by post-merge Privacy Shield Validation #601. Deployment remains development and Anchor/Stable qualification remains blocked on the non-deferrable gate groups in `qualification/seal-readiness.json`. Unfinished feature expansion outside the bounded 2.0 release is assigned to **2.0.1** in `docs/PLANNED-FEATURES.md`. Seal does not create production privacy authority or convert missing provider/runtime/recovery evidence into acceptance. The canonical Privacy Center source now targets Glaze V1.7 / `1.7.0` at `GoreeCloud/static-websites@531744f2a82133caca8ddde00fa782415d1a42e1`, but its downstream consumer acceptance remains blocked.
 
 ## Product identity
 
@@ -183,7 +183,7 @@ Current feature state remains in [Implemented features](docs/IMPLEMENTED-FEATURE
 | GoreeCloud Network `network-privacy` adapter | Draft downstream candidate; not centrally promoted or production-approved |
 | Additional application privacy adapters | Planned/incremental |
 | Standalone Firefox adapter 0.2.0 | Accepted in `GoreeCloud/firefox-addons`; does not certify compiled GoreeCloud Browser |
-| Compiled Browser runtime/UI acceptance | Pending; seal.1 contract already supports CEF/Chromium, but no fresh exact compiled Browser acceptance record exists |
+| Compiled Browser runtime/UI acceptance | Pending; seal.2 uses canonical `GoreeCloud/browser` runtime authority and supports CEF/Chromium, but no fresh exact compiled Browser acceptance record exists |
 | Privacy Center Glaze V1.7 source adoption | Complete at static-websites `531744f2a82133caca8ddde00fa782415d1a42e1`; consumer acceptance still pending |
 | Overall platform production approval | Not a single global gate; adapter-specific acceptance required |
 

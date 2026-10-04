@@ -14,18 +14,18 @@ lifecycle_metadata:
   qualification_state: blocked
   next_gate: anchor
   candidate_identity:
-    source_revision: 01e7502b9828bb5611677964e4f6eada70e7d055
-    review_identity: null
-    build_identity: "GitHub Actions: Privacy Shield Validation 36782421370"
+    source_revision: 9b938bb1ded71e8545da7abd7bedfdb0294857ef
+    review_identity: "GoreeCloud/privacy-shield#171"
+    build_identity: "GitHub Actions: Privacy Shield Validation 37221213780"
     artifact_name: null
     artifact_digest: null
     container_digest: null
     package_identity: null
     sbom_identity: null
     schema_migration_identity: null
-    configuration_boundary: "Privacy Shield Version 2.0 release candidate over the verified provider-neutral implementation source; qualification evidence must bind production state/signing providers and runtime adapters to this candidate, and any material runtime/dependency/privacy/security/recovery/platform/configuration change supersedes it."
-    dependency_state: "Version 2.0 Anchor qualification is blocked on qualification/seal-readiness.json; unfinished feature expansion is assigned to 2.0.1 and does not reduce candidate qualification requirements."
-    previous_known_good: "Weave source baseline 01e7502b9828bb5611677964e4f6eada70e7d055"
+    configuration_boundary: "Privacy Shield Version 2.0 seal.2 after correcting Browser ruleset authority to canonical GoreeCloud/browser; qualification evidence must bind production state/signing providers and runtime adapters to this exact source, and any material runtime/dependency/privacy/security/recovery/platform/configuration change supersedes it."
+    dependency_state: "Version 2.0 seal.2 remains blocked on all eight Anchor gate groups in qualification/seal-readiness.json; unfinished feature expansion remains assigned to 2.0.1 and does not reduce candidate qualification requirements."
+    previous_known_good: "Historical seal.1 source baseline 01e7502b9828bb5611677964e4f6eada70e7d055; source-only provenance, not production acceptance"
     rollback_target: "01e7502b9828bb5611677964e4f6eada70e7d055"
   last_transition: null
   evidence:

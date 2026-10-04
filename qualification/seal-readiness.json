@@ -59,7 +59,7 @@
         "docs/integrations/firefox-adapter-acceptance.md",
         "goreecloud.platform.yaml"
       ],
-      "reason": "Version 2.0 Anchor qualification blocker: the standalone Privacy Shield Firefox adapter has accepted 0.2.0 Stable evidence in GoreeCloud/firefox-addons, but those records explicitly exclude compiled GoreeCloud Browser acceptance. The frozen seal.1 Browser acceptance schema/evaluator already supports chromium-cef, firefox-gecko, Android System WebView Chromium, and other mature-engine records, and those contract/evaluator bytes are unchanged from candidate source 01e7502b9828bb5611677964e4f6eada70e7d055. Current GoreeCloud/browser uses the chromium-cef path, so the remaining 2.0 requirement is fresh exact compiled GoreeCloud Browser acceptance against that actual runtime boundary. Broader DNS, Network, application, and other adapter expansion remains 2.0.1 scope unless explicitly added to 2.0."
+      "reason": "Version 2.0 Anchor qualification blocker: standalone Firefox-adapter acceptance remains separate from compiled GoreeCloud Browser acceptance. Seal.2 source 9b938bb1ded71e8545da7abd7bedfdb0294857ef corrects the ruleset runtime authority to canonical GoreeCloud/browser and retains an engine-aware compiled-Browser acceptance contract supporting chromium-cef. Current GoreeCloud/browser uses the CEF/Chromium path, so fresh exact compiled Browser evidence for that artifact/runtime remains required. Broader DNS, Network, application, and other adapter expansion remains 2.0.1 scope unless explicitly added to 2.0."
     },
     {
       "id": "privacy-center-glaze-acceptance",

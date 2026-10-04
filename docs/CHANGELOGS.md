@@ -6,7 +6,7 @@
 - Updated the enforcing validator and regression test so the retired repository identity cannot silently return.
 - Reconciled ruleset and Browser-integration documentation to the exact active Browser engine/runtime boundary.
 - This changes a release-critical source contract present in `privacy-shield-2.0.0-seal.1`; seal.1 must be superseded before further Anchor qualification.
-- A new Version 2.0 Seal candidate must bind to the exact validated merged correction revision. No runtime acceptance, production approval, Anchor, or Stable authority is created.
+- The corrected merged source `9b938bb1ded71e8545da7abd7bedfdb0294857ef` passed Privacy Shield Validation #601 and is now bound as `privacy-shield-2.0.0-seal.2`; all eight Anchor gate groups remain blocked.
 
 ## 2026-10-04 — Browser runtime-boundary correction
 

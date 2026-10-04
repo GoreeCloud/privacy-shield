@@ -65,7 +65,7 @@ def main() -> None:
 
     if candidate.get("schema_version") != 1 or candidate.get("component") != "GoreeCloud Privacy Shield":
         fail("candidate identity drifted")
-    if candidate.get("candidate_id") != "privacy-shield-2.0.0-seal.1":
+    if candidate.get("candidate_id") != "privacy-shield-2.0.0-seal.2":
         fail("unexpected Privacy Shield Seal candidate id")
     if candidate.get("lifecycle") != "seal" or candidate.get("candidate_version") != "2.0.0":
         fail("candidate lifecycle/version drifted")
@@ -134,7 +134,7 @@ def main() -> None:
         fail("no Anchor blockers remain; perform a separate exact-candidate Anchor transition instead")
 
     print(
-        "Privacy Shield Seal candidate guard passed: privacy-shield-2.0.0-seal.1 is frozen; "
+        "Privacy Shield Seal candidate guard passed: privacy-shield-2.0.0-seal.2 is frozen; "
         f"Anchor qualification remains blocked by {len(blocked)} gate groups."
     )
 
