@@ -421,3 +421,13 @@ Accordingly, earlier qualification wording that described Version 2.0 as Firefox
 
 The remaining Version 2.0 Browser obligation is fresh exact compiled `GoreeCloud/browser` acceptance for its actual supported runtime, currently the CEF/Chromium desktop path. The gate remains blocked until that exact artifact/runtime evidence is produced and independently reviewed.
 
+## October 4, 2026 — etcd candidate evaluation and representative Browser evidence
+
+Privacy Shield PR #173 merged as `264a1759896efaf6e665c41dd62a1bf2294a3a02` after exact-head Privacy Shield Validation and provider-governance temporal-integrity checks passed. The repository now carries exactly two current state-provider candidate evaluations: FoundationDB remains failed, while self-hosted etcd v3.7.2 multi-member is complete and non-authorizing for candidate-evaluation purposes. There is still no approved state-provider selection, Privacy Shield etcd adapter implementation, exact deployed access-control assessment, operational qualification, or production acceptance.
+
+Privacy Shield PR #174 merged as `d686a7877d803188994d243ef7bfc2bfababe282` and bound representative GoreeCloud Browser CEF evidence to the existing Version 2.0 runtime gate without passing it. The evidence is tied to Browser source `16d02d80292fea225308b07ff69d947286dbb193` / tree `59a60318a3dd30c6f3d07d39d22f0d062b5fa4a4`, Core CI run `37236788843`, and Security Evidence artifact `11315419742` with SHA-256 `05af7ad06ed350cff3e15836281a5ebc5762f7dcb980ae06d90f3ecee1196fb4`.
+
+That Browser evidence remains supporting evidence only. No governed exact compiled-binary digest or complete ten-dimension independently reviewed Privacy Shield acceptance record exists, and any newer intended Browser build requires fresh exact binary-bound evidence. The runtime-adapter gate therefore remains blocked.
+
+Post-merge Privacy Shield Validation run `37241943361` (#609) and Provider Governance Temporal Integrity run `37241943328` (#67) passed on exact main `264a1759896efaf6e665c41dd62a1bf2294a3a02`. These results do not authorize Anchor or Stable status.
+
