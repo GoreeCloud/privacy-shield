@@ -11,7 +11,7 @@ GoreeCloud Browser remains a privileged Privacy Shield runtime and continues to 
 Privacy Shield is distinct from GoreeCloud Browser and Wardveil Security:
 
 - **GoreeCloud Privacy Shield** is the platform-wide privacy and data-use authority and shared privacy-control identity.
-- **GoreeCloud Browser** is the browser application and privileged Firefox/Gecko runtime authority for Browser-specific Privacy Shield behavior.
+- **GoreeCloud Browser** is the browser application and owns Browser-specific runtime privacy behavior. Current desktop Browser development uses a CEF/Chromium render path; the frozen Privacy Shield 2.0 Browser acceptance gate still reflects an earlier Firefox runtime boundary and requires governed reconciliation before current Browser evidence can satisfy it.
 - **Wardveil Security by GoreeCloud** is the platform-wide security and protection authority. It may provide security evidence to Privacy Shield and present Privacy Shield status without replacing Privacy Shield privacy authority.
 - **GoreeCloud Mesh** is the coordination and governance plane. It may transport or correlate Privacy Shield decisions and evidence but cannot create, extend, or upgrade privacy authority.
 - **Everkeep** is the resilience and preservation authority and coordinates lifecycle effects such as deletion across backups and recovery material.
@@ -95,7 +95,7 @@ A component must not claim a Privacy Shield capability that it has not implement
 
 Privacy Shield is not a centralized privileged proxy. Runtime authority remains with the component that actually performs the work while Privacy Shield supplies privacy authorization and shared contracts:
 
-- GoreeCloud Browser owns Firefox/Gecko-specific request interception and browsing privacy behavior.
+- GoreeCloud Browser owns engine/runtime-specific request interception and browsing privacy behavior. Standalone Firefox-adapter acceptance does not certify the current compiled Browser application.
 - GoreeCloud DNS owns DNS privacy filtering and DNS-policy execution when its `dns-privacy` adapter is accepted.
 - GoreeCloud Network owns privacy-relevant encrypted networking when its `network-privacy` adapter is accepted.
 - Native GoreeCloud applications own their storage and runtime implementation while using Privacy Shield for applicable privacy authorization and evidence contracts.
@@ -113,7 +113,7 @@ The native blocker replaces the managed uBlock Origin dependency in the GoreeClo
 
 Privacy Shield does not replace Wardveil Security, GoreeCloud Identity, VPN/private-network transport, GoreeCloud DNS, host/network firewalls, malware scanning, vulnerability management, authentication, backup, or recovery. Authentication identifies an actor; it does not by itself authorize that actor to use information for an arbitrary purpose.
 
-For Browser behavior, Privacy Shield does not replace or weaken Firefox/Gecko Safe Browsing, TLS, certificate validation, sandboxing, process isolation, site permissions, or the application update system.
+For Browser behavior, Privacy Shield does not replace or weaken the active browser engine/runtime's safe-browsing, TLS, certificate-validation, sandboxing, process-isolation, site-permission, or application-update boundaries.
 
 Privacy Shield remains local-first. Remote tracker learning and remote tracker telemetry are not approved. Platform status aggregation should prefer minimal derived state over raw browsing history, DNS history, network flows, content, message bodies, files, clipboard contents, typed text, location history, credentials, or similarly sensitive payloads.
 
@@ -182,7 +182,8 @@ Current feature state remains in [Implemented features](docs/IMPLEMENTED-FEATURE
 | GoreeCloud DNS `dns-privacy` adapter | Draft downstream candidate; not centrally promoted or production-approved |
 | GoreeCloud Network `network-privacy` adapter | Draft downstream candidate; not centrally promoted or production-approved |
 | Additional application privacy adapters | Planned/incremental |
-| Compiled Browser runtime/UI acceptance | Pending |
+| Standalone Firefox adapter 0.2.0 | Accepted in `GoreeCloud/firefox-addons`; does not certify compiled GoreeCloud Browser |
+| Compiled Browser runtime/UI acceptance | Pending; current CEF/Chromium Browser path requires governed Version 2.0 runtime-boundary reconciliation |
 | Privacy Center Glaze V1.7 source adoption | Complete at static-websites `531744f2a82133caca8ddde00fa782415d1a42e1`; consumer acceptance still pending |
 | Overall platform production approval | Not a single global gate; adapter-specific acceptance required |
 
