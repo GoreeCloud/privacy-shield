@@ -365,3 +365,10 @@ Privacy Shield migrated its human-readable root documentation into the repositor
 The migration preserves document content and history, keeps `README.md`, `LICENSE`, source-control controls, and `goreecloud.platform.yaml` at root for entry-point or technical purposes, adds `docs/README.md` as the documentation index, and updates path-sensitive validation/evidence references. Repository validation now fails closed if the migrated documentation returns to root.
 
 This is a repository-organization and maintainability change only. It does not establish provider selection, deployed runtime acceptance, production recovery, Seal, Anchor, or production privacy authority.
+
+
+## October 3, 2026 — Version 2.0 release identity and successor split
+
+Privacy Shield's governed release identity is now **Internal Version 2.0.0 / External Version 2.0.0** while remaining lifecycle **Seal**. Candidate `privacy-shield-2.0.0-seal.1` deliberately reuses the already-validated provider-neutral implementation source `01e7502b9828bb5611677964e4f6eada70e7d055`; this is a release-scope/version rebaseline, not a claim that missing production evidence became verified.
+
+All eight gate groups in `qualification/seal-readiness.json` remain Version 2.0 Anchor blockers. Exact compiled GoreeCloud Browser acceptance for the supported Firefox runtime remains a 2.0 gate. Unfinished or unverified feature expansion beyond the bounded 2.0 release—such as the replacement visual-identity work and broader adapter expansion—is transferred to Version 2.0.1. Stable/Anchor status remains withheld until the exact 2.0 candidate satisfies every applicable gate.

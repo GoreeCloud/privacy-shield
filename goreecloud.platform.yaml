@@ -23,8 +23,8 @@ lifecycle_metadata:
     package_identity: null
     sbom_identity: null
     schema_migration_identity: null
-    configuration_boundary: "Provider-neutral Privacy Shield source candidate; qualification evidence must bind production state/signing providers and runtime adapters to this candidate, and any material runtime/dependency/privacy/security/recovery/platform/configuration change supersedes it."
-    dependency_state: "Anchor qualification blocked on qualification/seal-readiness.json; unresolved qualification dependencies do not expand candidate authority."
+    configuration_boundary: "Privacy Shield Version 2.0 release candidate over the verified provider-neutral implementation source; qualification evidence must bind production state/signing providers and runtime adapters to this candidate, and any material runtime/dependency/privacy/security/recovery/platform/configuration change supersedes it."
+    dependency_state: "Version 2.0 Anchor qualification is blocked on qualification/seal-readiness.json; unfinished feature expansion is assigned to 2.0.1 and does not reduce candidate qualification requirements."
     previous_known_good: "Weave source baseline 01e7502b9828bb5611677964e4f6eada70e7d055"
     rollback_target: "01e7502b9828bb5611677964e4f6eada70e7d055"
   last_transition: null
@@ -35,7 +35,7 @@ lifecycle_metadata:
     - docs/PLANNED-FEATURES.md
     - docs/ACCEPTANCE-STATUS.md
     - README.md
-version: '0.1'
+version: '2.0.0'
 supported_platforms:
 - web
 - firefox
@@ -60,7 +60,7 @@ platform_systems:
     notes: Privacy Shield now owns a bounded privacy-safe source producer for the status contract already consumed read-only by GoreeCloud Manager. The source producer fixes production approval false, forbids protected/active runtime claims, and exports no raw private activity, credentials, or identifiers. Accepted runtime deployment, freshness/delivery, target-environment validation, and production acceptance remain migration-required.
   privacy_shield:
     result: not-applicable-justified
-    version: '0.1'
+    version: '2.0.0'
     evidence:
     - contracts/privacy-shield.platform.json
     - contracts/privacy-shield.identity.json
@@ -89,7 +89,7 @@ platform_systems:
     evidence:
     - docs/integrations/privacy-center-static-site.md
     - website/README.md
-    notes: The canonical Privacy Center source is now the single retained GoreeCloud website route at GoreeCloud/static-websites sites/main/privacy/index.html and declares the current GLAZE UI V1.6 / 1.6.0 target. Exact-current downstream human/rendered/accessibility/performance/resilience/rollback consumer acceptance remains incomplete, and this repository's website/ directory remains a historical 2.1.0 legacy/transitional deployment copy rather than current source authority.
+    notes: The canonical Privacy Center source is the single retained GoreeCloud website route at GoreeCloud/static-websites sites/main/privacy/index.html and currently retains historical Glaze UI 1.6.0 source adoption. The current shared target is Glaze V1.7 / 1.7.0, so fresh migration plus downstream human/rendered/accessibility/performance/resilience/rollback consumer acceptance remains incomplete. This repository's website/ directory remains a historical 2.1.0 legacy/transitional deployment copy rather than current source authority.
   mesh:
     result: applicable-migration-required
     version: null
@@ -159,10 +159,10 @@ continuity:
 external_dependencies: []
 compatibility:
   platform_contract: '2.0'
-  glaze_ui_required: 1.6.0
+  glaze_ui_required: 1.7.0
   requires:
   - goreecloud-platform-contract==2.0
-  - glaze-ui==1.6.0
+  - glaze-ui==1.7.0
   provides:
   - privacy-shield-durable-runtime-single-host
   - privacy-shield-mesh-evidence-delivery
@@ -235,8 +235,8 @@ conformance:
   - src/runtime-http.mjs
   - tests/runtime-http.test.mjs
   blockers:
-  - "GoreeCloud Privacy Shield is classified Weave: the core privacy platform substantially exists, while its authorization core, runtime integrations, and overall production acceptance remain incomplete."
-  - Canonical Privacy Center source adoption of Glaze UI 1.6.0 is established, but exact-current downstream consumer acceptance, human/rendered/accessibility/performance/resilience review, rollback, and legacy deployment retirement/cutover remain incomplete.
+  - "GoreeCloud Privacy Shield Version 2.0 is classified Seal: the exact verified source candidate is frozen while provider, runtime, recovery, current-Glaze, release, and overall Anchor qualification remain incomplete."
+  - Canonical Privacy Center source remains on historical Glaze UI 1.6.0 while the current required target is Glaze V1.7 / 1.7.0; migration, exact-current downstream consumer acceptance, human/rendered/accessibility/performance/resilience review, rollback, and legacy deployment retirement/cutover remain incomplete.
   - GoreeCloud Sync privacy-authorization and synchronization-governance integration remains unaccepted; Sync remains separately governed and is not a tenth Integral Platform System.
   - Single-host durable consent, policy, capability replay or revocation, and privacy evidence state are implemented and source-tested, but production/distributed durability and accepted Everkeep-backed recovery remain open.
   - Production signing-key custody and rotation operations remain pending.

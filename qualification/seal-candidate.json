@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
   "component": "GoreeCloud Privacy Shield",
-  "candidate_id": "privacy-shield-0.1-seal.1",
+  "candidate_id": "privacy-shield-2.0.0-seal.1",
   "lifecycle": "seal",
-  "candidate_version": "0.1",
+  "candidate_version": "2.0.0",
   "source_revision": "01e7502b9828bb5611677964e4f6eada70e7d055",
   "source_tree": "21e9a9324aeb0fc2f6f1bfd6ba74768e7006297b",
   "source_validation": [
@@ -13,9 +13,9 @@
       "result": "success"
     }
   ],
-  "configuration_boundary": "Provider-neutral Privacy Shield source candidate. Production state/signing provider identities and runtime adapter deployments remain qualification evidence and must bind to this source candidate; any material runtime, dependency, privacy/security, recovery, supported-platform, or release-critical configuration change supersedes this candidate.",
-  "dependency_state": "Anchor qualification remains blocked on the eight gate groups in qualification/seal-readiness.json; blocked qualification does not revoke the exact Seal identity.",
-  "previous_known_good": "Weave source baseline 01e7502b9828bb5611677964e4f6eada70e7d055",
+  "configuration_boundary": "Privacy Shield Version 2.0 release candidate over the verified provider-neutral implementation source. Production state/signing provider identities and runtime adapter deployments remain qualification evidence and must bind to this source candidate; any material runtime, dependency, privacy/security, recovery, supported-platform, or release-critical configuration change supersedes this candidate.",
+  "dependency_state": "Version 2.0 Anchor qualification remains blocked on the eight gate groups in qualification/seal-readiness.json. Unfinished feature expansion outside the bounded 2.0 candidate is assigned to 2.0.1 and does not reduce any 2.0 Anchor gate.",
+  "previous_known_good": "Verified provider-neutral source baseline 01e7502b9828bb5611677964e4f6eada70e7d055",
   "rollback_target": "01e7502b9828bb5611677964e4f6eada70e7d055",
   "anchor_qualification_status": "blocked",
   "production_approved": false,

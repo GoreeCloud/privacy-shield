@@ -4,7 +4,7 @@ GoreeCloud Privacy Shield is the platform-wide privacy, consent, data-governance
 
 GoreeCloud Browser remains a privileged Privacy Shield runtime and continues to provide Browser-specific native ad and tracker blocking, tracking-parameter cleanup, reviewed local-resource substitution, site exceptions, and privacy-focused browsing controls.
 
-> **Current status:** Seal under Platform Contract 2.0. Exact candidate `privacy-shield-0.1-seal.1` freezes implementation source at `01e7502b9828bb5611677964e4f6eada70e7d055`. Deployment remains development and Anchor qualification remains blocked on the gate groups in `qualification/seal-readiness.json`. Seal does not create production privacy authority; any material runtime, provider/dependency, privacy/security, recovery, supported-platform, or release-critical configuration change supersedes this candidate.
+> **Current status:** Seal under Platform Contract 2.0. Exact candidate `privacy-shield-2.0.0-seal.1` assigns Privacy Shield **Version 2.0.0** to the already-validated implementation source at `01e7502b9828bb5611677964e4f6eada70e7d055`. Deployment remains development and Anchor/Stable qualification remains blocked on the non-deferrable gate groups in `qualification/seal-readiness.json`. Unfinished feature expansion outside the bounded 2.0 release is assigned to **2.0.1** in `docs/PLANNED-FEATURES.md`. Seal does not create production privacy authority or convert missing provider/runtime/recovery evidence into acceptance.
 
 ## Product identity
 
