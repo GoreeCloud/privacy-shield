@@ -1,9 +1,9 @@
 # GoreeCloud Privacy Shield — Project Record
 
 **Repository:** `GoreeCloud/privacy-shield`  
-**Lifecycle:** Seal — Platform Contract 2.0; exact candidate `privacy-shield-0.1-seal.1` freezes implementation source `01e7502b9828bb5611677964e4f6eada70e7d055`; Anchor qualification remains blocked pending runtime, provider, recovery, and production acceptance  
+**Lifecycle:** Seal — Platform Contract 2.0; exact candidate `privacy-shield-2.0.0-seal.1` assigns Version 2.0.0 to implementation source `01e7502b9828bb5611677964e4f6eada70e7d055`; Anchor qualification remains blocked pending runtime, provider, recovery, current-consumer, release, and production acceptance  
 **License:** MPL-2.0  
-**Current required Glaze target:** GLAZE UI V1.6 / `1.6.0`  
+**Current required Glaze target:** Glaze V1.7 / `1.7.0`  
 **Migration baseline:** `5abe4ba46f4e949fe45fc653e0f95af0b180cae9`  
 **Record purpose:** Significant product, architecture, governance, provider-evaluation, lifecycle, and project-document migration history
 
@@ -229,11 +229,13 @@ The candidate remains provider-neutral, non-authorizing, and non-production. Qua
 
 ## Current Glaze boundary
 
-Historical Privacy Center source/deployment evidence uses Glaze UI 2.1.0.
+Historical Privacy Center source/deployment evidence includes the legacy Glaze UI 2.1.0 path and later V1.6 migration provenance.
 
-Current shared GoreeCloud design-system authority requires GLAZE UI V1.6 / `1.6.0`.
+Current shared GoreeCloud design-system authority requires Glaze V1.7 / `1.7.0`.
 
-Privacy Center therefore remains migration-required until exact-revision source, rendered, accessibility/resilience, performance, rollback, and application acceptance are complete.
+The canonical Privacy Center source now adopts V1.7 at `GoreeCloud/static-websites@531744f2a82133caca8ddde00fa782415d1a42e1`. Source/build/browser validation and the Cloudflare Pages deployment check pass for that revision.
+
+Privacy Center remains migration-required because current consumer acceptance, canonical-site readback, human/accessibility review, representative performance/resilience, rollback evidence, and legacy deployment retirement/cutover remain incomplete.
 
 Historical rendered evidence remains provenance only.
 
@@ -372,3 +374,14 @@ This is a repository-organization and maintainability change only. It does not e
 Privacy Shield's governed release identity is now **Internal Version 2.0.0 / External Version 2.0.0** while remaining lifecycle **Seal**. Candidate `privacy-shield-2.0.0-seal.1` deliberately reuses the already-validated provider-neutral implementation source `01e7502b9828bb5611677964e4f6eada70e7d055`; this is a release-scope/version rebaseline, not a claim that missing production evidence became verified.
 
 All eight gate groups in `qualification/seal-readiness.json` remain Version 2.0 Anchor blockers. Exact compiled GoreeCloud Browser acceptance for the supported Firefox runtime remains a 2.0 gate. Unfinished or unverified feature expansion beyond the bounded 2.0 release—such as the replacement visual-identity work and broader adapter expansion—is transferred to Version 2.0.1. Stable/Anchor status remains withheld until the exact 2.0 candidate satisfies every applicable gate.
+
+## October 3, 2026 — Privacy Center Glaze V1.7 source adoption
+
+Static-websites PR #132 migrated the canonical GoreeCloud Website, including `/privacy/`, from the historical V1.6 target to Glaze V1.7 / `1.7.0` and merged as `531744f2a82133caca8ddde00fa782415d1a42e1`.
+
+The exact canonical Privacy route blob is `aadf935248db716858b7882b1685d0bcdd4a6da4`. Post-merge repository validation and main-site source/build/browser validation passed. Cloudflare Pages also reported successful deployment for exact revision `531744f2a82133caca8ddde00fa782415d1a42e1`, deployment id `833c933e-f6d0-48ce-b14d-30c8e62a74f2`.
+
+The website's V1.7 consumer record remains `pending-evidence`. Canonical-site exact readback, human visual/keyboard/assistive-technology review, representative performance/resilience, rollback evidence, legacy deployment retirement/cutover, and final consumer acceptance remain open.
+
+Accordingly, Privacy Shield's `privacy-center-glaze-acceptance` gate remains blocked. This source migration does not create Privacy Shield runtime authority, production acceptance, Anchor, or Stable status.
+
