@@ -6,8 +6,8 @@
 **Lifecycle:** Seal  
 **Deployment State:** Development  
 **Qualification State:** Blocked  
-**Exact Candidate:** `privacy-shield-2.0.0-seal.1`  
-**Frozen Implementation Source:** `01e7502b9828bb5611677964e4f6eada70e7d055`  
+**Exact Candidate:** `privacy-shield-2.0.0-seal.2`  
+**Frozen Implementation Source:** `9b938bb1ded71e8545da7abd7bedfdb0294857ef`  
 **Successor Development Line:** 2.0.1
 
 ## Bounded 2.0 scope
