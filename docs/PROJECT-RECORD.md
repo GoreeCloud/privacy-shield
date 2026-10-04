@@ -290,7 +290,7 @@ The guard verifies the current failed FoundationDB state-provider candidate, dra
 
 ## Current production/provider boundary
 
-Privacy Shield is currently Weave and remains nonconformant.
+Privacy Shield is currently Seal under exact candidate `privacy-shield-2.0.0-seal.2` and remains nonconformant for Anchor while the mandatory qualification gates remain blocked.
 
 The repository contains substantial authorization, consent, capability, evidence, provider-governance, Policy, Observability, Mesh/Identity delivery, and bounded durable-state source mechanisms.
 
