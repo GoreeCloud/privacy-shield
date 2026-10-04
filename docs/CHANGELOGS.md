@@ -1,5 +1,13 @@
 # GoreeCloud Privacy Shield — Changelogs
 
+## 2026-10-04 — Provider and Browser evidence stabilization
+
+- Integrated a complete, non-authorizing self-hosted etcd v3.7.2 multi-member state-provider candidate evaluation while preserving the failed FoundationDB candidate and zero approved provider selections/production acceptances.
+- Hardened provider-governance inventory validation to require the exact current two-candidate state-provider set instead of silently assuming only FoundationDB can exist.
+- Bound representative exact-source CEF runtime/security evidence to the compiled-Browser gate without treating source/runtime CI as exact binary acceptance.
+- Reworded the Browser gate so evidence source `16d02d80292fea225308b07ff69d947286dbb193` remains a stable representative reference rather than a claim about the moving Browser main branch; any newer intended build requires fresh exact binary-bound evidence.
+- Privacy Shield main `264a1759896efaf6e665c41dd62a1bf2294a3a02` passed post-merge Privacy Shield Validation #609 and Provider Governance Temporal Integrity #67. All affected Anchor gates remain blocked; no Stable authority is created.
+
 ## 2026-10-04 — Browser ruleset runtime-authority correction
 
 - Corrected the Privacy Shield ruleset-lifecycle Browser runtime authority from retired `GoreeCloud/goreecloud-browser` to canonical `GoreeCloud/browser`.
