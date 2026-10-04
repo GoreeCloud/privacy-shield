@@ -85,7 +85,7 @@ platform_systems:
     notes: Privacy Shield implements a bounded non-authorizing Everkeep lifecycle handoff pinned to canonical GoreeCloud/everkeep revision f69e369e4d8627280fac728b7f7bcb02c43b5edd. The current canonical continuity.status schema is byte-identical to the historical schema previously pinned by Privacy Shield. Live Everkeep ingestion/execution, backup/restore, export/portability, target-environment recovery evidence, and production acceptance remain migration-required.
   glaze_ui:
     result: applicable-migration-required
-    version: 1.6.0
+    version: 1.7.0
     evidence:
     - docs/integrations/privacy-center-static-site.md
     - website/README.md
