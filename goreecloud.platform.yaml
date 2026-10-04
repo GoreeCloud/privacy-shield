@@ -89,7 +89,7 @@ platform_systems:
     evidence:
     - docs/integrations/privacy-center-static-site.md
     - website/README.md
-    notes: The canonical Privacy Center source is now the single retained GoreeCloud website route at GoreeCloud/static-websites sites/main/privacy/index.html and declares the current GLAZE UI V1.6 / 1.6.0 target. Exact-current downstream human/rendered/accessibility/performance/resilience/rollback consumer acceptance remains incomplete, and this repository's website/ directory remains a historical 2.1.0 legacy/transitional deployment copy rather than current source authority.
+    notes: The canonical Privacy Center source is the single retained GoreeCloud website route at GoreeCloud/static-websites sites/main/privacy/index.html and currently retains historical Glaze UI 1.6.0 source adoption. The current shared target is Glaze V1.7 / 1.7.0, so fresh migration plus downstream human/rendered/accessibility/performance/resilience/rollback consumer acceptance remains incomplete. This repository's website/ directory remains a historical 2.1.0 legacy/transitional deployment copy rather than current source authority.
   mesh:
     result: applicable-migration-required
     version: null
@@ -159,10 +159,10 @@ continuity:
 external_dependencies: []
 compatibility:
   platform_contract: '2.0'
-  glaze_ui_required: 1.6.0
+  glaze_ui_required: 1.7.0
   requires:
   - goreecloud-platform-contract==2.0
-  - glaze-ui==1.6.0
+  - glaze-ui==1.7.0
   provides:
   - privacy-shield-durable-runtime-single-host
   - privacy-shield-mesh-evidence-delivery
@@ -236,7 +236,7 @@ conformance:
   - tests/runtime-http.test.mjs
   blockers:
   - "GoreeCloud Privacy Shield Version 2.0 is classified Seal: the exact verified source candidate is frozen while provider, runtime, recovery, current-Glaze, release, and overall Anchor qualification remain incomplete."
-  - Canonical Privacy Center source adoption of Glaze UI 1.6.0 is established, but exact-current downstream consumer acceptance, human/rendered/accessibility/performance/resilience review, rollback, and legacy deployment retirement/cutover remain incomplete.
+  - Canonical Privacy Center source remains on historical Glaze UI 1.6.0 while the current required target is Glaze V1.7 / 1.7.0; migration, exact-current downstream consumer acceptance, human/rendered/accessibility/performance/resilience review, rollback, and legacy deployment retirement/cutover remain incomplete.
   - GoreeCloud Sync privacy-authorization and synchronization-governance integration remains unaccepted; Sync remains separately governed and is not a tenth Integral Platform System.
   - Single-host durable consent, policy, capability replay or revocation, and privacy evidence state are implemented and source-tested, but production/distributed durability and accepted Everkeep-backed recovery remain open.
   - Production signing-key custody and rotation operations remain pending.
