@@ -1,5 +1,13 @@
 # GoreeCloud Privacy Shield — Changelogs
 
+## 2026-10-04 — Browser ruleset runtime-authority correction
+
+- Corrected the Privacy Shield ruleset-lifecycle Browser runtime authority from retired `GoreeCloud/goreecloud-browser` to canonical `GoreeCloud/browser`.
+- Updated the enforcing validator and regression test so the retired repository identity cannot silently return.
+- Reconciled ruleset and Browser-integration documentation to the exact active Browser engine/runtime boundary.
+- This changes a release-critical source contract present in `privacy-shield-2.0.0-seal.1`; seal.1 must be superseded before further Anchor qualification.
+- A new Version 2.0 Seal candidate must bind to the exact validated merged correction revision. No runtime acceptance, production approval, Anchor, or Stable authority is created.
+
 ## 2026-10-04 — Browser runtime-boundary correction
 
 - Verified that the seal.1 compiled-Browser acceptance schema, evaluator, tests, and Browser adapter are byte-identical between frozen Privacy Shield source `01e7502b9828bb5611677964e4f6eada70e7d055` and current main.
