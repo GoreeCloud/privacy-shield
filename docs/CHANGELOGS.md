@@ -1,5 +1,13 @@
 # GoreeCloud Privacy Shield — Changelogs
 
+## 2026-10-04 — Browser runtime-boundary correction
+
+- Verified that the seal.1 compiled-Browser acceptance schema, evaluator, tests, and Browser adapter are byte-identical between frozen Privacy Shield source `01e7502b9828bb5611677964e4f6eada70e7d055` and current main.
+- Confirmed the frozen contract already supports `chromium-cef`, `firefox-gecko`, Android System WebView Chromium, and other mature-engine records.
+- Corrected stale Firefox-only qualification wording without changing runtime behavior or transferring standalone Firefox-adapter acceptance to GoreeCloud Browser.
+- Kept `runtime-adapter-acceptance` blocked pending fresh exact compiled GoreeCloud Browser acceptance for the current CEF/Chromium runtime.
+- Broader adapter expansion remains Version 2.0.1 scope; no production, Anchor, or Stable authority is created.
+
 ## 2026-10-04 — Privacy Center canonical readback reconciliation
 
 - Bound the Privacy Center Glaze gate to the stronger current `GoreeCloud/static-websites` V1.7 evidence set.

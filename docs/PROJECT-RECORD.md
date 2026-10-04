@@ -25,7 +25,7 @@ The project originated with a portable Browser privacy core and reviewed Browser
 
 Platform Privacy Shield later expanded beyond Browser without converting Browser into the platform privacy authority.
 
-The standalone Privacy Shield Firefox adapter is now independently accepted in `GoreeCloud/firefox-addons`, but current `GoreeCloud/browser` development uses a CEF/Chromium desktop render path. The frozen Version 2.0 Browser gate still reflects the earlier Firefox runtime boundary, so current Browser evidence requires governed runtime-boundary/candidate reconciliation rather than automatic substitution.
+The standalone Privacy Shield Firefox adapter is independently accepted in `GoreeCloud/firefox-addons`, while current `GoreeCloud/browser` development uses a CEF/Chromium desktop render path. The Version 2.0 Browser acceptance schema/evaluator already supports `chromium-cef` and is byte-identical at frozen candidate source `01e7502b9828bb5611677964e4f6eada70e7d055`; current Browser acceptance therefore requires fresh exact compiled CEF/Chromium evidence rather than a contract rewrite.
 
 Compiled GoreeCloud Browser runtime acceptance remains independently gated.
 
@@ -373,7 +373,7 @@ This is a repository-organization and maintainability change only. It does not e
 
 Privacy Shield's governed release identity is now **Internal Version 2.0.0 / External Version 2.0.0** while remaining lifecycle **Seal**. Candidate `privacy-shield-2.0.0-seal.1` deliberately reuses the already-validated provider-neutral implementation source `01e7502b9828bb5611677964e4f6eada70e7d055`; this is a release-scope/version rebaseline, not a claim that missing production evidence became verified.
 
-All eight gate groups in `qualification/seal-readiness.json` remain Version 2.0 Anchor blockers. The Version 2.0 Browser gate was frozen around exact compiled GoreeCloud Browser acceptance for a Firefox runtime. Current `GoreeCloud/browser` development uses CEF/Chromium, so that runtime-boundary mismatch must be governed before current Browser evidence can satisfy the gate. Unfinished or unverified feature expansion beyond the bounded 2.0 release—such as the replacement visual-identity work and broader adapter expansion—is transferred to Version 2.0.1. Stable/Anchor status remains withheld until the exact 2.0 candidate satisfies every applicable gate.
+All eight gate groups in `qualification/seal-readiness.json` remain Version 2.0 Anchor blockers. The Browser gate requires exact compiled GoreeCloud Browser acceptance under the artifact's actual supported engine/runtime boundary. The existing seal.1 contract already supports CEF/Chromium; no accepted compiled Browser record exists yet. Unfinished or unverified feature expansion beyond the bounded 2.0 release—such as replacement visual-identity work and broader adapter expansion—is transferred to Version 2.0.1. Stable/Anchor status remains withheld until the exact 2.0 candidate satisfies every applicable gate.
 
 ## October 3, 2026 — Privacy Center Glaze V1.7 source adoption
 
@@ -391,9 +391,9 @@ The canonical `GoreeCloud/firefox-addons` repository retains an accepted Privacy
 
 That release completed real-Firefox runtime, human target, compatibility/recovery, persistent signed installation, and same-profile restart acceptance. Its own release records explicitly exclude GoreeCloud Browser compiled-runtime acceptance.
 
-Live `GoreeCloud/browser` development now uses a CEF/Chromium desktop render path and remains Development. This conflicts with the frozen Version 2.0 Browser gate's Firefox runtime boundary. No CEF/Chromium evidence is treated as automatically equivalent, and no compiled Browser acceptance record is created by the standalone Firefox release.
+Live `GoreeCloud/browser` development uses a CEF/Chromium desktop render path and remains Development. The frozen seal.1 Privacy Shield Browser contract already lists `chromium-cef` as a supported engine family, so there is no contract-level conflict. No compiled Browser acceptance record is created by the standalone Firefox release, and fresh CEF/Chromium evidence remains mandatory.
 
-The `runtime-adapter-acceptance` gate therefore remains blocked pending governed runtime-boundary/candidate reconciliation and exact compiled GoreeCloud Browser acceptance. The bounded Firefox-adapter evidence is recorded in `docs/integrations/firefox-adapter-acceptance.md`.
+The `runtime-adapter-acceptance` gate therefore remains blocked pending exact compiled GoreeCloud Browser CEF/Chromium acceptance. The bounded Firefox-adapter evidence remains separate in `docs/integrations/firefox-adapter-acceptance.md`.
 
 ## October 3, 2026 — Release provenance and rollback evidence contract
 
@@ -412,4 +412,12 @@ Exact deployed/readback candidate `17303b6c7381faaa0e89ce6175ce24048fb56a12` pas
 The shared website consumer remains `pending-human-acceptance`. Privacy Shield Version 2.0 gate `privacy-center-glaze-acceptance` remains blocked on owner visual, keyboard, assistive-technology, representative performance/resilience, final consumer approval, and the separate legacy deployment retirement/cutover obligation.
 
 No Privacy Shield runtime, production, Anchor, or Stable authority is created by this website evidence.
+
+## October 4, 2026 — Browser runtime-boundary correction
+
+A direct blob comparison confirmed that the Version 2.0 seal.1 Browser runtime-acceptance schema, evaluator, tests, and Browser adapter are unchanged between frozen candidate source `01e7502b9828bb5611677964e4f6eada70e7d055` and current Privacy Shield main. The schema already supports `chromium-cef`, `firefox-gecko`, Android System WebView Chromium, and other mature-engine evidence records.
+
+Accordingly, earlier qualification wording that described Version 2.0 as Firefox-only was a stale governance description rather than an implementation/runtime-contract boundary. The correction does not alter Privacy Shield runtime behavior or silently transfer the accepted standalone Firefox adapter evidence to GoreeCloud Browser.
+
+The remaining Version 2.0 Browser obligation is fresh exact compiled `GoreeCloud/browser` acceptance for its actual supported runtime, currently the CEF/Chromium desktop path. The gate remains blocked until that exact artifact/runtime evidence is produced and independently reviewed.
 
