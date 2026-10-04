@@ -101,7 +101,7 @@ Behavioral tracker evidence must remain local and session-scoped under the appro
 
 Filter data, rule updates, exceptions, and local-resource substitution mechanisms must be validated and handled defensively. User-visible exceptions must be explicit and reversible.
 
-Privacy Shield must not replace or weaken Firefox/Gecko Safe Browsing, TLS, certificate validation, sandboxing, process isolation, site permissions, or application-update mechanisms.
+Privacy Shield must not replace or weaken the active GoreeCloud Browser engine/runtime's existing security boundaries.
 
 ## Production acceptance
 
