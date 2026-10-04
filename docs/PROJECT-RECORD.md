@@ -403,3 +403,13 @@ The template binds candidate `privacy-shield-2.0.0-seal.1` to required published
 
 The gate remains blocked. No release tag, release artifact, production deployment, Privacy Shield production authority, Anchor, or Stable status is established by defining the evidence contract.
 
+## October 4, 2026 — Privacy Center canonical readback reconciliation
+
+Privacy Shield now consumes the stronger current Glaze V1.7 website evidence from `GoreeCloud/static-websites` rather than treating canonical readback as missing.
+
+Exact deployed/readback candidate `17303b6c7381faaa0e89ce6175ce24048fb56a12` passed machine validation and byte-for-byte canonical production readback across all eleven current HTML routes. The Privacy route is blob `40d4bcb1f8fc1e53bbbcde15f151ce1027157f96` and matched production at 10,154 bytes. Current static-websites main `9ae21cf12e276ea7e553fcf2573318602886428e` preserves the same public Privacy bytes.
+
+The shared website consumer remains `pending-human-acceptance`. Privacy Shield Version 2.0 gate `privacy-center-glaze-acceptance` remains blocked on owner visual, keyboard, assistive-technology, representative performance/resilience, final consumer approval, and the separate legacy deployment retirement/cutover obligation.
+
+No Privacy Shield runtime, production, Anchor, or Stable authority is created by this website evidence.
+
