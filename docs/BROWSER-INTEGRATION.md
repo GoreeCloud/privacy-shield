@@ -105,7 +105,7 @@ Privacy Shield must not replace or weaken the active GoreeCloud Browser engine/r
 
 ## Production acceptance
 
-The exact compiled GoreeCloud Browser must validate Privacy Shield request blocking, URL cleaning in navigation/copy/share paths, tracker learning and blocking, persistent site exceptions, private-browsing behavior, exact-match local-resource substitution and fail-open behavior, site compatibility, failure handling, accessibility, Glaze UI behavior, and inherited Firefox security boundaries before production readiness is claimed.
+The exact compiled GoreeCloud Browser must validate Privacy Shield request blocking, URL cleaning in navigation/copy/share paths, tracker learning and blocking, persistent site exceptions, private-browsing behavior, exact-match local-resource substitution and fail-open behavior, site compatibility, failure handling, accessibility, Glaze UI behavior, and preservation of the active Browser engine/runtime boundaries before production readiness is claimed.
 
 ## Artwork status
 
