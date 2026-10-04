@@ -18,7 +18,7 @@ The authoritative current implemented scope is `docs/IMPLEMENTED-FEATURES.md`.
 
 ## Non-deferrable 2.0 Anchor gates
 
-The eight gate groups in `qualification/seal-readiness.json` remain attached to Version 2.0. They may not be moved to 2.0.1 merely to obtain a Stable label. Anchor/Stable promotion requires those gates to pass for the exact 2.0 candidate, including accepted production authority-state and signing-key providers, Integral Platform System runtime acceptance, Identity-authenticated hosting, Everkeep recovery, exact compiled GoreeCloud Browser acceptance for the supported Firefox runtime, current Glaze acceptance for the shipped Privacy Center, and hosting/Observability/recovery/release evidence.
+The eight gate groups in `qualification/seal-readiness.json` remain attached to Version 2.0 and remain blocked. They may not be moved to 2.0.1 merely to obtain a Stable label. Anchor/Stable promotion requires those gates to pass for the exact 2.0 candidate, including accepted production authority-state and signing-key providers, Integral Platform System runtime acceptance, Identity-authenticated hosting, Everkeep recovery, governed reconciliation and exact compiled GoreeCloud Browser acceptance for the supported runtime boundary, current Glaze acceptance for the shipped Privacy Center, and hosting/Observability/recovery/release evidence. A machine-readable pending release-evidence contract now defines the release/rollback evidence shape, but no accepted release record exists.
 
 ## Version 2.0.1
 

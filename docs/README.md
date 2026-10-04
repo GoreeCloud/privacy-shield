@@ -7,6 +7,7 @@ This directory is the canonical repository documentation tree for **GoreeCloud P
 - [Project specifications](PROJECT-SPECIFICATIONS.md)
 - [Project record](PROJECT-RECORD.md)
 - [Version 2.0 release boundary](RELEASE-2.0.md)
+- [Release provenance and rollback evidence](RELEASE-PROVENANCE-ROLLBACK.md)
 - [Capabilities](CAPABILITIES.md)
 - [Implemented features](IMPLEMENTED-FEATURES.md)
 - [Planned features](PLANNED-FEATURES.md)

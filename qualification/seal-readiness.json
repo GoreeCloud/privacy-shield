@@ -75,10 +75,11 @@
       "id": "hosting-observability-recovery-release",
       "state": "blocked",
       "evidence": [
-        "docs/integrations/runtime-http.md",
+        "qualification/release-evidence.template.json",
+        "docs/RELEASE-PROVENANCE-ROLLBACK.md",
         "goreecloud.platform.yaml"
       ],
-      "reason": "Version 2.0 Anchor qualification blocker: No production host/deployment, deployed health/readiness, monitoring/alerting, rollback/recovery, or published release provenance is accepted."
+      "reason": "Version 2.0 Anchor qualification blocker: a fail-closed release-evidence template now defines the required published release, artifact, SBOM/signing/source-provenance, deployment, canonical readback, and rollback evidence. Hosting, Observability, recovery, and release acceptance remain incomplete; no accepted release record, artifact identity, published tag, deployment identity, canonical readback, or completed rollback exercise exists."
     }
   ]
 }
