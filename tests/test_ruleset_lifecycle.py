@@ -30,7 +30,7 @@ class PrivacyShieldRulesetLifecycleTests(unittest.TestCase):
 
     def test_browser_consumption_is_versioned_and_fail_closed(self) -> None:
         browser = self.contract["browser_consumption"]
-        self.assertEqual(browser["current_runtime_authority"], "GoreeCloud/goreecloud-browser")
+        self.assertEqual(browser["current_runtime_authority"], "GoreeCloud/browser")
         self.assertTrue(browser["adapter_must_validate_schema_version"])
         self.assertTrue(browser["adapter_must_validate_ruleset_version"])
         self.assertTrue(browser["adapter_must_fail_closed_on_unsupported_contract"])
