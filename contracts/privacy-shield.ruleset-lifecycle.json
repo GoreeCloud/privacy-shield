@@ -24,7 +24,7 @@
     ]
   },
   "browser_consumption": {
-    "current_runtime_authority": "GoreeCloud/goreecloud-browser",
+    "current_runtime_authority": "GoreeCloud/browser",
     "adapter_must_validate_schema_version": true,
     "adapter_must_validate_ruleset_version": true,
     "adapter_must_fail_closed_on_unsupported_contract": true,
