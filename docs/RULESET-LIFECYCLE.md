@@ -42,7 +42,7 @@ The lifecycle contract records the exact schema and ruleset versions it governs.
 
 ## Browser consumption
 
-`GoreeCloud/goreecloud-browser` remains the current privileged runtime authority.
+`GoreeCloud/browser` is the canonical privileged Browser runtime authority.
 
 A Browser adapter consuming the canonical contract must validate both schema and ruleset versions. An unsupported contract must fail closed rather than being interpreted optimistically or partially.
 
