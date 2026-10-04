@@ -1,5 +1,13 @@
 # GoreeCloud Privacy Shield — Changelogs
 
+## 2026-10-03 — Privacy Center Glaze V1.7 source adoption
+
+- Reconciled the canonical Privacy Center source to Glaze V1.7 / `1.7.0` after static-websites PR #132 merged as `531744f2a82133caca8ddde00fa782415d1a42e1`.
+- Recorded successful post-merge repository and main-site source/build/browser validation plus the successful Cloudflare Pages deployment check for that exact static-websites revision.
+- Updated the Privacy Shield Platform Contract Glaze relationship from historical source target `1.6.0` to current source target `1.7.0` while keeping the relationship migration-required.
+- Kept `privacy-center-glaze-acceptance` blocked because current consumer review, canonical-site readback, rollback evidence, legacy deployment retirement/cutover, and final consumer acceptance remain incomplete.
+- This evidence advances only the source-migration/deployment portion of the Version 2.0 gate and does not create Privacy Shield runtime authority, production acceptance, Anchor, or Stable status.
+
 ## 2026-10-03 — Version 2.0 release identity and 2.0.1 scope split
 
 - Rebased the governed Privacy Shield release identity to **Version 2.0.0** without changing the frozen implementation source: candidate `privacy-shield-2.0.0-seal.1` remains bound to `01e7502b9828bb5611677964e4f6eada70e7d055`.
