@@ -1,5 +1,13 @@
 # GoreeCloud Privacy Shield — Changelogs
 
+## 2026-10-04 — Privacy Center canonical readback reconciliation
+
+- Bound the Privacy Center Glaze gate to the stronger current `GoreeCloud/static-websites` V1.7 evidence set.
+- Recorded deployed/readback candidate `17303b6c7381faaa0e89ce6175ce24048fb56a12`, Privacy route blob `40d4bcb1f8fc1e53bbbcde15f151ce1027157f96`, and byte-for-byte canonical readback across all eleven public HTML routes.
+- Verified current static-websites main `9ae21cf12e276ea7e553fcf2573318602886428e` retains the same public Privacy bytes.
+- Kept `privacy-center-glaze-acceptance` blocked on owner visual, keyboard, assistive-technology, representative performance/resilience, final consumer approval, and legacy deployment retirement/cutover.
+- No Privacy Shield runtime, production, Anchor, or Stable authority is created by website readback evidence.
+
 ## 2026-10-03 — Version 2.0 release provenance/rollback evidence contract
 
 - Added a fail-closed machine-readable release-evidence template for `privacy-shield-2.0.0-seal.1`.

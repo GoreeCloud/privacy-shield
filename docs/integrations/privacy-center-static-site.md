@@ -1,6 +1,6 @@
 # Privacy Center — Current Static-Site and Glaze Authority
 
-**Status:** Glaze V1.7 source adoption completed; downstream acceptance remains blocked  
+**Status:** Glaze V1.7 machine/deployment/readback evidence complete; human consumer acceptance remains blocked  
 **Privacy authority:** GoreeCloud Privacy Shield  
 **Static-site repository:** `GoreeCloud/static-websites`  
 **Current public website:** `https://www.goreecloud.com`  
@@ -11,7 +11,7 @@
 
 The current GoreeCloud public-web authority is the single retained website in `GoreeCloud/static-websites`. Its URL namespace identifies `sites/main/privacy/index.html` as the canonical `/privacy/` source. The former standalone `sites/privacy` package and the `GoreeCloud/privacy-shield/website` copy are migration/retirement or legacy deployment material, not current public-site source authority.
 
-The canonical Privacy route at `GoreeCloud/static-websites@531744f2a82133caca8ddde00fa782415d1a42e1` now declares:
+The canonical Privacy route at `GoreeCloud/static-websites@17303b6c7381faaa0e89ce6175ce24048fb56a12` now declares:
 
 - `data-glaze-version="1.7.0"`;
 - `goreecloud-glaze-ui=1.7.0`;
@@ -19,9 +19,9 @@ The canonical Privacy route at `GoreeCloud/static-websites@531744f2a82133caca8dd
 - the canonical Privacy Shield identity; and
 - explicit separation between Privacy Shield privacy authority and application/service runtime authority.
 
-The exact Privacy route blob at that revision is `aadf935248db716858b7882b1685d0bcdd4a6da4`.
+The exact Privacy route blob at that revision is `40d4bcb1f8fc1e53bbbcde15f151ce1027157f96`.
 
-This completes the **source-migration** portion of the Privacy Center Glaze V1.7 requirement. It does not establish downstream consumer acceptance, canonical deployed-byte equivalence, legacy deployment retirement, production Privacy Shield runtime acceptance, Anchor qualification, or Stable status.
+This completes the canonical source-migration portion of the Privacy Center Glaze V1.7 requirement. Exact machine validation, production deployment, and canonical readback are also verified for the current public bytes. Human consumer acceptance, representative performance/resilience, legacy deployment retirement, production Privacy Shield runtime acceptance, Anchor qualification, and Stable status remain separate.
 
 ## Exact Glaze authority
 
@@ -39,20 +39,20 @@ Glaze V1.7.0 intentionally inherits the accepted V1.6.0 runtime surface and excl
 
 ## Current repository and deployment evidence
 
-Static-websites PR #132 merged the V1.7 source migration to `main` as `531744f2a82133caca8ddde00fa782415d1a42e1`.
+The exact deployed/readback website candidate is `17303b6c7381faaa0e89ce6175ce24048fb56a12`. Current static-websites `main` is `9ae21cf12e276ea7e553fcf2573318602886428e`; later support-documentation and test-restoration changes did not change the public Privacy route bytes.
 
-For that exact merged revision:
+For candidate `17303b6c7381faaa0e89ce6175ce24048fb56a12`:
 
-- post-merge `Validate static website repository` completed successfully;
-- post-merge `Validate main GoreeCloud website` completed successfully;
-- the exact source/build/browser workflow validates the V1.7 lock, isolated artifact, public boundary, and canonical-page browser smoke;
-- Cloudflare Pages check `111344235579` completed successfully for exact revision `531744f2a82133caca8ddde00fa782415d1a42e1`;
-- Cloudflare deployment id is `833c933e-f6d0-48ce-b14d-30c8e62a74f2`; and
-- the associated Pages preview is `https://833c933e.goreecloud-website.pages.dev`.
+- repository and main-site validation passed;
+- isolated-artifact, responsive/interaction, and privacy/security validation passed;
+- all eleven canonical HTML routes matched production byte-for-byte;
+- total compared canonical HTML was 115,559 bytes;
+- the 404 body plus Glaze and Mesh SVG assets also matched source; and
+- the authoritative website consumer record reports `deployed-readback-verified`.
 
-This establishes exact source adoption and successful Pages deployment for the merged revision. It does **not** establish canonical-domain exact-byte readback because the repository production verifier has not yet been run post-merge against the new V1.7 revision through an authenticated workflow-dispatch path.
+For Privacy Center specifically, `/privacy/` matched `sites/main/privacy/index.html` exactly at 10,154 bytes using source blob `40d4bcb1f8fc1e53bbbcde15f151ce1027157f96`.
 
-The website's V1.7 consumer-acceptance record remains `pending-evidence`, with production approval false. Human visual, keyboard, assistive-technology, representative performance/resilience, exact rollback, canonical production readback, and final owner consumer acceptance remain pending.
+The shared website consumer record is `pending-human-acceptance`. Owner visual, keyboard, assistive-technology, representative performance/resilience, and final production consumer approval remain pending. Source rollback reversibility is verified through Git history.
 
 ## Legacy Privacy Shield website copy
 
@@ -70,4 +70,4 @@ The current Privacy Shield Platform Contract therefore distinguishes:
 
 Glaze is presentation authority only. Source migration, successful CI, a Pages deployment check, rendered website state, or a consumer record cannot create consent, authorize data use, upgrade privacy evidence, grant runtime capability, or establish Privacy Shield production acceptance.
 
-The Privacy Center Glaze gate therefore remains **blocked** for Privacy Shield Version 2.0 even though its source-migration substep is now complete.
+The Privacy Center Glaze gate therefore remains **blocked** for Privacy Shield Version 2.0 even though source migration, machine validation, deployment, and canonical readback are complete.
