@@ -65,9 +65,10 @@
       "state": "blocked",
       "evidence": [
         "docs/integrations/privacy-center-static-site.md",
+        "website/README.md",
         "goreecloud.platform.yaml"
       ],
-      "reason": "Version 2.0 Anchor qualification blocker: the shipped Privacy Center has not completed migration and exact-current consumer acceptance against the current Stable/Anchor Glaze target; existing 1.6.0 source evidence is historical migration input only."
+      "reason": "Version 2.0 Anchor qualification blocker: canonical Privacy Center source migration to Glaze V1.7 / 1.7.0 is complete at GoreeCloud/static-websites revision 531744f2a82133caca8ddde00fa782415d1a42e1 and that revision has successful source/build/browser checks plus a successful Cloudflare Pages deployment check. Current consumer review, canonical-site readback, rollback evidence, legacy deployment retirement/cutover, and final consumer acceptance remain incomplete."
     },
     {
       "id": "hosting-observability-recovery-release",
