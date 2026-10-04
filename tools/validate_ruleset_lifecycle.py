@@ -72,7 +72,7 @@ def main() -> int:
         fail("canonical ruleset unexpectedly allows a remote local-resource catalog")
 
     consumption = contract.get("browser_consumption", {})
-    if consumption.get("current_runtime_authority") != "GoreeCloud/goreecloud-browser":
+    if consumption.get("current_runtime_authority") != "GoreeCloud/browser":
         fail("Browser runtime authority changed")
     if consumption.get("adapter_must_validate_schema_version") is not True:
         fail("Browser adapter must validate schema version")

@@ -101,11 +101,11 @@ Behavioral tracker evidence must remain local and session-scoped under the appro
 
 Filter data, rule updates, exceptions, and local-resource substitution mechanisms must be validated and handled defensively. User-visible exceptions must be explicit and reversible.
 
-Privacy Shield must not replace or weaken Firefox/Gecko Safe Browsing, TLS, certificate validation, sandboxing, process isolation, site permissions, or application-update mechanisms.
+Privacy Shield must not replace or weaken the active GoreeCloud Browser engine/runtime's existing security boundaries.
 
 ## Production acceptance
 
-The exact compiled GoreeCloud Browser must validate Privacy Shield request blocking, URL cleaning in navigation/copy/share paths, tracker learning and blocking, persistent site exceptions, private-browsing behavior, exact-match local-resource substitution and fail-open behavior, site compatibility, failure handling, accessibility, Glaze UI behavior, and inherited Firefox security boundaries before production readiness is claimed.
+The exact compiled GoreeCloud Browser must validate Privacy Shield request blocking, URL cleaning in navigation/copy/share paths, tracker learning and blocking, persistent site exceptions, private-browsing behavior, exact-match local-resource substitution and fail-open behavior, site compatibility, failure handling, accessibility, Glaze UI behavior, and preservation of the active Browser engine/runtime boundaries before production readiness is claimed.
 
 ## Artwork status
 
