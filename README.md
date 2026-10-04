@@ -11,7 +11,7 @@ GoreeCloud Browser remains a privileged Privacy Shield runtime and continues to 
 Privacy Shield is distinct from GoreeCloud Browser and Wardveil Security:
 
 - **GoreeCloud Privacy Shield** is the platform-wide privacy and data-use authority and shared privacy-control identity.
-- **GoreeCloud Browser** is the browser application and owns Browser-specific runtime privacy behavior. Current desktop Browser development uses a CEF/Chromium render path; the frozen Privacy Shield 2.0 Browser acceptance gate still reflects an earlier Firefox runtime boundary and requires governed reconciliation before current Browser evidence can satisfy it.
+- **GoreeCloud Browser** is the browser application and owns Browser-specific runtime privacy behavior. Current desktop Browser development uses a CEF/Chromium render path. The frozen Privacy Shield 2.0 acceptance contract already supports `chromium-cef`; fresh exact compiled Browser evidence is still required and standalone Firefox-adapter acceptance does not transfer.
 - **Wardveil Security by GoreeCloud** is the platform-wide security and protection authority. It may provide security evidence to Privacy Shield and present Privacy Shield status without replacing Privacy Shield privacy authority.
 - **GoreeCloud Mesh** is the coordination and governance plane. It may transport or correlate Privacy Shield decisions and evidence but cannot create, extend, or upgrade privacy authority.
 - **Everkeep** is the resilience and preservation authority and coordinates lifecycle effects such as deletion across backups and recovery material.
@@ -183,7 +183,7 @@ Current feature state remains in [Implemented features](docs/IMPLEMENTED-FEATURE
 | GoreeCloud Network `network-privacy` adapter | Draft downstream candidate; not centrally promoted or production-approved |
 | Additional application privacy adapters | Planned/incremental |
 | Standalone Firefox adapter 0.2.0 | Accepted in `GoreeCloud/firefox-addons`; does not certify compiled GoreeCloud Browser |
-| Compiled Browser runtime/UI acceptance | Pending; current CEF/Chromium Browser path requires governed Version 2.0 runtime-boundary reconciliation |
+| Compiled Browser runtime/UI acceptance | Pending; seal.1 contract already supports CEF/Chromium, but no fresh exact compiled Browser acceptance record exists |
 | Privacy Center Glaze V1.7 source adoption | Complete at static-websites `531744f2a82133caca8ddde00fa782415d1a42e1`; consumer acceptance still pending |
 | Overall platform production approval | Not a single global gate; adapter-specific acceptance required |
 
