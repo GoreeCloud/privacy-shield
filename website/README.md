@@ -33,7 +33,7 @@ The legacy build copies the approved canonical Privacy Shield identity from `bra
 
 `website/dist` is legacy publication evidence, not canonical source authority. It must remain deterministic while the legacy deployment is in service. The canonical central package intentionally excludes generated `dist` as source authority.
 
-Source, generated artifact, deployed Pages revision, canonical-domain bytes, and human consumer acceptance remain distinct evidence classes.
+Source, committed generated artifact, and deployed bytes remain distinct evidence classes for the legacy 2.1 path. The canonical V1.7 source, Pages deployment revision, canonical-domain readback, and human consumer acceptance are likewise tracked separately.
 
 ## Current canonical website evidence
 
