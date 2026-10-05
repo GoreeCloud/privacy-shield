@@ -51,6 +51,7 @@ class ContractTestProductionStore extends MemoryPrivacyStateStore {
       provider_version: "1.0.0",
       provider_implementation: "ContractTestProductionStore",
       provider_authority: "GoreeCloud/goreecloud-privacy-shield",
+      selection_decision_id: "distributed-state-provider-production",
       durable: true,
       restart_recovery: true,
       atomic_transactions: true,
