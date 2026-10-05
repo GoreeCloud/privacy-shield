@@ -38,7 +38,7 @@
     "status": "approved",
     "implementation_authorized": true,
     "production_acceptance_authorized": false,
-    "decision_reference": "evidence+sha256:5726d13d0f05a0de8ef4053fff4d4f2db91089f45948749ddf9bf01e4441a71d:github://GoreeCloud/privacy-shield/decisions/state-providers/etcd-self-hosted-multimember-production.md",
+    "decision_reference": "evidence+sha256:a18110afa7f6947739260a5772edce16a09e620f1bd67257138531b58283ab50:github://GoreeCloud/privacy-shield/decisions/state-providers/etcd-self-hosted-multimember-production.md",
     "decided_at": "2026-10-04T23:00:18Z",
     "review_by": "2026-11-01T23:00:00Z"
   },
