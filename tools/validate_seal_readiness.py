@@ -12,6 +12,8 @@ RECORD = ROOT / "qualification" / "seal-readiness.json"
 CANDIDATE = ROOT / "qualification" / "seal-candidate.json"
 MANIFEST = ROOT / "goreecloud.platform.yaml"
 STATE_EVAL = ROOT / "evaluations" / "state-providers" / "foundationdb-self-hosted-multihost-production.json"
+ETCD_EVAL = ROOT / "evaluations" / "state-providers" / "etcd-self-hosted-multimember-production.json"
+ETCD_SELECTION = ROOT / "decisions" / "state-providers" / "etcd-self-hosted-multimember-production.json"
 SIGNING_EVAL = ROOT / "evaluations" / "signing-key-providers" / "ovhcloud-kms-hsm-production.json"
 STATE_DECISIONS = ROOT / "decisions" / "state-providers"
 SIGNING_DECISIONS = ROOT / "decisions" / "signing-key-providers"
@@ -44,6 +46,8 @@ def main() -> None:
     candidate = json.loads(CANDIDATE.read_text())
     manifest = MANIFEST.read_text()
     state_eval = json.loads(STATE_EVAL.read_text())
+    etcd_eval = json.loads(ETCD_EVAL.read_text())
+    etcd_selection = json.loads(ETCD_SELECTION.read_text())
     signing_eval = json.loads(SIGNING_EVAL.read_text())
     runtime_http = RUNTIME_HTTP.read_text()
 
@@ -108,10 +112,27 @@ def main() -> None:
 
     if state_eval.get("governance", {}).get("status") != "failed":
         fail("FoundationDB candidate must remain failed unless a governed replacement/re-evaluation changes the record")
+    if etcd_eval.get("governance", {}).get("status") != "complete":
+        fail("etcd candidate must remain complete while the current selection references it")
     if signing_eval.get("governance", {}).get("status") != "draft":
         fail("OVHcloud signing candidate must remain draft unless a governed evaluation changes the record")
-    if json_records(STATE_DECISIONS) or json_records(SIGNING_DECISIONS):
-        fail("provider selection records require explicit candidate-bound qualification reconciliation")
+
+    state_decisions = json_records(STATE_DECISIONS)
+    signing_decisions = json_records(SIGNING_DECISIONS)
+    if state_decisions != [ETCD_SELECTION]:
+        fail("Seal qualification must contain exactly the current etcd implementation selection")
+    if signing_decisions:
+        fail("signing-key provider selection requires separate candidate-bound qualification reconciliation")
+    governance = etcd_selection.get("governance", {})
+    if (
+        etcd_selection.get("decision_id") != "etcd-self-hosted-multimember-production-selection"
+        or etcd_selection.get("provider_id") != "etcd-self-hosted-multimember"
+        or etcd_selection.get("evaluation_record_id") != "etcd-self-hosted-multimember-production"
+        or governance.get("status") != "approved"
+        or governance.get("implementation_authorized") is not True
+        or governance.get("production_acceptance_authorized") is not False
+    ):
+        fail("etcd selection must remain approved for bounded implementation and non-authorizing for production acceptance")
     if json_records(STATE_ACCEPTANCE) or json_records(SIGNING_ACCEPTANCE):
         fail("production provider acceptance records require explicit candidate-bound qualification reconciliation")
 
