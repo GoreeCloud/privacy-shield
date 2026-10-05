@@ -431,3 +431,9 @@ That Browser evidence remains supporting evidence only. No governed exact compil
 
 Post-merge Privacy Shield Validation run `37241943361` (#609) and Provider Governance Temporal Integrity run `37241943328` (#67) passed on exact main `264a1759896efaf6e665c41dd62a1bf2294a3a02`. These results do not authorize Anchor or Stable status.
 
+## October 4, 2026 — etcd provider selection for bounded integration
+
+The complete self-hosted etcd v3.7.2 candidate evaluation now has approved selection record `etcd-self-hosted-multimember-production-selection`.
+
+The selection permits bounded provider-specific source work only. The Version 2.0 state-provider gate remains blocked on the adapter, a safe transport boundary for the synchronous store contract, exact target-environment assessment, operational qualification, recovery exercises, and final runtime acceptance.
+
