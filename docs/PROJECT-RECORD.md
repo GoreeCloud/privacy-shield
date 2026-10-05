@@ -437,3 +437,13 @@ The complete self-hosted etcd v3.7.2 candidate evaluation now has approved selec
 
 The selection permits bounded provider-specific source work only. The Version 2.0 state-provider gate remains blocked on the adapter, a safe transport boundary for the synchronous store contract, exact target-environment assessment, operational qualification, recovery exercises, and final runtime acceptance.
 
+## October 5, 2026 — selected etcd adapter and acceptance binding
+
+Privacy Shield PR #177 merged as `38e4e94ca8c59aab5ba71d9849428d42ba7b5df4` after exact-head Privacy Shield Validation #616 passed. Post-merge Validation #617 also passed on the authoritative main commit.
+
+The selected self-hosted etcd v3.7.2 provider now has a bounded Privacy Shield source adapter. The adapter preserves the synchronous authority-store contract through an injected linearizable snapshot and generation-bound compare-and-swap transport boundary. It does not bundle a live network client, credentials, deployment configuration, or production-acceptance authority.
+
+Production state-provider acceptance is now bound to the provider's exact approved `selection_decision_id`. Repository acceptance validation also resolves the record against the approved selection, checks provider identity and environment scope, and prevents an acceptance record from extending beyond the selection review boundary.
+
+The Version 2.0 state-provider gate remains blocked on live transport/deployment, exact target-environment access-control evidence, operational/recovery/topology qualification, and a fresh production-approved acceptance record. No Anchor or Stable authority is created.
+
