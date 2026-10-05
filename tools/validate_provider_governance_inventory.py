@@ -58,10 +58,24 @@ def main() -> None:
         if record.get("integration_authority") != CANONICAL_REPOSITORY:
             fail(f"{record.get('evaluation_id')}: integration_authority must use {CANONICAL_REPOSITORY}")
 
-    if state_decisions or signing_decisions:
-        fail("no provider selection decision is currently authorized by the active incomplete/failed evaluations")
+    if signing_decisions:
+        fail("no signing-key provider selection decision is currently authorized")
+    state_decisions_by_id = {record.get("decision_id"): record for record in state_decisions}
+    expected_decision_id = "etcd-self-hosted-multimember-production-selection"
+    if len(state_decisions_by_id) != 1 or set(state_decisions_by_id) != {expected_decision_id}:
+        fail("state-provider selection inventory must contain exactly the approved etcd integration selection")
+    selected = state_decisions_by_id[expected_decision_id]
+    if (
+        selected.get("provider_id") != "etcd-self-hosted-multimember"
+        or selected.get("evaluation_record_id") != "etcd-self-hosted-multimember-production"
+        or selected.get("integration_authority") != CANONICAL_REPOSITORY
+        or selected.get("governance", {}).get("status") != "approved"
+        or selected.get("governance", {}).get("implementation_authorized") is not True
+        or selected.get("governance", {}).get("production_acceptance_authorized") is not False
+    ):
+        fail("etcd state-provider selection must remain approved for implementation only and non-authorizing for production acceptance")
     if state_acceptance or signing_acceptance:
-        fail("no production provider acceptance record is currently valid without an approved selection")
+        fail("no production provider acceptance record is currently authorized")
 
     state_readme = (ROOT / "decisions" / "state-providers" / "README.md").read_text(encoding="utf-8")
     signing_readme = (ROOT / "decisions" / "signing-key-providers" / "README.md").read_text(encoding="utf-8")
@@ -73,7 +87,7 @@ def main() -> None:
         "explicitly **failed**",
         "etcd-self-hosted-multimember-production",
         "complete, non-authorizing",
-        "zero approved state-provider selections",
+        "one approved state-provider selection",
         "zero production-approved state-provider acceptance records",
     ]:
         if phrase.lower() not in state_readme.lower():
@@ -96,7 +110,7 @@ def main() -> None:
 
     print(
         "Privacy Shield provider-governance inventory valid "
-        "(state candidates=2: 1 failed, 1 complete; signing candidates=1 draft; selections=0; acceptance=0)."
+        "(state candidates=2: 1 failed, 1 complete; signing candidates=1 draft; state selections=1 approved-for-implementation; acceptance=0)."
     )
 
 

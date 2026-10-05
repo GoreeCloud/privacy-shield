@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "contract_id": "goreecloud.privacy-shield.state-provider-selection.v1",
+  "decision_id": "etcd-self-hosted-multimember-production-selection",
+  "provider_id": "etcd-self-hosted-multimember",
+  "provider_name": "etcd self-hosted multi-member cluster",
+  "provider_implementation": "etcd v3.7.2 self-hosted multi-member cluster",
+  "integration_authority": "GoreeCloud/privacy-shield",
+  "evaluation_record_id": "etcd-self-hosted-multimember-production",
+  "scope": {
+    "service": "privacy-shield",
+    "capability": "durable-authorization-state",
+    "authority_state": [
+      "consent",
+      "policy_versions_and_active_pointer",
+      "capability_revocation",
+      "single_use_capability_consumption",
+      "privacy_evidence_and_chain_head"
+    ],
+    "environments": [
+      "production"
+    ]
+  },
+  "evaluation": {
+    "durability": "passed",
+    "restart_recovery": "passed",
+    "atomic_transactions": "passed",
+    "multi_writer_serializability": "passed",
+    "distributed_topology": "passed",
+    "fail_closed_conflict_behavior": "passed",
+    "backup_restore": "passed",
+    "migration_rollback": "passed",
+    "access_control_isolation": "passed",
+    "privacy_safe_observability": "passed",
+    "operational_ownership": "passed"
+  },
+  "governance": {
+    "status": "approved",
+    "implementation_authorized": true,
+    "production_acceptance_authorized": false,
+    "decision_reference": "evidence+sha256:a18110afa7f6947739260a5772edce16a09e620f1bd67257138531b58283ab50:github://GoreeCloud/privacy-shield/decisions/state-providers/etcd-self-hosted-multimember-production.md",
+    "decided_at": "2026-10-04T23:00:18Z",
+    "review_by": "2026-11-01T23:00:00Z"
+  },
+  "privacy": {
+    "credentials_in_decision_record": false,
+    "raw_private_payloads_in_decision_record": false,
+    "secret_material_in_decision_record": false
+  },
+  "limitations": [
+    "Selection authorizes bounded provider-specific source integration only; it does not authorize deployment or production acceptance.",
+    "The current synchronous Privacy Shield state-store contract requires an explicit transport strategy before a real etcd network client can satisfy the runtime boundary.",
+    "Exact deployed access control, topology, recovery, observability, performance, operational qualification, and production acceptance remain separately required."
+  ]
+}
