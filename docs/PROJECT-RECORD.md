@@ -447,3 +447,11 @@ Production state-provider acceptance is now bound to the provider's exact approv
 
 The Version 2.0 state-provider gate remains blocked on live transport/deployment, exact target-environment access-control evidence, operational/recovery/topology qualification, and a fresh production-approved acceptance record. No Anchor or Stable authority is created.
 
+## October 5, 2026 — current Browser CEF supporting evidence
+
+Privacy Shield refreshed the blocked compiled-Browser gate against current `GoreeCloud/browser` source `95d92a89f09a64c079b2a5b8077e82db955dfb74` / tree `09c16bce62837018950993da083dc0343d5641c1`.
+
+Browser Core CI #891 passed the exact-source CEF runtime suite, and Security Evidence #336 retained exact-source security evidence. The current Browser line also includes newer private-session isolation and fail-closed cleanup-reporting behavior than the earlier representative checkpoint.
+
+This is supporting evidence only. No governed exact compiled Browser artifact identity or complete ten-dimension independently reviewed FR-013 record exists, so `runtime-adapter-acceptance` remains blocked.
+
