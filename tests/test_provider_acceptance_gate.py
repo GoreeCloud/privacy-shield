@@ -54,6 +54,45 @@ def state_record():
     }
 
 
+def state_selection():
+    return {
+        "schema_version": 1,
+        "contract_id": "goreecloud.privacy-shield.state-provider-selection.v1",
+        "decision_id": "distributed-state-provider-production",
+        "provider_id": "distributed-state",
+        "provider_name": "Distributed State",
+        "provider_implementation": "ExampleDistributedStateProvider",
+        "integration_authority": "GoreeCloud/goreecloud-privacy-shield",
+        "evaluation_record_id": "distributed-state-evaluation",
+        "scope": {
+            "service": "privacy-shield",
+            "capability": "durable-authorization-state",
+            "authority_state": ["consent"],
+            "environments": ["production"],
+        },
+        "evaluation": {},
+        "governance": {
+            "status": "approved",
+            "implementation_authorized": True,
+            "production_acceptance_authorized": False,
+            "decision_reference": "test://selection",
+            "decided_at": "2026-09-19T00:00:00Z",
+            "review_by": "2026-09-21T21:00:00Z",
+        },
+        "privacy": {
+            "credentials_in_decision_record": False,
+            "raw_private_payloads_in_decision_record": False,
+            "secret_material_in_decision_record": False,
+        },
+        "limitations": [],
+    }
+
+
+def state_selections():
+    selection = state_selection()
+    return {selection["decision_id"]: selection}
+
+
 def signing_record():
     evidence = []
     for index, category in enumerate(sorted(gate.SIGNING_QUALIFICATIONS)):
@@ -87,6 +126,25 @@ def signing_record():
 class ProviderAcceptanceGateTests(unittest.TestCase):
     def test_complete_current_state_acceptance_passes(self) -> None:
         gate.validate_state_acceptance(state_record(), now=NOW)
+
+    def test_state_acceptance_resolves_exact_approved_selection(self) -> None:
+        gate.validate_state_acceptance(state_record(), now=NOW, selections=state_selections())
+
+    def test_state_acceptance_rejects_unknown_selection(self) -> None:
+        with self.assertRaises(SystemExit):
+            gate.validate_state_acceptance(state_record(), now=NOW, selections={})
+
+    def test_state_acceptance_rejects_selection_identity_mismatch(self) -> None:
+        selections = state_selections()
+        selections["distributed-state-provider-production"]["provider_id"] = "other-provider"
+        with self.assertRaises(SystemExit):
+            gate.validate_state_acceptance(state_record(), now=NOW, selections=selections)
+
+    def test_state_acceptance_cannot_outlive_selection_review_boundary(self) -> None:
+        selections = state_selections()
+        selections["distributed-state-provider-production"]["governance"]["review_by"] = "2026-09-20T20:00:00Z"
+        with self.assertRaises(SystemExit):
+            gate.validate_state_acceptance(state_record(), now=NOW, selections=selections)
 
     def test_state_acceptance_requires_selection_decision_binding(self) -> None:
         record = state_record()
