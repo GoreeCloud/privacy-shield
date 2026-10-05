@@ -1,5 +1,11 @@
 # GoreeCloud Privacy Shield — Changelogs
 
+## 2026-10-05 — current Browser CEF evidence refresh
+
+- Rebound supporting compiled-Browser evidence to current Browser source `95d92a89f09a64c079b2a5b8077e82db955dfb74`.
+- Recorded exact-source Core CI #891 and Security Evidence #336 plus the newer private-session/failure-safety behavior.
+- Preserved the strict FR-013 gate as blocked because exact compiled-artifact identity, all ten passed dimensions, freshness, and independent accepted review remain incomplete.
+
 ## 2026-10-05 — selected etcd adapter and acceptance binding
 
 - Added the bounded source adapter for the approved self-hosted etcd v3.7.2 selection.
