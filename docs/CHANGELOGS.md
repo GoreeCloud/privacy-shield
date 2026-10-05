@@ -1,5 +1,14 @@
 # GoreeCloud Privacy Shield — Changelogs
 
+## 2026-10-05 — selected etcd adapter and acceptance binding
+
+- Added the bounded source adapter for the approved self-hosted etcd v3.7.2 selection.
+- Preserved synchronous authority-state semantics through an injected linearizable snapshot and compare-and-swap transport boundary.
+- Bound runtime and repository production acceptance to the exact approved provider selection and its review window.
+- Advanced the Version 2.0 provider gate from missing implementation to deployment/qualification/acceptance evidence.
+- PR #177 merged as `38e4e94ca8c59aab5ba71d9849428d42ba7b5df4`; exact-head Validation #616 and post-merge Validation #617 passed.
+- No live provider deployment, production acceptance, Anchor, or Stable authority is created.
+
 ## 2026-10-04 — etcd integration selection
 
 - Recorded the current etcd v3.7.2 provider selection for bounded source integration.
