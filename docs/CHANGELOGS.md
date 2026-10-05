@@ -1,5 +1,11 @@
 # GoreeCloud Privacy Shield — Changelogs
 
+## 2026-10-04 — etcd integration selection
+
+- Recorded the current etcd v3.7.2 provider selection for bounded source integration.
+- Aligned provider inventory, qualification, feature, status, and project records.
+- Adapter, transport, target-environment, qualification, and recovery work remain open.
+
 ## 2026-10-04 — Provider and Browser evidence stabilization
 
 - Integrated a complete, non-authorizing self-hosted etcd v3.7.2 multi-member state-provider candidate evaluation while preserving the failed FoundationDB candidate and zero approved provider selections/production acceptances.
