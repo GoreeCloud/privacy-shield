@@ -15,9 +15,11 @@
         "evaluations/state-providers/etcd-self-hosted-multimember-production.json",
         "decisions/state-providers/etcd-self-hosted-multimember-production.json",
         "decisions/state-providers/etcd-self-hosted-multimember-production.md",
+        "src/etcd-state-provider.mjs",
+        "tests/etcd-state-provider.test.mjs",
         "acceptance/state-providers/README.md"
       ],
-      "reason": "Version 2.0 Anchor qualification blocker: the FoundationDB candidate remains failed. The complete self-hosted etcd v3.7.2 candidate now has an approved, non-production-authorizing provider selection for bounded source integration. Privacy Shield still lacks an implemented etcd state-provider adapter, an exact target-environment access-control assessment, controlled operational qualification, and a production acceptance record."
+      "reason": "Version 2.0 Anchor qualification blocker: FoundationDB remains failed. The selected self-hosted etcd v3.7.2 provider now has a bounded source adapter using an injected synchronous transport contract, but no live etcd transport/deployment is established. Exact target-environment access-control assessment, controlled operational qualification, recovery/topology evidence, and a production acceptance record remain required."
     },
     {
       "id": "production-signing-key-provider",

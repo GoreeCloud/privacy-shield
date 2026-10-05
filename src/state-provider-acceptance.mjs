@@ -155,6 +155,7 @@ export function requireStateProviderAcceptance(provider, {
     "provider_version",
     "provider_implementation",
     "provider_authority",
+    "selection_decision_id",
   ]) {
     requireString(capabilities[field], "INVALID_PRODUCTION_STATE_PROVIDER_IDENTITY");
   }
@@ -169,6 +170,9 @@ export function requireStateProviderAcceptance(provider, {
   }
   if (acceptanceRecord.provider_authority !== capabilities.provider_authority) {
     throw new Error("STATE_PROVIDER_ACCEPTANCE_AUTHORITY_MISMATCH");
+  }
+  if (selectionDecisionId !== capabilities.selection_decision_id) {
+    throw new Error("STATE_PROVIDER_ACCEPTANCE_SELECTION_DECISION_MISMATCH");
   }
 
   const acceptedCapabilities = requireObject(

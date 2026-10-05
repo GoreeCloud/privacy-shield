@@ -13,6 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 STATE_SCHEMA = ROOT / "contracts" / "privacy-shield.state-provider-acceptance.schema.json"
 SIGNING_SCHEMA = ROOT / "contracts" / "privacy-shield.signing-key-provider-acceptance.schema.json"
 STATE_DIR = ROOT / "acceptance" / "state-providers"
+STATE_SELECTION_DIR = ROOT / "decisions" / "state-providers"
 SIGNING_DIR = ROOT / "acceptance" / "signing-key-providers"
 
 SLUG = re.compile(r"^[a-z0-9][a-z0-9-]*$")
@@ -104,6 +105,71 @@ def parse_time(value: Any, label: str) -> datetime:
     return parsed.astimezone(timezone.utc)
 
 
+def load_state_selections() -> dict[str, dict[str, Any]]:
+    selections: dict[str, dict[str, Any]] = {}
+    if not STATE_SELECTION_DIR.exists():
+        return selections
+    for path in sorted(STATE_SELECTION_DIR.glob("*.json")):
+        record = load_json(path, f"state selection {path}")
+        decision_id = record.get("decision_id")
+        require(
+            isinstance(decision_id, str) and SLUG.fullmatch(decision_id) is not None,
+            f"state selection {path}: invalid decision_id",
+        )
+        require(decision_id not in selections, f"duplicate state selection decision_id: {decision_id}")
+        selections[decision_id] = record
+    return selections
+
+
+def validate_state_selection_binding(
+    record: dict[str, Any],
+    selections: dict[str, dict[str, Any]],
+    *,
+    now: datetime,
+    valid_until: datetime,
+    label: str,
+) -> None:
+    decision_id = record["selection_decision_id"]
+    selection = selections.get(decision_id)
+    require(selection is not None, f"{label}: selected state-provider decision does not exist")
+
+    governance = selection.get("governance")
+    require(isinstance(governance, dict), f"{label}: selection governance is invalid")
+    require(governance.get("status") == "approved", f"{label}: selection is not approved")
+    require(governance.get("implementation_authorized") is True, f"{label}: selection does not authorize implementation")
+    require(
+        governance.get("production_acceptance_authorized") is False,
+        f"{label}: selection must not self-authorize production acceptance",
+    )
+
+    require(selection.get("provider_id") == record["provider_id"], f"{label}: selection provider_id mismatch")
+    require(
+        selection.get("provider_implementation") == record["provider_implementation"],
+        f"{label}: selection provider_implementation mismatch",
+    )
+    require(
+        selection.get("integration_authority") == record["provider_authority"],
+        f"{label}: selection provider authority mismatch",
+    )
+
+    scope = selection.get("scope")
+    require(isinstance(scope, dict), f"{label}: selection scope is invalid")
+    require(scope.get("service") == "privacy-shield", f"{label}: selection service scope mismatch")
+    require(
+        scope.get("capability") == "durable-authorization-state",
+        f"{label}: selection capability scope mismatch",
+    )
+    environments = scope.get("environments")
+    require(
+        isinstance(environments, list) and record["deployment"]["environment"] in environments,
+        f"{label}: deployment environment is outside selection scope",
+    )
+
+    review_by = parse_time(governance.get("review_by"), f"{label}.selection.review_by")
+    require(review_by > now, f"{label}: provider selection review boundary has expired")
+    require(valid_until <= review_by, f"{label}: acceptance cannot outlive provider selection review boundary")
+
+
 def content_addressed_reference(value: Any, label: str, explicit_sha: Any = None) -> None:
     require(isinstance(value, str) and value == value.strip(), f"{label} must be canonical text")
     match = EVIDENCE_REF.fullmatch(value)
@@ -113,7 +179,7 @@ def content_addressed_reference(value: Any, label: str, explicit_sha: Any = None
         require(match.group(1) == explicit_sha, f"{label} digest does not match sha256 field")
 
 
-def validate_state_acceptance(record: dict[str, Any], *, now: datetime | None = None, label: str = "state acceptance") -> None:
+def validate_state_acceptance(record: dict[str, Any], *, now: datetime | None = None, label: str = "state acceptance", selections: dict[str, dict[str, Any]] | None = None) -> None:
     now = (now or datetime.now(timezone.utc)).astimezone(timezone.utc)
     expected = {
         "schema_version","contract_id","selection_decision_id","provider_id","provider_implementation","provider_authority",
@@ -160,6 +226,14 @@ def validate_state_acceptance(record: dict[str, Any], *, now: datetime | None = 
     observed_date = datetime.strptime(acceptance["observed_date"], "%Y-%m-%d").replace(tzinfo=timezone.utc)
     require(observed_date.date() <= now.date(), f"{label}: observed_date cannot be future-dated")
     valid_until = parse_time(acceptance["valid_until"], f"{label}.acceptance.valid_until")
+    if selections is not None:
+        validate_state_selection_binding(
+            record,
+            selections,
+            now=now,
+            valid_until=valid_until,
+            label=label,
+        )
 
     evidence = record["evidence"]
     require(isinstance(evidence, list) and evidence, f"{label}: evidence must be non-empty")
@@ -273,9 +347,14 @@ def validate_repository() -> tuple[int, int]:
     validate_schema_boundaries()
     state_count = 0
     signing_count = 0
+    state_selections = load_state_selections()
     if STATE_DIR.exists():
         for path in sorted(STATE_DIR.glob("*.json")):
-            validate_state_acceptance(load_json(path, f"state acceptance {path}"), label=str(path))
+            validate_state_acceptance(
+                load_json(path, f"state acceptance {path}"),
+                label=str(path),
+                selections=state_selections,
+            )
             state_count += 1
     if SIGNING_DIR.exists():
         for path in sorted(SIGNING_DIR.glob("*.json")):

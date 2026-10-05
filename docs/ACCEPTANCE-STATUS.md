@@ -45,15 +45,15 @@ The built-in file provider is explicitly not distributed or multi-writer seriali
 
 ### 3. Production state provider
 
-**State: Contract and acceptance gate integrated in source; production provider implementation and runtime acceptance pending.**
+**State: Selected etcd source adapter integrated; live transport/deployment qualification and production acceptance pending.**
 
-The current integrated source requires the V1 state-provider capability profile: durability, restart recovery, atomic transactions, multi-writer serializability, distributed operation, and fail-closed conflict handling. It also requires independently governed exact-provider/exact-deployment acceptance evidence. A capability declaration or schema-valid record is necessary source metadata, not proof that a provider actually satisfies those properties.
+The current source requires the V1 state-provider capability profile: durability, restart recovery, atomic transactions, multi-writer serializability, distributed operation, and fail-closed conflict handling. The selected etcd adapter exposes those production-shaped capabilities only through an injected synchronous transport contract and carries no acceptance authority. A capability declaration or schema-valid record remains source metadata, not proof that a deployed provider satisfies those properties.
 
 Production acceptance requires exact-provider and exact-deployment concurrency, failure/recovery, backup/restore, topology, access-control, operational evidence, and a fresh production-approved acceptance record. No source-controlled provider currently carries production acceptance.
 
-Current candidate inventory contains two governed state-provider evaluations. `foundationdb-self-hosted-multihost-production` remains explicitly failed. `etcd-self-hosted-multimember-production` is complete, and `etcd-self-hosted-multimember-production-selection` is approved for bounded source integration only. That selection authorizes implementation work but does not establish an exact target-environment access-control boundary, operational qualification, deployment acceptance, or production acceptance. There is one approved state-provider selection and zero production-approved state-provider acceptance records.
+Current candidate inventory contains two governed state-provider evaluations. `foundationdb-self-hosted-multihost-production` remains explicitly failed. `etcd-self-hosted-multimember-production` is complete, and `etcd-self-hosted-multimember-production-selection` is approved for bounded source integration only. The selected adapter source is now present, but no live etcd transport or deployment is established. The selection and adapter do not establish target-environment access control, recovery/topology qualification, deployment acceptance, or production acceptance. There is one approved state-provider selection and zero production-approved state-provider acceptance records.
 
-The production runtime now consumes that record directly rather than trusting provider capability claims. Startup requires exact source revision and source-tree binding, the requested environment/topology, matching provider identity/version/implementation/authority metadata, complete passing qualification evidence, and a fresh production-approved state-provider acceptance record.
+The production runtime consumes the independent acceptance record rather than trusting provider capability claims. Startup requires exact source revision and source-tree binding, the requested environment/topology, matching provider identity/version/implementation/authority metadata, the same exact approved `selection_decision_id` declared by the provider, complete passing qualification evidence, and a fresh production-approved state-provider acceptance record.
 
 ### 4. Production signing-key custody
 
