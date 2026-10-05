@@ -19,6 +19,7 @@ class AcceptedStateProvider {
       provider_version: "1.0.0",
       provider_implementation: "AcceptedStateProvider",
       provider_authority: "GoreeCloud/goreecloud-privacy-shield",
+      selection_decision_id: "distributed-state-provider-production",
       durable: true,
       restart_recovery: true,
       atomic_transactions: true,
@@ -182,5 +183,12 @@ test("state provider acceptance requires a canonical selection decision binding"
   assert.throws(
     () => requireAccepted({ record: invalid }),
     /INVALID_STATE_PROVIDER_ACCEPTANCE_SELECTION_DECISION/,
+  );
+
+  const mismatched = record();
+  mismatched.selection_decision_id = "different-approved-selection";
+  assert.throws(
+    () => requireAccepted({ record: mismatched }),
+    /STATE_PROVIDER_ACCEPTANCE_SELECTION_DECISION_MISMATCH/,
   );
 });
