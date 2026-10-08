@@ -32,6 +32,14 @@ The canonical `goreecloud-care` adapter declares only `telemetry-minimization`, 
 
 The separate Care-adapter production decision is now approved for that exact RC identity. `production_approved=true` applies only to the three declared Care capabilities and is invalidated by a source, package, declared privacy behavior, or representative-target change until fresh exact-runtime acceptance is governed again. It does not expand Care into content blocking, tracking resistance, DNS privacy, network privacy, retention/deletion authority, export authority, or exception management; it does not promote Care to Stable; and it does not make the Privacy Shield platform foundation globally production-ready or satisfy the separate compiled GoreeCloud Browser production gate.
 
+### GoreeCloud Memos
+
+Role: maintained-fork application privacy adapter.
+
+GoreeCloud Memos declares only telemetry-minimization, data-minimization, deletion-controls, and portable-export, with GoreeCloud/memos remaining the runtime authority. The source-side adapter contract is integrated at Memos main revision 6f76952d40e016adee9694e4c408bf63eaca055e and remains Development evidence only.
+
+This central declaration registers the reviewed source contract; it does not create runtime acceptance, activate Privacy Shield status production, approve external-provider behavior, or set production_approved=true. Memos still requires exact-runtime acceptance on a representative target and separate production approval before Privacy Shield conformance can be claimed.
+
 ### Wardveil Security
 
 Role: read-only security-context presenter.
